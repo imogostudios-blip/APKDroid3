@@ -9,7 +9,7 @@
   "background_color": "#0a0a0a",
   "theme_color": "#02C57A",
   "lang": "en",
-  "dir": "ltr",
+  "dir": "rtl",
   "icons": [
     {
       "src": "res/icons/icon-48.png",
