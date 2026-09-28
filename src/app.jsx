@@ -436,7 +436,7 @@ const AppCard=({app,onClick,small})=>{
   const img=app.artworkUrl100||app.artworkUrl60;
   if(small){
     return(
-      <button onClick={()=>onClick(app)} className="flex flex-col w-[120px] shrink-0 text-left group">
+      <button onClick={()=>onClick(app)} className="flex flex-col w-[120px] shrink-0 text-right group">
         <img src={img} alt="" className="w-[120px] h-[120px] rounded-[24px] object-cover shadow-sm border border-[hsl(var(--border))] bg-muted group-hover:shadow-md transition-all" loading="lazy"/>
         <div className="mt-2 flex flex-col">
           <h3 className="font-medium text-[13px] leading-tight line-clamp-2">{app.trackName}</h3>
@@ -446,7 +446,7 @@ const AppCard=({app,onClick,small})=>{
     );
   }
   return(
-    <button onClick={()=>onClick(app)} className="flex items-center gap-3 w-full p-3 hover:bg-[hsl(var(--muted))]/50 rounded-xl text-left transition">
+    <button onClick={()=>onClick(app)} className="flex items-center gap-3 w-full p-3 hover:bg-[hsl(var(--muted))]/50 rounded-xl text-right transition">
       <img src={img} alt="" className="w-14 h-14 rounded-2xl bg-muted shadow-sm object-cover border border-[hsl(var(--border))]" loading="lazy"/>
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate text-sm">{app.trackName}</p>
@@ -465,7 +465,7 @@ const HScroll=({title,children,onSeeAll,ltr,rtl,pad,free})=>(
     </div>
     <div
       className={`flex gap-3 overflow-x-auto pb-2 scrollbar-hide ${free?'':'snap-x snap-mandatory'} ${pad||'px-4'}`}
-      style={rtl?{direction:'rtl'}:ltr?{direction:'ltr'}:undefined}
+      style={{direction:'rtl'}}
     >{children}</div>
   </section>
 );
@@ -494,7 +494,7 @@ const TopNav=({nav,isDetail,onOpenAccount,route})=>{
   const activePath=route||'/';
   return(
     <>
-      <div className={`hdr-top-row flex items-center px-4 max-w-screen-2xl mx-auto w-full ${isDetail?'sticky top-0 z-40 bg-[hsl(var(--bg))]':''}`} style={{direction:'ltr'}}>
+      <div className={`hdr-top-row flex items-center px-4 max-w-screen-2xl mx-auto w-full ${isDetail?'sticky top-0 z-40 bg-[hsl(var(--bg))]':''}`} style={{direction:'rtl'}}>
         {isDetail ? (
           <button type="button" className="nav-chip shrink-0" onClick={()=>window.history.back()} aria-label={t('back')}>
             <Icon name="left" className="w-5 h-5"></Icon>
@@ -562,7 +562,7 @@ const AccountHub=({open,onClose,nav,theme,setTheme,profile,setProfile,lang,night
   const go=p=>{onClose&&onClose();nav(p)};
   const ar=lang==='ar';
   return(
-    <div className={`acc-overlay ${open?'open':''}`} dir={ar?'rtl':'ltr'}>
+    <div className={`acc-overlay ${open?'open':''}`} dir="rtl">
       <div className="acc-top">
         <button type="button" className="acc-x" onClick={()=>{if(view==='edit')setView('main');else onClose&&onClose()}} aria-label={t('back')}>
           <Icon name="x" className="w-5 h-5"></Icon>
@@ -827,7 +827,7 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
                   <button type="button" className="promo-banner-wrap" onClick={()=>open(app)} style={{border:0,padding:0,width:'100%',background:'transparent',cursor:'pointer'}}>
                     <img src={shot} alt="" loading={i===0?'eager':'lazy'}/>
                   </button>
-                  <div className="promo-foot" dir={_lang==='ar'?'rtl':'ltr'}>
+                  <div className="promo-foot" dir="rtl">
                     <img className="promo-icon" src={icon} alt="" onClick={()=>open(app)} style={{cursor:'pointer'}}/>
                     <button type="button" className="promo-meta" onClick={()=>open(app)} style={{border:0,background:'transparent',color:'inherit',fontFamily:'inherit',cursor:'pointer'}}>
                       <div className="promo-name">{app.trackName}</div>
@@ -862,7 +862,7 @@ const StackedAppsPager=({frames,open,title})=>{
           <div className="stack-slide" key={'frame-'+fi+'-'+(group[0]&&group[0].trackId)}>
             <div className="stack-card">
               {group.map(app=>(
-                <button type="button" className="stack-row" key={app.trackId} onClick={()=>open(app)} dir={_lang==='ar'?'rtl':'ltr'}>
+                <button type="button" className="stack-row" key={app.trackId} onClick={()=>open(app)} dir="rtl">
                   <img className="stack-row-icon" src={app.artworkUrl100||app.artworkUrl60} alt="" loading="lazy"/>
                   <div className="stack-row-body">
                     <div className="stack-row-name">{app.trackName}</div>
@@ -1284,7 +1284,7 @@ const DetailTopBar=({app,isFav,onToggleFav,onShare,onOpenIn,onToggleTheme,isDark
   const run=fn=>()=>{setOpen(false);if(fn)fn()};
   const ar=_lang==='ar';
   return(
-    <div className="hdr-top-row dt-bar flex items-center px-4 max-w-screen-2xl mx-auto w-full sticky top-0 z-40 bg-[hsl(var(--bg))]" style={{direction:'ltr'}}>
+    <div className="hdr-top-row dt-bar flex items-center px-4 max-w-screen-2xl mx-auto w-full sticky top-0 z-40 bg-[hsl(var(--bg))]" style={{direction:'rtl'}}>
       <div className="dt-left">
         {app&&(
           <>
@@ -1295,7 +1295,7 @@ const DetailTopBar=({app,isFav,onToggleFav,onShare,onOpenIn,onToggleTheme,isDark
               {open&&(
                 <>
                   <div className="dt-scrim" onClick={()=>setOpen(false)}></div>
-                  <div className="dt-menu" role="menu" dir={ar?'rtl':'ltr'}>
+                  <div className="dt-menu" role="menu" dir="rtl">
                     <button type="button" role="menuitem" className="dt-item" onClick={run(onShare)}>
                       <BrandIcon name="share"/>
                       <span>{t('dt_share')}</span>
@@ -1406,7 +1406,7 @@ const InfoVal=({k,v})=>{
     if(/^artworkUrl/.test(k))return <div className="dt-art"><img src={v} alt="" loading="lazy"/>{link}</div>;
     return link;
   }
-  if(IT_LONG_KEYS.includes(k))return <div className="dt-long" dir="auto">{String(v)}</div>;
+  if(IT_LONG_KEYS.includes(k))return <div className="dt-long" dir="ltr">{String(v)}</div>;
   return <span>{String(v)}</span>;
 };
 
@@ -1422,7 +1422,7 @@ const AppInfoSheet=({app,onClose})=>{
   const label=k=>{const l=IT_LABELS[k];return l?(ar?l[0]:l[1]):k};
   return(
     <div className="dt-info-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose&&onClose()}}>
-      <div className="dt-info-sheet" dir={ar?'rtl':'ltr'} role="dialog" aria-modal="true" aria-label={t('dt_info')}>
+      <div className="dt-info-sheet" dir="rtl" role="dialog" aria-modal="true" aria-label={t('dt_info')}>
         <div className="dt-info-head">
           <div className="dt-info-title">{t('dt_info')}</div>
           <button type="button" className="dt-x" onClick={onClose} aria-label={t('dt_close')}>
@@ -2214,7 +2214,7 @@ const SearchLogPage=({nav})=>{
         ):<div className="play-list">{items.map(it=>(
           <div key={it.id} className="play-item">
             <button type="button" onClick={()=>setSel(p=>({...p,[it.id]:!p[it.id]}))} className={`w-6 h-6 rounded-md border flex items-center justify-center shrink-0 ${sel[it.id]?'bg-primary border-primary text-white':'border-[hsl(var(--border))]'}`}>{sel[it.id]?'✓':''}</button>
-            <button type="button" className="flex-1 min-w-0 text-left flex items-center gap-2" onClick={()=>openItem(it)}>
+            <button type="button" className="flex-1 min-w-0 text-right flex items-center gap-2" onClick={()=>openItem(it)}>
               <Icon name="hist" className="w-4 h-4 text-muted-foreground shrink-0"></Icon>
               <span className="text-sm font-medium truncate flex-1">{it.term}</span>
               <span className="text-[10px] font-semibold shrink-0 px-1.5 py-0.5 rounded-full text-white" style={{background:typeColor(it.type)}}>{typeLabel(it.type)}</span>
@@ -2245,7 +2245,7 @@ const Music=({play})=>{
       <div className="px-4 pt-3"><div className="flex items-center gap-2 bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5"><Icon name="search" className="w-4 h-4 text-muted-foreground"></Icon><input value={q} onChange={e=>setQ(e.target.value)} placeholder={t('search_songs')} className="flex-1 bg-transparent outline-none text-sm"/></div></div>
       <h2 className="font-semibold px-4 mt-5 mb-3">{q?t('results'):t('top_songs')}</h2>
       {ld?<div className="px-4 space-y-3">{Array(6).fill(0).map((_,i)=><Skel key={i} c="h-14"></Skel>)}</div>:
-        songs.map(s=><button key={s.trackId} onClick={()=>play(s,songs)} className="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-[hsl(var(--muted))]/50 text-left"><img src={s.artworkUrl100||s.artworkUrl60} className="w-12 h-12 rounded-lg object-cover" alt=""/><div className="flex-1 min-w-0"><p className="text-sm font-medium truncate">{s.trackName}</p><p className="text-xs text-muted-foreground truncate">{s.artistName}</p></div>{s.previewUrl&&<Icon name="play" className="w-5 h-5 text-primary shrink-0"></Icon>}</button>)}
+        songs.map(s=><button key={s.trackId} onClick={()=>play(s,songs)} className="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-[hsl(var(--muted))]/50 text-right"><img src={s.artworkUrl100||s.artworkUrl60} className="w-12 h-12 rounded-lg object-cover" alt=""/><div className="flex-1 min-w-0"><p className="text-sm font-medium truncate">{s.trackName}</p><p className="text-xs text-muted-foreground truncate">{s.artistName}</p></div>{s.previewUrl&&<Icon name="play" className="w-5 h-5 text-primary shrink-0"></Icon>}</button>)}
     </div>
   );
 };
@@ -2413,7 +2413,7 @@ const EqualizerPage=({eqOn,setEqOn,bands,setBand,volume,setVolume,nav})=>{
       <div className="mt-8 px-2">
         <label className="text-sm font-medium text-muted-foreground">{t('master_volume')}</label>
         <input className="eq-vol mt-3 w-full" type="range" min="0" max="1" step="0.01" value={volume} onChange={e=>setVolume(Number(e.target.value))}/>
-        <div className="text-xs text-muted-foreground text-right mt-1">{Math.round(volume*100)}%</div>
+        <div className="text-xs text-muted-foreground text-left mt-1">{Math.round(volume*100)}%</div>
       </div>
     </div>
   );
@@ -2618,7 +2618,7 @@ const OnboardFlow=({onFinish,setLang,setTheme,setExpMode,setStyle2})=>{
     return x.ar.includes(sheetQ.trim())||x.en.toLowerCase().includes(q)||x.c.includes(q);
   });
   return(
-    <div className="ob-screen" dir={ar?'rtl':'ltr'}>
+    <div className="ob-screen" dir="rtl">
       {step===0&&(
         <div className="ob-body">
           <ObSvg className="ob-logo" html={SVG_SETUP}></ObSvg>
@@ -2731,7 +2731,7 @@ const CountryBlock=({country,setCountry,lang})=>{
     if(!isBlockedCountry(c))location.reload();
   };
   return(
-    <div className="ob-screen" dir={ar?'rtl':'ltr'}>
+    <div className="ob-screen" dir="rtl">
       <div className="ob-body">
         <ObSvg className="ob-logo sm" html={SVG_BLOCKED}></ObSvg>
         <p className="ob-legal" style={{opacity:1,fontSize:'1rem',fontWeight:700}}>{t('country_blocked')}</p>
