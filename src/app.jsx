@@ -422,8 +422,10 @@ const Icon=({name,className='w-5 h-5'})=>{
     info:<><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></>,
     external:<><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></>,
   };
-  if(name==='pause')return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 32 32" fill="currentColor">{p.pause}</svg>;
-  return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{p[name]||null}</svg>;
+  const flip=['left','prev','next','arrowRight'].includes(name);
+  const cls=flip?(className?className+' icon-flip':'icon-flip'):className;
+  if(name==='pause')return <svg xmlns="http://www.w3.org/2000/svg" className={cls} viewBox="0 0 32 32" fill="currentColor">{p.pause}</svg>;
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{p[name]||null}</svg>;
 };
 
 const Stars=({r=0,s='w-3 h-3'})=>(
@@ -694,7 +696,7 @@ const BottomNav=({route,nav})=>{
     {k:'nav_music',p:'/music',i:'head'}
   ];
   return(
-    <nav className="app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden">
+    <nav className="app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden" style={{direction:'ltr'}}>
       <div className="flex justify-around items-center h-16 px-2">
         {items.map(it=>{
           const a=it.root ? route==='/' : route.startsWith(it.p);
@@ -2800,7 +2802,7 @@ function App(){
 
   useEffect(()=>{const n=!!night;const th=theme==='black'?'dark':theme;if(th!==theme)setThemeS(th);document.documentElement.classList.toggle('black',n);document.documentElement.classList.toggle('dark',n||th==='dark');setS('apk_theme',th);setS('apk_night',n)},[theme,night]);
   useEffect(()=>{document.documentElement.classList.toggle('style2',!!style2);setS('apk_style2',!!style2)},[style2]);
-  useEffect(()=>{setLangGlobal(lang);document.documentElement.lang=lang},[lang]);
+  useEffect(()=>{setLangGlobal(lang);document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr'},[lang]);
   useEffect(()=>{bumpReloadSeed()},[]);
   const setTheme=v=>setThemeS(v);
   const isDarkNow=!!night||theme==='dark';
