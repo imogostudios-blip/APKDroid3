@@ -507,7 +507,7 @@ const TopNav=({nav,isDetail,onOpenAccount,route})=>{
         <div className="flex-1"></div>
         <button type="button" onClick={()=>nav('/')} className="shrink-0 group" aria-label="APKDroid Store">
           <div className="group-hover:scale-105 transition-transform">
-            <StoreLogo size={36}></StoreLogo>
+            <StoreLogo size={56}></StoreLogo>
           </div>
         </button>
       </div>
@@ -2478,18 +2478,6 @@ const StoreLogo=({size=32})=>(
   <img src={STORE_LOGO_SRC} alt="" style={{height:size,width:'auto',aspectRatio:'915/1039',objectFit:'contain',flexShrink:0,display:'block'}}/>
 );
 
-const SplashScreen=({onDone})=>{
-  useEffect(()=>{const t=setTimeout(onDone,1800);return()=>clearTimeout(t)},[onDone]);
-  return(
-    <div className="ob-screen" style={{alignItems:'center',justifyContent:'center'}} onClick={onDone}>
-      <div style={{display:'flex',alignItems:'center',gap:14}}>
-        <StoreLogo size={56}></StoreLogo>
-        <span style={{fontSize:28,fontWeight:800,letterSpacing:'-0.03em'}}>APKDroid Store</span>
-      </div>
-    </div>
-  );
-};
-
 const InstallMock=({promo,blue})=>{
   const accent=blue?'#0B57D0':'#02C57A';
   return(
@@ -2808,13 +2796,11 @@ function App(){
   const toggleTheme=()=>{if(isDarkNow){setNight(false);setTheme('light')}else{setTheme('dark')}};
   const setLang=v=>{setLangGlobal(v);setLangS(v)};
   const[onboardDone,setOnboardDone]=useState(()=>!!getS('apk_onboard_done',false));
-  const[splash,setSplash]=useState(()=>!!getS('apk_onboard_done',false));
   const finishOnboard=({lang:l,theme:th,exp,style2:s2,country:co})=>{
     setLang(l);setTheme(th);setStyle2(!!s2);setExpMode(!s2);
     if(co){setCountry(co);setS('apk_country',co)}
-    setS('apk_onboard_done',true);setOnboardDone(true);setSplash(false);
+    setS('apk_onboard_done',true);setOnboardDone(true);
   };
-  const hideSplash=()=>setSplash(false);
 
   const ensureAudioGraph=(el)=>{
     try{
@@ -2971,7 +2957,6 @@ function App(){
   },[route]);
 
   if(!onboardDone)return <OnboardFlow onFinish={finishOnboard} setLang={setLang} setTheme={setTheme} setExpMode={setExpMode} setStyle2={setStyle2}></OnboardFlow>;
-  if(splash)return <SplashScreen onDone={hideSplash}></SplashScreen>;
   if(isBlockedCountry(country))return <CountryBlock country={country} setCountry={setCountry} lang={lang}></CountryBlock>;
 
   return(
