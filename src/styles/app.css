@@ -419,7 +419,7 @@ html:not(.dark):not(.black) .play-item{border-bottom-color:rgba(0,0,0,.06)}
 
 
 .app-header.hdr-one{overflow:visible;height:auto;flex-shrink:0;background:transparent}
-.hdr-top-row{height:64px;flex-shrink:0}
+.hdr-top-row{height:72px;flex-shrink:0}
 .hdr-chips{position:sticky;top:0;z-index:42;height:48px;display:flex;align-items:center;gap:8px;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:hsl(var(--bg))}
 .hdr-chips::-webkit-scrollbar{display:none}
 .hdr-chip{flex-shrink:0;border:none;background:#2C2C2C;color:#eee;border-radius:999px;padding:8px 14px;font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
