@@ -892,11 +892,6 @@ const isGameApp=a=>{
   return names.some(g=>g==='games'||g==='game'||g==='ألعاب'||g.indexOf('games')>=0||g.indexOf('game')===0);
 };
 const onlyApps=list=>(list||[]).filter(a=>a&&!isGameApp(a));
-const PageIntro=()=>(
-  <div className="page-intro">
-    <div className="page-intro-name">APKDroid</div>
-  </div>
-);
 const SVG_TIMEOUT='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 225"><g><path d="M183.755 92.384l23.355-9.985 3.734 8.735-23.355 9.985z" fill="#78909C"></path><path d="M300.016 105.501l-75.215 32.156-41.472-97.007 75.215-32.156z" fill="#B0BEC5"></path><path d="M237.06 70.417l-28.504 12.186L192.36 44.72l28.504-12.186zm34.422-14.723L242.978 67.88l-16.196-37.883 28.504-12.186zm-15.38 59.184l-28.504 12.186-16.196-37.883 28.504-12.186zm34.37-14.591l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E"></path><path d="M81.281 63.336l81.192-34.711 52.754 123.397-81.192 34.711z" fill="#B0BEC5"></path><path d="M157.1 187.2l-3.7-8.7 43.8-18.8 3.7 8.7" fill="#90A4AE"></path><path d="M103.432 20.379l2.53-2.271 15.364 17.114-2.53 2.271z" fill="#78909C"></path><path d="M91.9 41.4c9.3 5.6 21.6 4.7 30.1-2.9s10.7-19.7 6.1-29.6L91.9 41.4z" fill="#B0BEC5"></path><path d="M84.237 134.88l23.355-9.985 3.734 8.735-23.355 9.985zm3.333-56.887l81.192-34.711 1.612 3.77-81.192 34.711zm39.776 93.116l81.192-34.711 1.612 3.77-81.192 34.711z" fill="#78909C"></path><path d="M131 105.5c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2 1.5 0.6 3.1 0.6 4.5-0.1 1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zm22.8-8.9c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2s3.1 0.6 4.5-0.1c1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zM139.5 119c-1.9-4.4 2.2-10.3 9.1-13.3 6.9-2.9 14-1.8 15.9 2.6l-25 10.7z" fill="#455A64"></path><path d="M146.8 130c-1.2 0.5-2.6 0-3.1-1.2l-4.2-9.8 4.3-1.9 4.2 9.8c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1"></path><path d="M148.5 122c-1.2 0.5-2.6 0-3.1-1.2l-1.6-3.6 4.3-1.9 1.6 3.6c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1"></path><path d="M116.665 184.37L41.45 216.526l-41.472-97.007 75.215-32.156z" fill="#B0BEC5"></path><path d="M53.709 149.286l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883L71.935 96.68zm-15.432 59.316l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E"></path></g></svg>';
 const LoadTimeout=({show,onRetry})=>{
   if(!show)return null;
@@ -922,10 +917,8 @@ const Home=({nav,open,openInstall})=>{
   const[pool,setPool]=useState([]);
   const[shown,setShown]=useState(0);
   const[done,setDone]=useState(false);
-  const[intro,setIntro]=useState(true);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
-  useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
     let got=false;
@@ -973,7 +966,6 @@ const Home=({nav,open,openInstall})=>{
       {u.apps.map(a=><AppCard key={'row-'+i+'-'+a.trackId} app={a} small onClick={open}></AppCard>)}
     </HScroll>
   );
-  if(intro)return <PageIntro></PageIntro>;
   return(
     <div className="min-h-[100dvh] pb-24 sm:pb-8">
       <LoadTimeout show={timedOut} onRetry={()=>setReload(n=>n+1)}/>
@@ -1010,10 +1002,8 @@ const GAME_SECTIONS=[
 const Games=({open})=>{
   const[rows,setRows]=useState(()=>GAME_SECTIONS.map(()=>[]));
   const[ready,setReady]=useState(0);
-  const[intro,setIntro]=useState(true);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
-  useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
     let got=false;
@@ -1044,7 +1034,6 @@ const Games=({open})=>{
     })();
     return()=>{cancel=true;clearTimeout(timer)};
   },[reload]);
-  if(intro)return <PageIntro></PageIntro>;
   return(
     <div className="pb-20 sm:pb-8 pt-2">
       <LoadTimeout show={timedOut} onRetry={()=>setReload(n=>n+1)}/>
