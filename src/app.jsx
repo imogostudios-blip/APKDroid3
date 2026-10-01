@@ -507,7 +507,7 @@ const TopNav=({nav,isDetail,onOpenAccount,route})=>{
         <div className="flex-1"></div>
         <button type="button" onClick={()=>nav('/')} className="shrink-0 group" aria-label="APKDroid Store">
           <div className="group-hover:scale-105 transition-transform">
-            <StoreLogo size={36}></StoreLogo>
+            <StoreLogo size={48}></StoreLogo>
           </div>
         </button>
       </div>
@@ -922,10 +922,8 @@ const Home=({nav,open,openInstall})=>{
   const[pool,setPool]=useState([]);
   const[shown,setShown]=useState(0);
   const[done,setDone]=useState(false);
-  const[intro,setIntro]=useState(true);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
-  useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
     let got=false;
@@ -973,7 +971,6 @@ const Home=({nav,open,openInstall})=>{
       {u.apps.map(a=><AppCard key={'row-'+i+'-'+a.trackId} app={a} small onClick={open}></AppCard>)}
     </HScroll>
   );
-  if(intro)return <PageIntro></PageIntro>;
   return(
     <div className="min-h-[100dvh] pb-24 sm:pb-8">
       <LoadTimeout show={timedOut} onRetry={()=>setReload(n=>n+1)}/>
@@ -1010,10 +1007,8 @@ const GAME_SECTIONS=[
 const Games=({open})=>{
   const[rows,setRows]=useState(()=>GAME_SECTIONS.map(()=>[]));
   const[ready,setReady]=useState(0);
-  const[intro,setIntro]=useState(true);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
-  useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
     let got=false;
@@ -1044,7 +1039,6 @@ const Games=({open})=>{
     })();
     return()=>{cancel=true;clearTimeout(timer)};
   },[reload]);
-  if(intro)return <PageIntro></PageIntro>;
   return(
     <div className="pb-20 sm:pb-8 pt-2">
       <LoadTimeout show={timedOut} onRetry={()=>setReload(n=>n+1)}/>
@@ -2808,13 +2802,11 @@ function App(){
   const toggleTheme=()=>{if(isDarkNow){setNight(false);setTheme('light')}else{setTheme('dark')}};
   const setLang=v=>{setLangGlobal(v);setLangS(v)};
   const[onboardDone,setOnboardDone]=useState(()=>!!getS('apk_onboard_done',false));
-  const[splash,setSplash]=useState(()=>!!getS('apk_onboard_done',false));
   const finishOnboard=({lang:l,theme:th,exp,style2:s2,country:co})=>{
     setLang(l);setTheme(th);setStyle2(!!s2);setExpMode(!s2);
     if(co){setCountry(co);setS('apk_country',co)}
-    setS('apk_onboard_done',true);setOnboardDone(true);setSplash(false);
+    setS('apk_onboard_done',true);setOnboardDone(true);
   };
-  const hideSplash=()=>setSplash(false);
 
   const ensureAudioGraph=(el)=>{
     try{
@@ -2971,7 +2963,6 @@ function App(){
   },[route]);
 
   if(!onboardDone)return <OnboardFlow onFinish={finishOnboard} setLang={setLang} setTheme={setTheme} setExpMode={setExpMode} setStyle2={setStyle2}></OnboardFlow>;
-  if(splash)return <SplashScreen onDone={hideSplash}></SplashScreen>;
   if(isBlockedCountry(country))return <CountryBlock country={country} setCountry={setCountry} lang={lang}></CountryBlock>;
 
   return(
