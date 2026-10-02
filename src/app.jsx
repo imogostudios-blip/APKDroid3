@@ -486,7 +486,7 @@ const PersonMark=({className='w-6 h-6'})=>(
   </svg>
 );
 
-const TopNav=({nav,isDetail,onOpenAccount,route})=>{
+const TopNav=({nav,isDetail,onOpenAccount,route,photo})=>{
   const showChips=!isDetail&&(route==='/'||route===''||route==='/games'||(route||'').startsWith('/category/'));
   const chips=route==='/games'||((route||'').startsWith('/category/')&&GAME_SECTIONS.some(g=>route.indexOf(encodeURIComponent(g.term))>=0||route.indexOf(g.term)>=0))
     ?[{k:'chip_all',path:'/games',term:''}].concat(GAME_SECTIONS.map(g=>({k:g.k,path:'/category/'+encodeURIComponent(g.term),term:g.term})))
@@ -501,7 +501,7 @@ const TopNav=({nav,isDetail,onOpenAccount,route})=>{
           </button>
         ) : (
           <button type="button" className="nav-chip shrink-0" onClick={onOpenAccount} aria-label={t('account')}>
-            <PersonMark className="w-6 h-6"></PersonMark>
+            {photo?<img src={photo} alt="" className="nav-avatar"/>:<PersonMark className="w-6 h-6"></PersonMark>}
           </button>
         )}
         <div className="flex-1"></div>
@@ -939,7 +939,7 @@ const installImgFallback = () => {
     const el = ev.target;
     if (!el || el.tagName !== 'IMG' || el.dataset.fb) return;
     const cls = typeof el.className === 'string' ? el.className : '';
-    if (/(acc-avatar|acc-edit-avatar|store-logo)/.test(cls)) return;
+    if (/(acc-avatar|acc-edit-avatar|store-logo|nav-avatar)/.test(cls)) return;
     if (el.closest && el.closest('.acc-overlay')) return;
     const shot = /(bg-screenshot|bg-lightbox-img)/.test(cls) || !!(el.closest && el.closest('.dt-thumbs,.bg-screenshots,.bg-lightbox'));
     const w = el.offsetWidth;
@@ -3094,7 +3094,7 @@ function App(){
     <div className="app-shell" key={lang}>
       <AccountHub open={accOpen} onClose={()=>setAccOpen(false)} nav={nav} theme={theme} setTheme={setTheme} profile={profile} setProfile={setProfile} lang={lang} night={night} setNight={setNight}/>
       <main id="app-scroll" className="app-main max-w-screen-2xl mx-auto w-full">
-        {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||isDetail)&&<TopNav nav={nav} isDetail={isDetail} onOpenAccount={()=>setAccOpen(true)} route={route}/>}
+        {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||isDetail)&&<TopNav nav={nav} isDetail={isDetail} onOpenAccount={()=>setAccOpen(true)} route={route} photo={profile&&profile.photo}></TopNav>}
         <div className="app-scroll-fill">{page}</div>
       </main>
       {!hideMini&&<MiniPlayer track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onClose={closeP} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onOpen={()=>nav('/now-playing')} isFav={isSongFav} onFav={toggleSongFav}/>}

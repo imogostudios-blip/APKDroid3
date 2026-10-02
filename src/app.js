@@ -1702,7 +1702,8 @@ const TopNav = ({
   nav,
   isDetail,
   onOpenAccount,
-  route
+  route,
+  photo
 }) => {
   const showChips = !isDetail && (route === '/' || route === '' || route === '/games' || (route || '').startsWith('/category/'));
   const chips = route === '/games' || (route || '').startsWith('/category/') && GAME_SECTIONS.some(g => route.indexOf(encodeURIComponent(g.term)) >= 0 || route.indexOf(g.term) >= 0) ? [{
@@ -1741,7 +1742,11 @@ const TopNav = ({
     className: "nav-chip shrink-0",
     onClick: onOpenAccount,
     "aria-label": t('account')
-  }, /*#__PURE__*/React.createElement(PersonMark, {
+  }, photo ? /*#__PURE__*/React.createElement("img", {
+    src: photo,
+    alt: "",
+    className: "nav-avatar"
+  }) : /*#__PURE__*/React.createElement(PersonMark, {
     className: "w-6 h-6"
   })), /*#__PURE__*/React.createElement("div", {
     className: "flex-1"
@@ -2524,7 +2529,7 @@ const installImgFallback = () => {
     const el = ev.target;
     if (!el || el.tagName !== 'IMG' || el.dataset.fb) return;
     const cls = typeof el.className === 'string' ? el.className : '';
-    if (/(acc-avatar|acc-edit-avatar|store-logo)/.test(cls)) return;
+    if (/(acc-avatar|acc-edit-avatar|store-logo|nav-avatar)/.test(cls)) return;
     if (el.closest && el.closest('.acc-overlay')) return;
     const shot = /(bg-screenshot|bg-lightbox-img)/.test(cls) || !!(el.closest && el.closest('.dt-thumbs,.bg-screenshots,.bg-lightbox'));
     const w = el.offsetWidth;
@@ -7500,7 +7505,8 @@ function App() {
     nav: nav,
     isDetail: isDetail,
     onOpenAccount: () => setAccOpen(true),
-    route: route
+    route: route,
+    photo: profile && profile.photo
   }), /*#__PURE__*/React.createElement("div", {
     className: "app-scroll-fill"
   }, page)), !hideMini && /*#__PURE__*/React.createElement(MiniPlayer, {
