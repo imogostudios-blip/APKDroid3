@@ -416,12 +416,12 @@ html:not(.dark) .acc-save{background:#02C57A;color:#fff}
 html:not(.dark) .acc-row:hover{background:rgba(0,0,0,.04)}
 
 .net-spin{display:flex;align-items:center;justify-content:center;background:hsl(var(--bg))}
-.net-full{position:fixed;inset:0;z-index:80}
+.net-full{position:fixed;inset:0;z-index:480;background:hsl(var(--bg))}
 .net-in{position:relative;z-index:1;min-height:calc(100dvh - 8.5rem);width:100%}
 .net-spin-mark{width:120px;height:120px}
 .net-spin-mark svg{width:120px;height:120px;display:block}
-.net-off{background:hsl(var(--bg));color:hsl(var(--fg));display:flex;align-items:flex-start;justify-content:center}
-.net-off-block{position:relative;top:18%;display:flex;flex-direction:column;align-items:center;padding:0 20px;text-align:center;width:100%}
+.net-off{background:hsl(var(--bg));color:hsl(var(--fg));display:flex;align-items:center;justify-content:center;min-height:calc(100dvh - 8.5rem)}
+.net-off-block{position:relative;top:auto;display:flex;flex-direction:column;align-items:center;padding:0 20px;text-align:center;width:100%;transform:translateY(-28px)}
 .net-off-ico{width:72px;height:72px}
 .net-off-ico svg{width:72px;height:72px;display:block}
 html:not(.dark) .net-off-ico svg path{fill:#5f6368}
@@ -534,3 +534,11 @@ html.dark.exp-banner .nav-chip.dt-fav.on { color: #ea4335 !important; }
 
 /* ===== PWA / project shell (no layout changes) ===== */
 html { -webkit-tap-highlight-color: transparent; }
+
+.search-page{position:fixed;inset:0;z-index:480;background:hsl(var(--bg));color:hsl(var(--fg));display:flex;flex-direction:column}
+.search-page-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+.search-suggest{margin:8px 16px 4px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.search-suggest-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;background:transparent;border:none;border-bottom:1px solid hsl(var(--border));color:inherit;text-align:inherit;font-family:inherit;cursor:pointer}
+.search-suggest-item:last-child{border-bottom:none}
+.search-suggest-item img{width:36px;height:36px;border-radius:9px;object-fit:cover;background:hsl(var(--muted));flex-shrink:0}
+.search-suggest-name{font-size:.92rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
