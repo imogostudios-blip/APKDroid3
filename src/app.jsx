@@ -993,18 +993,21 @@ const homeSources=seed=>[
   ()=>api.search(freshTerm('photo video editor',seed,8),20).catch(()=>[]),
 ];
 
+let homePoolCache=[];
 const Home=({nav,open,openInstall})=>{
-  const[pool,setPool]=useState([]);
-  const[shown,setShown]=useState(0);
-  const[done,setDone]=useState(false);
+  const[pool,setPool]=useState(()=>homePoolCache.slice());
+  const[shown,setShown]=useState(()=>homePoolCache.length?10:0);
+  const[done,setDone]=useState(()=>homePoolCache.length>0);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
   const[intro,setIntro]=useState(true);
   useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
-    let got=false;
-    setPool([]);setShown(0);setDone(false);setTimedOut(false);
+    if(reload>0)homePoolCache=[];
+    let got=homePoolCache.length>0;
+    if(!got){setPool([]);setShown(0);setDone(false);setTimedOut(false)}
+    else{setPool(homePoolCache.slice());setShown(10);setDone(true);setTimedOut(false)}
     const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},10000);
     (async()=>{
       const seed=getContentSeed()+reload*17;
@@ -1017,7 +1020,7 @@ const Home=({nav,open,openInstall})=>{
         const rotated=pickSlice(acc,acc.length,seed);
         const next=rotated.length?rotated:acc;
         setPool(next);
-        if(next.length){got=true;setTimedOut(false);clearTimeout(timer);rememberIds('apk_seen_apps',next)}
+        if(next.length){got=true;homePoolCache=next.slice();setTimedOut(false);clearTimeout(timer);rememberIds('apk_seen_apps',next)}
         setShown(s=>Math.min(10,s+2));
       }
       if(!cancel){
@@ -1086,19 +1089,21 @@ const GAME_SECTIONS=[
   {k:'g_puzzle',term:'puzzle brain games',gid:6014},
 ];
 
+let gamesRowsCache=null;
 const Games=({open})=>{
-  const[rows,setRows]=useState(()=>GAME_SECTIONS.map(()=>[]));
-  const[ready,setReady]=useState(0);
+  const[rows,setRows]=useState(()=>gamesRowsCache?gamesRowsCache.map(r=>(r||[]).slice()):GAME_SECTIONS.map(()=>[]));
+  const[ready,setReady]=useState(()=>gamesRowsCache&&gamesRowsCache.some(r=>r&&r.length)?GAME_SECTIONS.length:0);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
   const[intro,setIntro]=useState(true);
   useEffect(()=>{const t=setTimeout(()=>setIntro(false),500);return()=>clearTimeout(t)},[]);
   useEffect(()=>{
     let cancel=false;
-    let got=false;
-    setRows(GAME_SECTIONS.map(()=>[]));
-    setReady(0);
-    setTimedOut(false);
+    if(reload>0)gamesRowsCache=null;
+    const cached=gamesRowsCache&&gamesRowsCache.some(r=>r&&r.length);
+    let got=!!cached;
+    if(!cached){setRows(GAME_SECTIONS.map(()=>[]));setReady(0);setTimedOut(false)}
+    else{setRows(gamesRowsCache.map(r=>(r||[]).slice()));setReady(GAME_SECTIONS.length);setTimedOut(false)}
     const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},10000);
     (async()=>{
       const seed=getContentSeed()+reload*17;
@@ -1116,6 +1121,7 @@ const Games=({open})=>{
           const n=prev.slice();
           batch.forEach((idx,j)=>{n[idx]=dropSeen('apk_seen_games',pickSlice(results[j]||[],12,seed+idx))});
           rememberIds('apk_seen_games',n.flat());
+          if(n.some(r=>r&&r.length))gamesRowsCache=n.map(r=>(r||[]).slice());
           return n;
         });
         setReady(x=>x+batch.length);
@@ -2459,9 +2465,17 @@ const Music=({play})=>{
 };
 
 
+const SVG_SETTINGS_SPIN='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100%" height="100%"><g class="material-spinner"><circle class="material-path" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"></circle></g></svg>';
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
+  const[boot,setBoot]=useState(true);
+  useEffect(()=>{const t=setTimeout(()=>setBoot(false),1500);return()=>clearTimeout(t)},[]);
   const pickSrc=id=>{const n=normalizeStore(id);setSelStore(n);setS('apk_store',n);setApiOpen(false)};
+  if(boot)return(
+    <div className="page-cover play-wrap settings-boot" role="status" aria-label="loading">
+      <div className="settings-spin" dangerouslySetInnerHTML={{__html:SVG_SETTINGS_SPIN}}></div>
+    </div>
+  );
   return(
     <div className="page-cover play-wrap">
       <div className="flex items-center gap-2 px-3 pt-3 pb-2">
