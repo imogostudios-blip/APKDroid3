@@ -825,7 +825,7 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
               <div className="promo-slide" key={'promo-'+app.trackId+'-'+i}>
                 <div className="promo-ghost">
                   <button type="button" className="promo-banner-wrap" onClick={()=>open(app)} style={{border:0,padding:0,width:'100%',background:'transparent',cursor:'pointer'}}>
-                    <img className="shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
+                    <img className="promo-shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
                   </button>
                   <div className="promo-foot" dir={_lang==='ar'?'rtl':'ltr'}>
                     <img className="promo-icon" src={icon} alt="" onClick={()=>open(app)} style={{cursor:'pointer'}}/>
@@ -892,65 +892,69 @@ const isGameApp=a=>{
   return names.some(g=>g==='games'||g==='game'||g==='ألعاب'||g.indexOf('games')>=0||g.indexOf('game')===0);
 };
 const onlyApps=list=>(list||[]).filter(a=>a&&!isGameApp(a));
+const SVG_NET_SPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><linearGradient id="loadingGradient" x1="15" y1="15" x2="105" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4285F4"/><stop offset="0.34" stop-color="#34A853"/><stop offset="0.67" stop-color="#FBBC05"/><stop offset="1" stop-color="#EA4335"/></linearGradient></defs><circle cx="60" cy="60" r="46" fill="none" stroke="url(#loadingGradient)" stroke-width="14" stroke-linecap="round" stroke-dasharray="1 289"><animateTransform attributeName="transform" type="rotate" values="0 60 60;90 60 60;300 60 60;360 60 60" keyTimes="0;0.45;0.75;1" keySplines="0.65 0 0.85 0.25;0.12 0.85 0.35 1;0.25 0.05 0.55 1" calcMode="spline" dur="2.4s" repeatCount="indefinite"/><animate attributeName="stroke-dasharray" values="1 289;25 265;90 200;160 130;220 70;250 40;250 40;1 289" keyTimes="0;0.12;0.25;0.38;0.50;0.56;0.60;1" keySplines="0.4 0 0.6 1;0.35 0 0.55 1;0.3 0 0.5 1;0.25 0 0.45 1;0.15 0 0.3 1;0.7 0 1 0.15;0.05 0.8 0.2 1" calcMode="spline" dur="2.4s" repeatCount="indefinite"/></circle></svg>`;
+const SVG_ANDROID_PH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="48" height="48"><path fill="#e3e3e3" d="M40-239q8-106 65-196.5T256-579l-75-129q-3-9-.5-18t10.5-14q9-5 19.5-2t15.5 12l74 127q86-37 180-37t180 37l75-127q5-9 15.5-12t19.5 2q8 5 11.5 14.5T780-708l-76 129q94 53 151 143.5T920-239H40Zm275-125q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Zm400 0q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Z"/></svg>`;
+const SVG_SHOT_OFF = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="175" height="175"><g><path d="M512,843.9a62.6,62.6 0,1 0,0 -125.1,62.6 62.6,0 0,0 0,125.1zM366.5,671.8a44.4,44.4 0,0 1,-34.4 -15.7,46.8 46.8,0 0,1 3.2,-65.7A262.2,262.2 0,0 1,512 523.2c9.4,0 18.8,0 28.2,1.5 25,3.2 43.8,26.6 42.2,51.6 -3.1,25 -26.6,43.8 -51.6,42.2a175.9,175.9 0,0 0,-131.4 42.2,55.1 55.1,0 0,1 -32.9,11zM235.1,540.4c-12.5,0 -25,-4.7 -34.4,-14.1a48.7,48.7 0,0 1,1.6 -67.3c45.4,-42.2 97,-75.1 154.9,-95.4 25,-9.4 51.6,3.1 59.4,28.2 9.4,25 -3.1,51.6 -28.2,59.4 -45.4,17.2 -87.6,42.2 -123.6,76.7 -6.3,9.4 -18.8,12.5 -29.7,12.5zM788.9,540.4c-11,0 -23.5,-4.7 -32.9,-12.5a351.2,351.2 0,0 0,-209.6 -95.4c-25,-3.1 -45.4,-25 -42.2,-51.6 3.1,-26.6 25,-43.8 51.6,-42.2 98.6,9.4 192.4,53.2 264.4,120.4 18.8,17.2 20.4,46.9 1.6,65.7 -7.8,11 -20.4,15.7 -32.9,15.7zM89.6,394.9c-12.5,0 -25,-4.7 -34.4,-14.1 -17.2,-18.8 -17.2,-48.5 1.6,-65.7 46.9,-45.4 98.6,-82.9 156.5,-111.1a45,45 0,0 1,62.5 20.3c12.5,23.5 3.2,51.6 -20.3,62.6a618.3,618.3 0,0 0,-134.6 95.4c-7.8,9.4 -20.3,12.5 -31.3,12.5zM934.4,394.9c-11,0 -23.5,-4.7 -32.9,-12.5 -104.8,-101.7 -244.1,-156.5 -389.5,-156.5 -45.4,0 -90.8,4.7 -134.5,15.7a46.6,46.6 0,1 1,-21.9 -90.8c51.6,-12.5 103.3,-18.8 156.5,-18.8 170.5,0 331.6,65.7 455.3,183 18.8,17.2 18.8,46.9 1.6,65.7 -9.4,9.4 -21.9,14.1 -34.4,14.1z" fill="#BEC2C6"/><path d="M932.8,978.4c-12.5,0 -23.5,-4.7 -32.9,-14.1L56.7,121.1c-18.8,-18.8 -18.8,-48.5 0,-65.7 18.8,-18.8 48.5,-18.8 65.7,0l843.2,843.3c18.8,18.8 18.8,48.5 0,65.7 -9.4,9.4 -20.3,14.1 -32.9,14.1z" fill="#BEC2C6"/></g></svg>`;
+const SVG_WIFI_OFF = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="72" height="72"><path fill="#e3e3e3" d="M73-536 2-607q97-94 220.5-143.5T480-800q134 0 257.5 49.5T958-607l-71 71q-82-79-187-121.5T480-700q-115 0-220 42.5T73-536Zm350.5 352.5Q400-207 400-240t23.5-56.5Q447-320 480-320t56.5 23.5Q560-273 560-240t-23.5 56.5Q513-160 480-160t-56.5-23.5ZM298-309l-70-71q51-48 116-74t136-26q41 0 80.5 8.5T636-446q-17 17-33 38.5T574-363q-23-8-46.5-12.5T480-380q-51 0-97.5 18T298-309ZM186-422l-70-71q74-71 168-109t197-38q103 0 196.5 37.5T845-494l-15 16q-20-3-36.5-7.5T760-490q-14 0-28.5 3.5T701-478q-50-30-106-46t-115-16q-83 0-158.5 30.5T186-422Zm545.5 250.5Q720-183 720-200t11.5-28.5Q743-240 760-240t28.5 11.5Q800-217 800-200t-11.5 28.5Q777-160 760-160t-28.5-11.5ZM720-280v-140h80v140h-80Z"/></svg>`;
+const svgDataUri = svg => 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+const NetSpin = () => (
+  <div className="net-spin" role="status" aria-label="loading">
+    <div className="net-spin-mark" dangerouslySetInnerHTML={{__html:SVG_NET_SPIN}}></div>
+  </div>
+);
+const sendNetNotice = () => {
+  const body = 'تم قطع الإتصال بالإنترنت تحقق من الخادم';
+  const done = () => { try { if (window.__apkToast) window.__apkToast('تم إرسال الإشعار'); } catch {} };
+  try {
+    if (typeof Notification !== 'undefined') {
+      const fire = () => { try { new Notification('APKDroid', { body }); done(); } catch { done(); } };
+      if (Notification.permission === 'granted') { fire(); return; }
+      if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(p => { if (p === 'granted') fire(); else done(); }).catch(done);
+        return;
+      }
+    }
+  } catch {}
+  done();
+};
+const NetOffline = ({onRetry}) => (
+  <div className="net-off" role="alert">
+    <div className="net-off-block">
+      <div className="net-off-ico" dangerouslySetInnerHTML={{__html:SVG_WIFI_OFF}}></div>
+      <p>تم قطع الإتصال بالإنترنت تحقق من الخادم</p>
+      <div className="net-off-actions">
+        <button type="button" className="net-off-btn" onClick={onRetry}>إعادة المحاولة</button>
+        <button type="button" className="net-off-btn net-off-btn-alt" onClick={sendNetNotice}>إرسال إشعار</button>
+      </div>
+    </div>
+  </div>
+);
+const installImgFallback = () => {
+  if (window.__apkImgFb) return;
+  window.__apkImgFb = true;
+  const iconUri = svgDataUri(SVG_ANDROID_PH);
+  const shotUri = svgDataUri(SVG_SHOT_OFF);
+  document.addEventListener('error', ev => {
+    const el = ev.target;
+    if (!el || el.tagName !== 'IMG' || el.dataset.fb) return;
+    const cls = typeof el.className === 'string' ? el.className : '';
+    if (/(acc-avatar|acc-edit-avatar|store-logo)/.test(cls)) return;
+    if (el.closest && el.closest('.acc-overlay')) return;
+    const shot = /(^|\s)(shot|bg-screenshot|bg-lightbox-img|bg-exp-img|promo-shot)(\s|$)/.test(cls) || !!(el.closest && el.closest('.promo-banner-wrap,.dt-thumbs,.bg-shots'));
+    el.dataset.fb = shot ? 'shot' : 'icon';
+    el.style.objectFit = 'contain';
+    el.style.padding = shot ? '18%' : '14%';
+    el.style.background = 'hsl(var(--muted))';
+    el.src = shot ? shotUri : iconUri;
+  }, true);
+};
+
 const PageIntro=()=>(
   <div className="page-intro">
     <div className="page-intro-name">APKDroid</div>
   </div>
 );
 const SVG_TIMEOUT='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 225"><g><path d="M183.755 92.384l23.355-9.985 3.734 8.735-23.355 9.985z" fill="#78909C"></path><path d="M300.016 105.501l-75.215 32.156-41.472-97.007 75.215-32.156z" fill="#B0BEC5"></path><path d="M237.06 70.417l-28.504 12.186L192.36 44.72l28.504-12.186zm34.422-14.723L242.978 67.88l-16.196-37.883 28.504-12.186zm-15.38 59.184l-28.504 12.186-16.196-37.883 28.504-12.186zm34.37-14.591l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E"></path><path d="M81.281 63.336l81.192-34.711 52.754 123.397-81.192 34.711z" fill="#B0BEC5"></path><path d="M157.1 187.2l-3.7-8.7 43.8-18.8 3.7 8.7" fill="#90A4AE"></path><path d="M103.432 20.379l2.53-2.271 15.364 17.114-2.53 2.271z" fill="#78909C"></path><path d="M91.9 41.4c9.3 5.6 21.6 4.7 30.1-2.9s10.7-19.7 6.1-29.6L91.9 41.4z" fill="#B0BEC5"></path><path d="M84.237 134.88l23.355-9.985 3.734 8.735-23.355 9.985zm3.333-56.887l81.192-34.711 1.612 3.77-81.192 34.711zm39.776 93.116l81.192-34.711 1.612 3.77-81.192 34.711z" fill="#78909C"></path><path d="M131 105.5c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2 1.5 0.6 3.1 0.6 4.5-0.1 1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zm22.8-8.9c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2s3.1 0.6 4.5-0.1c1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zM139.5 119c-1.9-4.4 2.2-10.3 9.1-13.3 6.9-2.9 14-1.8 15.9 2.6l-25 10.7z" fill="#455A64"></path><path d="M146.8 130c-1.2 0.5-2.6 0-3.1-1.2l-4.2-9.8 4.3-1.9 4.2 9.8c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1"></path><path d="M148.5 122c-1.2 0.5-2.6 0-3.1-1.2l-1.6-3.6 4.3-1.9 1.6 3.6c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1"></path><path d="M116.665 184.37L41.45 216.526l-41.472-97.007 75.215-32.156z" fill="#B0BEC5"></path><path d="M53.709 149.286l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883L71.935 96.68zm-15.432 59.316l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E"></path></g></svg>';
-const SVG_SPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120"><defs><linearGradient id="loadingGradient" x1="15" y1="15" x2="105" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4285F4"/><stop offset="0.34" stop-color="#34A853"/><stop offset="0.67" stop-color="#FBBC05"/><stop offset="1" stop-color="#EA4335"/></linearGradient></defs><circle cx="60" cy="60" r="46" fill="none" stroke="url(#loadingGradient)" stroke-width="14" stroke-linecap="round" stroke-dasharray="1 289"><animateTransform attributeName="transform" type="rotate" values="0 60 60;90 60 60;300 60 60;360 60 60" keyTimes="0;0.45;0.75;1" keySplines="0.65 0 0.85 0.25;0.12 0.85 0.35 1;0.25 0.05 0.55 1" calcMode="spline" dur="2.4s" repeatCount="indefinite"/><animate attributeName="stroke-dasharray" values="1 289;25 265;90 200;160 130;220 70;250 40;250 40;1 289" keyTimes="0;0.12;0.25;0.38;0.50;0.56;0.60;1" keySplines="0.4 0 0.6 1;0.35 0 0.55 1;0.3 0 0.5 1;0.25 0 0.45 1;0.15 0 0.3 1;0.7 0 1 0.15;0.05 0.8 0.2 1" calcMode="spline" dur="2.4s" repeatCount="indefinite"/></circle></svg>`;
-const SVG_OFFLINE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="96" height="96"><path fill="currentColor" d="M73-536 2-607q97-94 220.5-143.5T480-800q134 0 257.5 49.5T958-607l-71 71q-82-79-187-121.5T480-700q-115 0-220 42.5T73-536Zm350.5 352.5Q400-207 400-240t23.5-56.5Q447-320 480-320t56.5 23.5Q560-273 560-240t-23.5 56.5Q513-160 480-160t-56.5-23.5ZM298-309l-70-71q51-48 116-74t136-26q41 0 80.5 8.5T636-446q-17 17-33 38.5T574-363q-23-8-46.5-12.5T480-380q-51 0-97.5 18T298-309ZM186-422l-70-71q74-71 168-109t197-38q103 0 196.5 37.5T845-494l-15 16q-20-3-36.5-7.5T760-490q-14 0-28.5 3.5T701-478q-50-30-106-46t-115-16q-83 0-158.5 30.5T186-422Zm545.5 250.5Q720-183 720-200t11.5-28.5Q743-240 760-240t28.5 11.5Q800-217 800-200t-11.5 28.5Q777-160 760-160t-28.5-11.5ZM720-280v-140h80v140h-80Z"/></svg>`;
-const SVG_APP_FB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="48" height="48"><path fill="currentColor" d="M40-239q8-106 65-196.5T256-579l-75-129q-3-9-.5-18t10.5-14q9-5 19.5-2t15.5 12l74 127q86-37 180-37t180 37l75-127q5-9 15.5-12t19.5 2q8 5 11.5 14.5T780-708l-76 129q94 53 151 143.5T920-239H40Zm275-125q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Zm400 0q15-15 15-35t-15-35q-15-15-35-15t-35 15q-15 15-15 35t15 35q15 15 35 15t35-15Z"/></svg>`;
-const SVG_SHOT_FB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="175" height="175"><g><path d="M512,843.9a62.6,62.6 0,1 0,0 -125.1,62.6 62.6,0 0,0 0,125.1zM366.5,671.8a44.4,44.4 0,0 1,-34.4 -15.7,46.8 46.8,0 0,1 3.2,-65.7A262.2,262.2 0,0 1,512 523.2c9.4,0 18.8,0 28.2,1.5 25,3.2 43.8,26.6 42.2,51.6 -3.1,25 -26.6,43.8 -51.6,42.2a175.9,175.9 0,0 0,-131.4 42.2,55.1 55.1,0 0,1 -32.9,11zM235.1,540.4c-12.5,0 -25,-4.7 -34.4,-14.1a48.7,48.7 0,0 1,1.6 -67.3c45.4,-42.2 97,-75.1 154.9,-95.4 25,-9.4 51.6,3.1 59.4,28.2 9.4,25 -3.1,51.6 -28.2,59.4 -45.4,17.2 -87.6,42.2 -123.6,76.7 -6.3,9.4 -18.8,12.5 -29.7,12.5zM788.9,540.4c-11,0 -23.5,-4.7 -32.9,-12.5a351.2,351.2 0,0 0,-209.6 -95.4c-25,-3.1 -45.4,-25 -42.2,-51.6 3.1,-26.6 25,-43.8 51.6,-42.2 98.6,9.4 192.4,53.2 264.4,120.4 18.8,17.2 20.4,46.9 1.6,65.7 -7.8,11 -20.4,15.7 -32.9,15.7zM89.6,394.9c-12.5,0 -25,-4.7 -34.4,-14.1 -17.2,-18.8 -17.2,-48.5 1.6,-65.7 46.9,-45.4 98.6,-82.9 156.5,-111.1a45,45 0,0 1,62.5 20.3c12.5,23.5 3.2,51.6 -20.3,62.6a618.3,618.3 0,0 0,-134.6 95.4c-7.8,9.4 -20.3,12.5 -31.3,12.5zM934.4,394.9c-11,0 -23.5,-4.7 -32.9,-12.5 -104.8,-101.7 -244.1,-156.5 -389.5,-156.5 -45.4,0 -90.8,4.7 -134.5,15.7a46.6,46.6 0,1 1,-21.9 -90.8c51.6,-12.5 103.3,-18.8 156.5,-18.8 170.5,0 331.6,65.7 455.3,183 18.8,17.2 18.8,46.9 1.6,65.7 -9.4,9.4 -21.9,14.1 -34.4,14.1z" fill="#BEC2C6"/><path d="M932.8,978.4c-12.5,0 -23.5,-4.7 -32.9,-14.1L56.7,121.1c-18.8,-18.8 -18.8,-48.5 0,-65.7 18.8,-18.8 48.5,-18.8 65.7,0l843.2,843.3c18.8,18.8 18.8,48.5 0,65.7 -9.4,9.4 -20.3,14.1 -32.9,14.1z" fill="#BEC2C6"/></g></svg>`;
-const sendNetNotice=()=>{
-  const body='تم قطع الإتصال بالإنترنت تحقق من الخادم';
-  const title='APKDroid';
-  const toast=()=>{try{const el=document.createElement('div');el.className='net-toast';el.textContent='تم إرسال الإشعار';document.body.appendChild(el);setTimeout(()=>el.remove(),2200)}catch(e){}};
-  try{
-    if(typeof Notification==='undefined'){toast();return}
-    const fire=()=>{try{new Notification(title,{body})}catch(e){}toast()};
-    if(Notification.permission==='granted')fire();
-    else if(Notification.permission!=='denied')Notification.requestPermission().then(p=>{if(p==='granted')fire();else toast()}).catch(toast);
-    else toast();
-  }catch(e){toast()}
-};
-const DetailNet=({mode,onRetry})=>{
-  if(mode==='wait'){
-    return <div className="net-panel"><div className="net-spin" dangerouslySetInnerHTML={{__html:SVG_SPIN}}></div></div>;
-  }
-  return(
-    <div className="net-panel">
-      <div className="net-off" dangerouslySetInnerHTML={{__html:SVG_OFFLINE}}></div>
-      <p className="net-msg">تم قطع الإتصال بالإنترنت تحقق من الخادم</p>
-      <div className="net-actions">
-        <button type="button" className="net-btn" onClick={onRetry}>إعادة المحاولة</button>
-        <button type="button" className="net-btn net-btn-alt" onClick={sendNetNotice}>إرسال إشعار</button>
-      </div>
-    </div>
-  );
-};
-const installImgGuard=()=>{
-  if(typeof document==='undefined'||window.__apkImgGuard)return;
-  window.__apkImgGuard=true;
-  document.addEventListener('error',e=>{
-    const t=e.target;
-    if(!t||t.tagName!=='IMG'||t.dataset.fb)return;
-    const cls=String(t.className||'');
-    if(/acc-avatar|acc-edit-avatar|mp-disc|store-logo/.test(cls))return;
-    const isShot=/\bshot\b|bg-screenshot|bg-lightbox-img|bg-exp-img|img-shot/.test(cls);
-    t.dataset.fb='1';
-    const span=document.createElement('span');
-    span.className='img-fallback '+(isShot?'is-shot ':'is-app ')+cls;
-    span.innerHTML=isShot?SVG_SHOT_FB:SVG_APP_FB;
-    const w=t.offsetWidth,h=t.offsetHeight;
-    if(w)span.style.width=w+'px';
-    if(h)span.style.height=h+'px';
-    const st=t.getAttribute('style');
-    if(st)span.style.cssText=(span.style.cssText?span.style.cssText+';':'')+st;
-    if(t.parentNode)t.parentNode.replaceChild(span,t);
-  },true);
-};
-
 const LoadTimeout=({show,onRetry})=>{
   if(!show)return null;
   return(
@@ -1438,7 +1442,7 @@ const InfoVal=({k,v})=>{
     if(v.every(isHttpUrl))return(
       <div className="dt-thumbs">
         {v.map((u,i)=>(
-          <a key={i} href={u} target="_blank" rel="noopener noreferrer"><img className="img-shot" src={u} alt="" loading="lazy"/></a>
+          <a key={i} href={u} target="_blank" rel="noopener noreferrer"><img className="shot" src={u} alt="" loading="lazy"/></a>
         ))}
       </div>
     );
@@ -1450,7 +1454,7 @@ const InfoVal=({k,v})=>{
   if(IT_COUNT_KEYS.includes(k)&&!isNaN(Number(v)))return <span>{Number(v).toLocaleString()}</span>;
   if(isHttpUrl(v)){
     const link=<a href={v} target="_blank" rel="noopener noreferrer" dir="ltr">{v}</a>;
-    if(/^artworkUrl/.test(k))return <div className="dt-art"><img src={v} alt="" loading="lazy"/>{link}</div>;
+    if(/^artworkUrl/.test(k))return <div className="dt-art"><img className="app-icon-img" src={v} alt="" loading="lazy"/>{link}</div>;
     return link;
   }
   if(IT_LONG_KEYS.includes(k))return <div className="dt-long" dir="auto">{String(v)}</div>;
@@ -1547,26 +1551,37 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
     go(0);
   };
 
-  const[retryN,setRetryN]=useState(0);
-  const[netSlow,setNetSlow]=useState(false);
+  const[netTry,setNetTry]=useState(0);
+  const[waited,setWaited]=useState(false);
+  const[failKind,setFailKind]=useState('');
+  useEffect(()=>{window.__apkToast=showToast},[toastMsg]);
   useEffect(()=>{
-    let dead=false;
-    setLd(true);setApp(null);setNetSlow(false);setSim([]);
-    const timer=setTimeout(()=>{if(!dead)setNetSlow(true)},7000);
+    let cancel=false;
+    setLd(true);setFailKind('');setWaited(false);setApp(null);
+    const timer=setTimeout(()=>{if(!cancel)setWaited(true)},7000);
     (async()=>{
       try{
         const a=await api.lookup(id);
-        if(dead)return;
-        setApp(a||null);
-        if(setDetailApp)setDetailApp(a||null);
-        if(a){setNetSlow(false);clearTimeout(timer)}
-        if(a?.primaryGenreName){const s=await api.cat(a.primaryGenreName,a.primaryGenreId||6000,10);if(!dead)setSim(s.filter(x=>x.trackId!==a.trackId).slice(0,8))}
-      }catch{if(!dead&&setDetailApp)setDetailApp(null)}
-      finally{if(!dead)setLd(false)}
+        if(cancel)return;
+        if(!a){
+          setApp(null);
+          const offline=typeof navigator!=='undefined'&&navigator.onLine===false;
+          setFailKind(offline?'net':'missing');
+          if(setDetailApp)setDetailApp(null);
+        }else{
+          setApp(a);setFailKind('');
+          if(setDetailApp)setDetailApp(a);
+          if(a.primaryGenreName){
+            const similar=await api.cat(a.primaryGenreName,a.primaryGenreId||6000,10);
+            if(!cancel)setSim(similar.filter(x=>x.trackId!==a.trackId).slice(0,8));
+          }
+        }
+      }catch{
+        if(!cancel){setApp(null);setFailKind('net');if(setDetailApp)setDetailApp(null)}
+      }finally{if(!cancel)setLd(false)}
     })();
-    return()=>{dead=true;clearTimeout(timer);if(setDetailApp)setDetailApp(null)};
-  },[id,retryN]);
-  const retryDetail=()=>{setNetSlow(false);setLd(true);setRetryN(n=>n+1)};
+    return()=>{cancel=true;clearTimeout(timer);if(setDetailApp)setDetailApp(null)};
+  },[id,netTry]);
   useEffect(()=>{if(autoInstall&&!ld&&app)setReqOpen(true)},[autoInstall,ld,app,id]);
   useEffect(()=>{
     if(dlView.phase!=='download')return;
@@ -1676,7 +1691,11 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
       onBack={goBack}
     />
   );
-  if(!app)return <>{topBar}<DetailNet mode={netSlow?'off':'wait'} onRetry={retryDetail}></DetailNet></>;
+  if(!app){
+    if(failKind==='missing'&&!ld)return <>{topBar}<div className="p-8 text-center text-muted-foreground">{t('app_not_found')}</div></>;
+    if(waited)return <NetOffline onRetry={()=>setNetTry(n=>n+1)}></NetOffline>;
+    return <NetSpin></NetSpin>;
+  }
 
   const rating=fmtRating(app.averageUserRating);
   const ratingCount=app.userRatingCount?`(${Number(app.userRatingCount).toLocaleString()})`:'';
@@ -2865,6 +2884,7 @@ function App(){
   useEffect(()=>{queueRef.current=queue;qIdxRef.current=qIdx},[queue,qIdx]);
 
   useEffect(()=>{const n=!!night;const th=theme==='black'?'dark':theme;if(th!==theme)setThemeS(th);document.documentElement.classList.toggle('black',n);document.documentElement.classList.toggle('dark',th==='dark');setS('apk_theme',th);setS('apk_night',n)},[theme,night]);
+  useEffect(()=>{installImgFallback()},[]);
   useEffect(()=>{document.documentElement.classList.toggle('style2',!!style2);setS('apk_style2',!!style2)},[style2]);
   useEffect(()=>{setLangGlobal(lang);document.documentElement.lang=lang},[lang]);
   useEffect(()=>{bumpReloadSeed()},[]);
@@ -3064,4 +3084,4 @@ class ErrorBoundary extends React.Component{
     return this.props.children;
   }
 }
-installImgGuard();_bootStore().then(()=>{ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App></App></ErrorBoundary>);}).catch(()=>{ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App></App></ErrorBoundary>);});
+_bootStore().then(()=>{ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App></App></ErrorBoundary>);}).catch(()=>{ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App></App></ErrorBoundary>);});
