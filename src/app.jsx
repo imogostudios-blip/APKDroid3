@@ -2465,7 +2465,7 @@ const Music=({play})=>{
 };
 
 
-const SVG_SETTINGS_SPIN='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100%" height="100%"><g class="material-spinner"><circle class="material-path" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"></circle></g></svg>';
+const SVG_SETTINGS_SPIN='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40"><g class="material-spinner"><circle class="material-path" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"></circle></g></svg>';
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
   const[boot,setBoot]=useState(true);
