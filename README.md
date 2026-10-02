@@ -7,7 +7,7 @@
 - app.jsx يُترجم مسبقاً إلى src/app.js، بدون Babel في المتصفح
 - Tailwind مبني في src/styles/tailwind.css بدل سكربت CDN
 - خطوط Inter وRoboto اللاتينية في res/fonts/
-- Service Worker apkdroid-v4 يخزّن كل غلاف التطبيق
+- Service Worker apkdroid-v6 يخزّن كل غلاف التطبيق
 
 src/app.jsx بقي مصدراً للتعديل. بعد أي تعديل على الواجهة أعد بناء app.js وtailwind.css.
 
