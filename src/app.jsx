@@ -129,7 +129,7 @@ const STRINGS={
     dl_direct_fail:'تعذر إيجاد رابط مباشر لهذا التطبيق',
     more_options:'خيارات',toggle_theme:'تبديل الثيم',
     ads_suggested:'إعلان • إعلانات مقترحة لك',suggested_for_you:'مقترحة لك',ad_label:'إعلان',
-    account:'الحساب',manage_account:'إدارة حسابك على APKDroid Store',edit_profile:'تعديل الملف الشخصي',profile_name:'الاسم',profile_photo:'صورة الملف الشخصي',save_profile:'حفظ',theme_black:'أسود',night_mode:'الوضع الليلي',chip_all:'الكل',night_mode_desc:'أولوية على كل الستايلات — أسود وأبيض ورمادي',choose_theme:'المظهر',pages_menu:'القائمة',guest_name:'حسابك',change_photo:'تغيير الصورة',
+    account:'الحساب',manage_account:'إدارة حسابك على APKDroid Store',edit_profile:'تعديل الملف الشخصي',profile_name:'الاسم',profile_photo:'صورة الملف الشخصي',save_profile:'حفظ',theme_black:'أسود',night_mode:'الوضع الليلي',theme_dim:'معتم',chip_all:'الكل',night_mode_desc:'أولوية على كل الستايلات — أسود وأبيض ورمادي',choose_theme:'المظهر',pages_menu:'القائمة',guest_name:'حسابك',change_photo:'تغيير الصورة',
     dt_share:'مشاركة',dt_open_in:'الفتح في...',dt_theme:'تغيير الثيم',dt_info:'معلومات عن التطبيق',dt_save:'حفظ في المكتبة',dt_unsave:'إزالة من المكتبة',dt_close:'إغلاق',dt_yes:'نعم',dt_no:'لا',
   },
   en:{
@@ -193,7 +193,7 @@ const STRINGS={
     dl_direct_fail:'Could not find a direct link for this app',
     more_options:'Options',toggle_theme:'Toggle theme',
     ads_suggested:'Ad • Suggested ads for you',suggested_for_you:'Suggested for you',ad_label:'Ad',
-    account:'Account',manage_account:'Manage your APKDroid Store account',edit_profile:'Edit profile',profile_name:'Name',profile_photo:'Profile photo',save_profile:'Save',theme_black:'Black',night_mode:'Night mode',chip_all:'All',night_mode_desc:'Overrides every style with black, white and gray',choose_theme:'Appearance',pages_menu:'Menu',guest_name:'Your account',change_photo:'Change photo',
+    account:'Account',manage_account:'Manage your APKDroid Store account',edit_profile:'Edit profile',profile_name:'Name',profile_photo:'Profile photo',save_profile:'Save',theme_black:'Black',night_mode:'Night mode',theme_dim:'Dim',chip_all:'All',night_mode_desc:'Overrides every style with black, white and gray',choose_theme:'Appearance',pages_menu:'Menu',guest_name:'Your account',change_photo:'Change photo',
     dt_share:'Share',dt_open_in:'Open in...',dt_theme:'Change theme',dt_info:'App info',dt_save:'Save to library',dt_unsave:'Remove from library',dt_close:'Close',dt_yes:'Yes',dt_no:'No',
   }
 };
@@ -607,12 +607,8 @@ const AccountHub=({open,onClose,nav,theme,setTheme,profile,setProfile,lang,night
             </button>
             <button type="button" className="acc-row" onClick={()=>setThemeOpen(true)}>
               <span className="acc-row-label">{t('appearance')}</span>
-              <Icon name={theme==='light'?'sun':'moon'} className="w-5 h-5"></Icon>
+              <Icon name={night?'moon':(theme==='light'?'sun':'moon')} className="w-5 h-5"></Icon>
             </button>
-            <div className="acc-row" style={{cursor:'default'}}>
-              <span className="acc-row-label">{t('night_mode')}</span>
-              <button type="button" className={`eq-switch ${night?'on':''}`} onClick={()=>setNight(!night)} aria-label={t('night_mode')}/>
-            </div>
             <button type="button" className="acc-row" onClick={()=>setPagesOpen(true)}>
               <span className="acc-row-label">{t('pages_menu')}</span>
               <Icon name="folder" className="w-5 h-5"></Icon>
@@ -628,12 +624,20 @@ const AccountHub=({open,onClose,nav,theme,setTheme,profile,setProfile,lang,night
         {[
           {id:'light',label:t('light')},
           {id:'dark',label:t('dark')},
-        ].map(it=>(
-          <button key={it.id} type="button" className={`acc-pick-item ${theme===it.id?'on':''}`} onClick={()=>{setTheme(it.id==='black'?'dark':it.id);setThemeOpen(false)}}>
-            <span>{it.label}</span>
-            {theme===it.id&&<span style={{marginInlineStart:'auto'}}>✓</span>}
-          </button>
-        ))}
+          {id:'dim',label:t('theme_dim')},
+        ].map(it=>{
+          const cur=night?'dim':(theme==='dark'?'dark':'light');
+          return(
+            <button key={it.id} type="button" className={`acc-pick-item ${cur===it.id?'on':''}`} onClick={()=>{
+              if(it.id==='dim'){setNight(true);setTheme('dark')}
+              else{setNight(false);setTheme(it.id)}
+              setThemeOpen(false);
+            }}>
+              <span>{it.label}</span>
+              {cur===it.id&&<span style={{marginInlineStart:'auto'}}>✓</span>}
+            </button>
+          );
+        })}
       </AccPick>
       <AccPick open={pagesOpen} title={t('pages_menu')} onClose={()=>setPagesOpen(false)}>
         {[
@@ -1001,7 +1005,7 @@ const Home=({nav,open,openInstall})=>{
     let cancel=false;
     let got=false;
     setPool([]);setShown(0);setDone(false);setTimedOut(false);
-    const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},7000);
+    const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},10000);
     (async()=>{
       const seed=getContentSeed()+reload*17;
       const sources=homeSources(seed);
@@ -1049,7 +1053,7 @@ const Home=({nav,open,openInstall})=>{
   const showIntro=intro||booting;
   return(
     <div className="min-h-[100dvh] pb-24 sm:pb-8">
-      {showIntro&&<NetSpin></NetSpin>}
+      {showIntro&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!pool.length&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&pool.length>0&&<PromoCarousel apps={topAds} open={open} openInstall={openInstall} auto></PromoCarousel>}
       {!showIntro&&visible.slice(0,4).map((u,i)=>renderUnit(u,i))}
@@ -1094,7 +1098,7 @@ const Games=({open})=>{
     setRows(GAME_SECTIONS.map(()=>[]));
     setReady(0);
     setTimedOut(false);
-    const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},7000);
+    const timer=setTimeout(()=>{if(!cancel&&!got)setTimedOut(true)},10000);
     (async()=>{
       const seed=getContentSeed()+reload*17;
       for(let i=0;i<GAME_SECTIONS.length;i+=2){
@@ -1124,7 +1128,7 @@ const Games=({open})=>{
   const showIntro=intro||booting;
   return(
     <div className="pb-20 sm:pb-8 pt-2">
-      {showIntro&&<NetSpin></NetSpin>}
+      {showIntro&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!hasGames&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&GAME_SECTIONS.map((sec,i)=>{
         if(i>=ready && i>=ready+2)return null;
@@ -1144,31 +1148,85 @@ const Games=({open})=>{
 };
 
 const Search=({nav,open,initQ})=>{
-  const[q,setQ]=useState(initQ||'');const[res,setRes]=useState([]);const[ld,setLd]=useState(false);
+  const[q,setQ]=useState(initQ||'');
+  const[res,setRes]=useState([]);
+  const[ld,setLd]=useState(false);
   const[hist,setHist]=useState(()=>getS('apk_search_history',[]));
+  const[panel,setPanel]=useState(!!(initQ&&String(initQ).trim()));
+  const[submitted,setSubmitted]=useState(!!(initQ&&String(initQ).trim()));
+  const[suggest,setSuggest]=useState([]);
   const ref=useRef(null);
-  useEffect(()=>{ref.current?.focus()},[]);
-  useEffect(()=>{if(!q.trim()){setRes([]);setLd(false);return}const timer=setTimeout(async()=>{setLd(true);try{setRes(await api.search(q,30));if(q.trim().length>1){pushSearchHist(q,'apps');setHist(getS('apk_search_history',[]))}}catch{setRes([])}finally{setLd(false)}},280);return()=>clearTimeout(timer)},[q]);
-  const doS=term=>{if(!term.trim())return;pushSearchHist(term,'apps');setHist(getS('apk_search_history',[]));setQ(term)};
+  useEffect(()=>{
+    if(!panel||submitted){setSuggest([]);return}
+    const term=q.trim();
+    if(!term){setSuggest([]);return}
+    let cancel=false;
+    const timer=setTimeout(async()=>{
+      try{
+        const list=await api.search(term,8);
+        if(!cancel)setSuggest((list||[]).slice(0,8));
+      }catch{if(!cancel)setSuggest([])}
+    },220);
+    return()=>{cancel=true;clearTimeout(timer)};
+  },[q,panel,submitted]);
+  useEffect(()=>{
+    if(!submitted)return;
+    const term=q.trim();
+    if(!term){setRes([]);setLd(false);return}
+    let cancel=false;
+    setLd(true);
+    api.search(term,30).then(list=>{if(!cancel)setRes(list||[])}).catch(()=>{if(!cancel)setRes([])}).finally(()=>{if(!cancel)setLd(false)});
+    return()=>{cancel=true};
+  },[submitted,q]);
+  const openPanel=()=>{
+    setPanel(true);
+    setSubmitted(false);
+    setRes([]);
+    setTimeout(()=>{try{ref.current&&ref.current.focus()}catch(e){}},40);
+  };
+  const closePanel=()=>{
+    setPanel(false);
+    setSubmitted(false);
+    setQ('');
+    setSuggest([]);
+    setRes([]);
+    try{ref.current&&ref.current.blur()}catch(e){}
+  };
+  const doS=term=>{
+    const v=String(term==null?q:term).trim();
+    if(!v)return;
+    pushSearchHist(v,'apps');
+    setHist(getS('apk_search_history',[]));
+    setQ(v);
+    setPanel(true);
+    setSubmitted(true);
+    setSuggest([]);
+    try{ref.current&&ref.current.blur()}catch(e){}
+  };
   const openCat=c=>{nav(`/category/${encodeURIComponent(c.term)}`);};
+  const histBlock=hist.length>0?(
+    <div className="px-4 mt-4">
+      <p className="text-xs font-semibold text-muted-foreground mb-2">{t('search_log')}</p>
+      {hist.map(h=>(
+        <button key={h} type="button" onClick={()=>doS(h)} className="flex items-center gap-3 w-full py-3 hover:bg-[hsl(var(--muted))]/50 rounded-lg px-2 text-sm">
+          <Icon name="hist" className="w-4 h-4 text-muted-foreground"></Icon>
+          <span className="truncate">{h}</span>
+        </button>
+      ))}
+    </div>
+  ):(
+    <div className="px-4 mt-8 text-center text-muted-foreground text-sm">{t('search_log_empty')}</div>
+  );
   return(
     <div className="pb-20 sm:pb-8">
-      <div className="px-4 pt-3 sticky top-0 z-30 bg-[hsl(var(--bg))]/90 backdrop-blur">
-        <div className="flex items-center gap-2 bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5 border border-transparent focus-within:border-[hsl(var(--border))] focus-within:bg-[hsl(var(--bg))]">
-          <Icon name="search" className="w-5 h-5 text-muted-foreground shrink-0"></Icon>
-          <input ref={ref} value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doS(q)} placeholder={t('search_placeholder')} className="flex-1 bg-transparent outline-none text-sm"/>
-          {q&&<button onClick={()=>setQ('')}><Icon name="x" className="w-4 h-4 text-muted-foreground"></Icon></button>}
-        </div>
-      </div>
-      {q.trim()?(
+      {!panel&&(
         <>
-          {ld&&<div className="px-4 mt-4 space-y-3">{Array(5).fill(0).map((_,i)=><Skel key={i} c="h-16 w-full"></Skel>)}</div>}
-          {!ld&&res.length>0&&<div className="px-2 mt-3">{res.map(a=><AppCard key={a.trackId} app={a} onClick={open}></AppCard>)}</div>}
-          {!ld&&res.length===0&&q.trim().length>1&&<div className="px-4 mt-8 text-center text-muted-foreground text-sm">{t('app_not_found')}</div>}
-        </>
-      ):(
-        <>
-          {hist.length>0&&<div className="px-4 mt-4"><p className="text-xs font-semibold text-muted-foreground mb-2">{t('recent_searches')}</p>{hist.map(h=><button key={h} onClick={()=>doS(h)} className="flex items-center gap-3 w-full py-3 hover:bg-[hsl(var(--muted))]/50 rounded-lg px-2 text-sm"><Icon name="hist" className="w-4 h-4 text-muted-foreground"></Icon>{h}</button>)}</div>}
+          <div className="px-4 pt-3 sticky top-0 z-30 bg-[hsl(var(--bg))]/90 backdrop-blur">
+            <button type="button" onClick={openPanel} className="flex items-center gap-2 w-full bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5 border border-transparent text-start">
+              <Icon name="search" className="w-5 h-5 text-muted-foreground shrink-0"></Icon>
+              <span className="flex-1 text-muted-foreground text-sm">{t('search_placeholder')}</span>
+            </button>
+          </div>
           <div className="px-4 mt-5 mb-1"><p className="text-xs font-semibold text-muted-foreground">{t('categories')}</p></div>
           <div className="bg-cat-grid">
             {SEARCH_CATEGORIES.map(c=>(
@@ -1179,6 +1237,43 @@ const Search=({nav,open,initQ})=>{
             ))}
           </div>
         </>
+      )}
+      {panel&&(
+        <div className="search-page">
+          <div className="px-3 pt-3 pb-2 flex items-center gap-2">
+            <button type="button" className="nav-chip shrink-0" onClick={closePanel} aria-label={t('back')}>
+              <Icon name="left" className="w-5 h-5"></Icon>
+            </button>
+            <div className="flex items-center gap-2 flex-1 bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5 border border-transparent focus-within:border-[hsl(var(--border))] focus-within:bg-[hsl(var(--bg))]">
+              <Icon name="search" className="w-5 h-5 text-muted-foreground shrink-0"></Icon>
+              <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={t('search_placeholder')} className="flex-1 bg-transparent outline-none text-sm" enterKeyHint="search"/>
+              {q&&<button type="button" onClick={()=>{setQ('');setSubmitted(false);setSuggest([]);setRes([]);ref.current&&ref.current.focus()}}><Icon name="x" className="w-4 h-4 text-muted-foreground"></Icon></button>}
+            </div>
+          </div>
+          <div className="search-page-body">
+            {submitted?(
+              <>
+                {ld&&<div className="px-4 mt-4 space-y-3">{Array(5).fill(0).map((_,i)=><Skel key={i} c="h-16 w-full"></Skel>)}</div>}
+                {!ld&&res.length>0&&<div className="px-2 mt-3">{res.map(a=><AppCard key={a.trackId} app={a} onClick={open}></AppCard>)}</div>}
+                {!ld&&res.length===0&&<div className="px-4 mt-8 text-center text-muted-foreground text-sm">{t('app_not_found')}</div>}
+              </>
+            ):(
+              <>
+                {q.trim()&&suggest.length>0&&(
+                  <div className="search-suggest">
+                    {suggest.map(a=>(
+                      <button key={a.trackId} type="button" className="search-suggest-item" onClick={()=>open(a)}>
+                        <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
+                        <span className="search-suggest-name">{a.trackName}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {histBlock}
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -1585,7 +1680,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   useEffect(()=>{
     let cancel=false;
     setLd(true);setFailKind('');setWaited(false);setApp(null);
-    const timer=setTimeout(()=>{if(!cancel)setWaited(true)},7000);
+    const timer=setTimeout(()=>{if(!cancel)setWaited(true)},10000);
     (async()=>{
       try{
         const a=await api.lookup(id);
@@ -2391,13 +2486,6 @@ const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,n
         </div>
         <button type="button" className={`eq-switch ${style2?'on':''}`} onClick={()=>{const n=!style2;setStyle2(n);setExpMode(!n)}} aria-label={t('style2')}/>
       </div>
-      <div className="settings-box" style={{display:'flex',alignItems:'center',gap:12}}>
-        <div className="min-w-0" style={{flex:1}}>
-          <p className="text-sm font-medium">{t('night_mode')}</p>
-          <p className="text-xs mt-0.5" style={{opacity:.7}}>{t('night_mode_desc')}</p>
-        </div>
-        <button type="button" className={`eq-switch ${night?'on':''}`} onClick={()=>setNight(!night)} aria-label={t('night_mode')}/>
-      </div>
       <button type="button" className="settings-box" style={{width:'calc(100% - 28px)',border:'none',textAlign:'inherit',fontFamily:'inherit',cursor:'pointer',color:'#eee'}} onClick={()=>{if(window.confirm(t('reset_confirm')))wipeStore()}}>
         <span className="block text-sm font-semibold">{t('reset_data')}</span>
         <span className="block text-xs mt-0.5" style={{opacity:.7}}>{t('reset_data_desc')}</span>
@@ -2915,7 +3003,8 @@ function App(){
     document.documentElement.classList.toggle('black',n);
     document.documentElement.classList.toggle('dark',th==='dark');
     setS('apk_theme',th);setS('apk_night',n);
-    const color=n?'#000000':(th==='dark'?'#141415':'#FFFFFF');
+    const special=!!accOpen||route==='/settings'||route==='/downloads'||route==='/search-log';
+    const color=special?'#1F1F1F':(n?'#000000':(th==='dark'?'#141415':'#FFFFFF'));
     const meta=document.querySelector('meta[name="theme-color"]');
     if(meta)meta.setAttribute('content',color);
     try{
@@ -2929,14 +3018,22 @@ function App(){
         if(prev)URL.revokeObjectURL(prev);
       }).catch(()=>{});
     }catch{}
-  },[theme,night]);
+  },[theme,night,route,accOpen]);
   useEffect(()=>{installImgFallback()},[]);
   useEffect(()=>{document.documentElement.classList.toggle('style2',!!style2);setS('apk_style2',!!style2)},[style2]);
   useEffect(()=>{setLangGlobal(lang);document.documentElement.lang=lang},[lang]);
   useEffect(()=>{bumpReloadSeed()},[]);
   const setTheme=v=>setThemeS(v);
   const isDarkNow=!!night||theme==='dark';
-  const toggleTheme=()=>{if(isDarkNow){setNight(false);setTheme('light')}else{setTheme('dark')}};
+  const[themePick,setThemePick]=useState(false);
+  const themeCur=night?'dim':(theme==='dark'?'dark':'light');
+  const applyThemeMode=mode=>{
+    if(mode==='dim'){setNight(true);setTheme('dark')}
+    else if(mode==='dark'){setNight(false);setTheme('dark')}
+    else{setNight(false);setTheme('light')}
+    setThemePick(false);
+  };
+  const toggleTheme=()=>setThemePick(true);
   const setLang=v=>{setLangGlobal(v);setLangS(v)};
   const[onboardDone,setOnboardDone]=useState(()=>!!getS('apk_onboard_done',false));
   const finishOnboard=({lang:l,theme:th,exp,style2:s2,country:co})=>{
@@ -3105,6 +3202,14 @@ function App(){
   return(
     <div className="app-shell" key={lang}>
       <AccountHub open={accOpen} onClose={()=>setAccOpen(false)} nav={nav} theme={theme} setTheme={setTheme} profile={profile} setProfile={setProfile} lang={lang} night={night} setNight={setNight}/>
+      <AccPick open={themePick} title={t('choose_theme')} onClose={()=>setThemePick(false)}>
+        {[{id:'light',label:t('light')},{id:'dark',label:t('dark')},{id:'dim',label:t('theme_dim')}].map(it=>(
+          <button key={it.id} type="button" className={`acc-pick-item ${themeCur===it.id?'on':''}`} onClick={()=>applyThemeMode(it.id)}>
+            <span>{it.label}</span>
+            {themeCur===it.id&&<span style={{marginInlineStart:'auto'}}>✓</span>}
+          </button>
+        ))}
+      </AccPick>
       <main id="app-scroll" className="app-main max-w-screen-2xl mx-auto w-full">
         {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||isDetail)&&<TopNav nav={nav} isDetail={isDetail} onOpenAccount={()=>setAccOpen(true)} route={route} photo={profile&&profile.photo}></TopNav>}
         <div className="app-scroll-fill">{page}</div>
