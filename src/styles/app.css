@@ -85,6 +85,7 @@ html.exp-banner .nav-chip{background:hsla(0,0%,100%,.4)!important;backdrop-filte
 html.exp-banner.dark .nav-chip,html.dark.exp-banner .nav-chip{background:hsla(0,0%,0%,.4)!important;color:#f2f2f7!important}
 .nav-chip{width:40px;height:40px;border-radius:9999px;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:transparent;color:hsl(var(--muted-fg));transition:background .15s,color .15s}
 .nav-chip:hover{background:hsl(var(--muted));color:hsl(var(--fg))}
+.nav-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;display:block}
 .bg-detail-icon{width:96px;height:96px;border-radius:20px;object-fit:cover;box-shadow:0 1px 3px 0 rgba(0,0,0,.15);flex-shrink:0;background:hsl(var(--muted));transition:width .35s,height .35s,border-radius .35s}
 .dl-icon-wrap{position:relative;width:96px;height:96px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:width .35s,height .35s}
 .dl-icon-wrap.active{width:120px;height:120px}
@@ -383,6 +384,7 @@ html.style2.dark .load-timeout-btn{background:#A8C7FA;color:#062e6f}
 html.black,html.black.style2,html.black.dark,html.black.style2.dark{--bg:0 0% 0%}
 html.black body,html.black #root{background:#000!important}
 html.black .bot-nav,html.black.style2 .bot-nav{background:#000!important;border-color:#1a1a1a!important}
+.bot-nav button:not(.nav-ico-on),.bot-nav button:not(.nav-ico-on) svg{color:#C4C7C5}
 
 .acc-card,.acc-manage,.acc-list,.settings-box,.play-list{background:#0E0E0E;color:#eee}
 html.dark .acc-overlay,html.dark .acc-card,html.dark .acc-manage,html.dark .acc-list{background:#0E0E0E;color:#eee}
