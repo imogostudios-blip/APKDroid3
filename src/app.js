@@ -2198,8 +2198,16 @@ const bumpReloadSeed = () => {
 };
 const getContentSeed = () => {
   const c = getS('apk_reload_count', 0) | 0;
-  return Math.floor(Math.max(0, c - 1) / 5);
+  return c || 1;
 };
+const FRESH_WORDS = ['new', 'latest', 'best', 'top', 'free', 'popular', 'trending', 'hd', 'pro', 'lite', 'plus', 'mini', 'offline', '2024', '2025', '2026', 'daily', 'hot', 'editor', 'choice', 'fun', 'fast', 'smart', 'social', 'tools'];
+const freshTerm = (base, seed, i = 0) => String(base || '') + ' ' + FRESH_WORDS[(Math.abs(seed) + i) % FRESH_WORDS.length];
+const dropSeen = (key, list) => {
+  const seen = new Set((getS(key, []) || []).map(String));
+  const fresh = (list || []).filter(a => a && !seen.has(String(a.trackId)));
+  return fresh.length >= 6 ? fresh : list;
+};
+const rememberIds = (key, list) => setS(key, (list || []).map(a => a && a.trackId).filter(Boolean).slice(0, 140));
 const pickSlice = (arr, n, seed) => {
   if (!arr || !arr.length) return [];
   const start = seed * 3 % Math.max(1, arr.length);
@@ -2580,7 +2588,7 @@ const LoadTimeout = ({
     onClick: onRetry
   }, t('retry_load')));
 };
-const HOME_SOURCES = [() => api.search('best apps', 24).catch(() => api.top()), () => api.cat('for you apps', GENRES.entertainment.id, 24).catch(() => []), () => api.cat('messaging social chat', 6005, 24).catch(() => api.search('whatsapp messenger social', 20)), () => api.cat('productivity tools', GENRES.productivity.id, 24).catch(() => api.search('productivity', 20)), () => api.cat('education learn', GENRES.education.id, 24).catch(() => api.search('education', 20)), () => api.search('photo video editor', 20).catch(() => [])];
+const homeSources = seed => [() => api.search(freshTerm('best apps', seed, 0), 24).catch(() => api.top()), () => api.cat(freshTerm('for you apps', seed, 1), GENRES.entertainment.id, 24).catch(() => []), () => api.cat(freshTerm('messaging social chat', seed, 2), 6005, 24).catch(() => api.search(freshTerm('whatsapp messenger social', seed, 3), 20)), () => api.cat(freshTerm('productivity tools', seed, 4), GENRES.productivity.id, 24).catch(() => api.search(freshTerm('productivity', seed, 5), 20)), () => api.cat(freshTerm('education learn', seed, 6), GENRES.education.id, 24).catch(() => api.search(freshTerm('education', seed, 7), 20)), () => api.search(freshTerm('photo video editor', seed, 8), 20).catch(() => [])];
 const Home = ({
   nav,
   open,
@@ -2591,6 +2599,11 @@ const Home = ({
   const [done, setDone] = useState(false);
   const [reload, setReload] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
+  const [intro, setIntro] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setIntro(false), 500);
+    return () => clearTimeout(t);
+  }, []);
   useEffect(() => {
     let cancel = false;
     let got = false;
@@ -2602,12 +2615,13 @@ const Home = ({
       if (!cancel && !got) setTimedOut(true);
     }, 7000);
     (async () => {
-      const seed = getContentSeed();
+      const seed = getContentSeed() + reload * 17;
+      const sources = homeSources(seed);
       let acc = [];
-      for (let i = 0; i < HOME_SOURCES.length; i += 2) {
-        const lists = await Promise.all(HOME_SOURCES.slice(i, i + 2).map(fn => fn().catch(() => [])));
+      for (let i = 0; i < sources.length; i += 2) {
+        const lists = await Promise.all(sources.slice(i, i + 2).map(fn => fn().catch(() => [])));
         if (cancel) return;
-        acc = uniqApps(onlyApps(acc.concat(lists.flat())));
+        acc = dropSeen('apk_seen_apps', uniqApps(onlyApps(acc.concat(lists.flat()))));
         const rotated = pickSlice(acc, acc.length, seed);
         const next = rotated.length ? rotated : acc;
         setPool(next);
@@ -2615,6 +2629,7 @@ const Home = ({
           got = true;
           setTimedOut(false);
           clearTimeout(timer);
+          rememberIds('apk_seen_apps', next);
         }
         setShown(s => Math.min(10, s + 2));
       }
@@ -2669,24 +2684,23 @@ const Home = ({
     onClick: open
   })));
   const booting = !pool.length && !timedOut;
+  const showIntro = intro || booting;
   return /*#__PURE__*/React.createElement("div", {
     className: "min-h-[100dvh] pb-24 sm:pb-8"
-  }, booting && /*#__PURE__*/React.createElement(NetSpin, {
-    full: true
-  }), /*#__PURE__*/React.createElement(LoadTimeout, {
-    show: timedOut && !pool.length,
+  }, showIntro && /*#__PURE__*/React.createElement(NetSpin, null), /*#__PURE__*/React.createElement(LoadTimeout, {
+    show: timedOut && !pool.length && !intro,
     onRetry: () => setReload(n => n + 1)
-  }), pool.length > 0 && /*#__PURE__*/React.createElement(PromoCarousel, {
+  }), !showIntro && pool.length > 0 && /*#__PURE__*/React.createElement(PromoCarousel, {
     apps: topAds,
     open: open,
     openInstall: openInstall,
     auto: true
-  }), visible.slice(0, 4).map((u, i) => renderUnit(u, i)), showMid && /*#__PURE__*/React.createElement(PromoCarousel, {
+  }), !showIntro && visible.slice(0, 4).map((u, i) => renderUnit(u, i)), !showIntro && showMid && /*#__PURE__*/React.createElement(PromoCarousel, {
     apps: midAds,
     open: open,
     openInstall: openInstall,
     auto: true
-  }), visible.slice(4).map((u, i) => renderUnit(u, i + 4)), showEnd && /*#__PURE__*/React.createElement(PromoCarousel, {
+  }), !showIntro && visible.slice(4).map((u, i) => renderUnit(u, i + 4)), !showIntro && showEnd && /*#__PURE__*/React.createElement(PromoCarousel, {
     apps: endAds,
     open: open,
     openInstall: openInstall,
@@ -2755,6 +2769,11 @@ const Games = ({
   const [ready, setReady] = useState(0);
   const [reload, setReload] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
+  const [intro, setIntro] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setIntro(false), 500);
+    return () => clearTimeout(t);
+  }, []);
   useEffect(() => {
     let cancel = false;
     let got = false;
@@ -2765,13 +2784,13 @@ const Games = ({
       if (!cancel && !got) setTimedOut(true);
     }, 7000);
     (async () => {
-      const seed = getContentSeed();
+      const seed = getContentSeed() + reload * 17;
       for (let i = 0; i < GAME_SECTIONS.length; i += 2) {
         const batch = [i, i + 1].filter(x => x < GAME_SECTIONS.length);
         const results = await Promise.all(batch.map(idx => {
-          const s = GAME_SECTIONS[idx];
-          const extra = seed % 3 === 0 ? '' : seed % 3 === 1 ? ' free' : ' online';
-          return api.cat(s.term + extra, s.gid, 25).catch(() => api.search(s.term, 25).catch(() => []));
+          const sec = GAME_SECTIONS[idx];
+          const term = freshTerm(sec.term, seed, idx);
+          return api.cat(term, sec.gid, 25).catch(() => api.search(term, 25).catch(() => []));
         }));
         if (cancel) return;
         const has = results.some(r => r && r.length);
@@ -2783,8 +2802,9 @@ const Games = ({
         setRows(prev => {
           const n = prev.slice();
           batch.forEach((idx, j) => {
-            n[idx] = pickSlice(results[j] || [], 12, seed + idx);
+            n[idx] = dropSeen('apk_seen_games', pickSlice(results[j] || [], 12, seed + idx));
           });
+          rememberIds('apk_seen_games', n.flat());
           return n;
         });
         setReady(x => x + batch.length);
@@ -2798,14 +2818,13 @@ const Games = ({
   }, [reload]);
   const hasGames = rows.some(r => r && r.length);
   const booting = !hasGames && !timedOut;
+  const showIntro = intro || booting;
   return /*#__PURE__*/React.createElement("div", {
     className: "pb-20 sm:pb-8 pt-2"
-  }, booting && /*#__PURE__*/React.createElement(NetSpin, {
-    full: true
-  }), /*#__PURE__*/React.createElement(LoadTimeout, {
-    show: timedOut && !hasGames,
+  }, showIntro && /*#__PURE__*/React.createElement(NetSpin, null), /*#__PURE__*/React.createElement(LoadTimeout, {
+    show: timedOut && !hasGames && !intro,
     onRetry: () => setReload(n => n + 1)
-  }), GAME_SECTIONS.map((sec, i) => {
+  }), !showIntro && GAME_SECTIONS.map((sec, i) => {
     if (i >= ready && i >= ready + 2) return null;
     const list = rows[i] || [];
     const waiting = i >= ready;
