@@ -1053,7 +1053,8 @@ const Home=({nav,open,openInstall})=>{
   const showIntro=intro||booting;
   return(
     <div className="min-h-[100dvh] pb-24 sm:pb-8">
-      {showIntro&&<NetSpin full></NetSpin>}
+      {intro&&<NetSpin></NetSpin>}
+      {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!pool.length&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&pool.length>0&&<PromoCarousel apps={topAds} open={open} openInstall={openInstall} auto></PromoCarousel>}
       {!showIntro&&visible.slice(0,4).map((u,i)=>renderUnit(u,i))}
@@ -1128,7 +1129,8 @@ const Games=({open})=>{
   const showIntro=intro||booting;
   return(
     <div className="pb-20 sm:pb-8 pt-2">
-      {showIntro&&<NetSpin full></NetSpin>}
+      {intro&&<NetSpin></NetSpin>}
+      {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!hasGames&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&GAME_SECTIONS.map((sec,i)=>{
         if(i>=ready && i>=ready+2)return null;

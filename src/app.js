@@ -2689,7 +2689,7 @@ const Home = ({
   const showIntro = intro || booting;
   return /*#__PURE__*/React.createElement("div", {
     className: "min-h-[100dvh] pb-24 sm:pb-8"
-  }, showIntro && /*#__PURE__*/React.createElement(NetSpin, {
+  }, intro && /*#__PURE__*/React.createElement(NetSpin, null), !intro && booting && /*#__PURE__*/React.createElement(NetSpin, {
     full: true
   }), /*#__PURE__*/React.createElement(LoadTimeout, {
     show: timedOut && !pool.length && !intro,
@@ -2825,7 +2825,7 @@ const Games = ({
   const showIntro = intro || booting;
   return /*#__PURE__*/React.createElement("div", {
     className: "pb-20 sm:pb-8 pt-2"
-  }, showIntro && /*#__PURE__*/React.createElement(NetSpin, {
+  }, intro && /*#__PURE__*/React.createElement(NetSpin, null), !intro && booting && /*#__PURE__*/React.createElement(NetSpin, {
     full: true
   }), /*#__PURE__*/React.createElement(LoadTimeout, {
     show: timedOut && !hasGames && !intro,
