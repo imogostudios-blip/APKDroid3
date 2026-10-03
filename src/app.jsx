@@ -2465,15 +2465,27 @@ const Music=({play})=>{
 };
 
 
-const SettingsSpinner=()=>(
-  <div className="set-spin-screen" role="status" aria-label="loading">
-    <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40" aria-hidden="true">
-      <g className="set-spin-rotor">
-        <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
-      </g>
-    </svg>
-  </div>
-);
+const SettingsSpinner=()=>{
+  useEffect(()=>{
+    document.documentElement.classList.add('set-boot');
+    const meta=document.querySelector('meta[name="theme-color"]');
+    const prev=meta&&meta.getAttribute('content');
+    if(meta)meta.setAttribute('content','#1F1F1F');
+    return()=>{
+      document.documentElement.classList.remove('set-boot');
+      if(meta&&prev)meta.setAttribute('content',prev);
+    };
+  },[]);
+  return(
+    <div className="set-spin-screen" role="status" aria-label="loading">
+      <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40" aria-hidden="true">
+        <g className="set-spin-rotor">
+          <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
+        </g>
+      </svg>
+    </div>
+  );
+};
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
   const[boot,setBoot]=useState(true);

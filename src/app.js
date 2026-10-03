@@ -5419,30 +5419,42 @@ const Music = ({
     className: "w-5 h-5 text-primary shrink-0"
   }))));
 };
-const SettingsSpinner = () => /*#__PURE__*/React.createElement("div", {
-  className: "set-spin-screen",
-  role: "status",
-  "aria-label": "loading"
-}, /*#__PURE__*/React.createElement("svg", {
-  className: "set-spin",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 50 50",
-  width: "40",
-  height: "40",
-  "aria-hidden": "true"
-}, /*#__PURE__*/React.createElement("g", {
-  className: "set-spin-rotor"
-}, /*#__PURE__*/React.createElement("circle", {
-  className: "set-spin-arc",
-  cx: "25",
-  cy: "25",
-  r: "20",
-  fill: "none",
-  stroke: "#0B57D0",
-  strokeWidth: "4",
-  strokeMiterlimit: "10",
-  strokeLinecap: "round"
-}))));
+const SettingsSpinner = () => {
+  useEffect(() => {
+    document.documentElement.classList.add('set-boot');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const prev = meta && meta.getAttribute('content');
+    if (meta) meta.setAttribute('content', '#1F1F1F');
+    return () => {
+      document.documentElement.classList.remove('set-boot');
+      if (meta && prev) meta.setAttribute('content', prev);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "set-spin-screen",
+    role: "status",
+    "aria-label": "loading"
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "set-spin",
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 50 50",
+    width: "40",
+    height: "40",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("g", {
+    className: "set-spin-rotor"
+  }, /*#__PURE__*/React.createElement("circle", {
+    className: "set-spin-arc",
+    cx: "25",
+    cy: "25",
+    r: "20",
+    fill: "none",
+    stroke: "#0B57D0",
+    strokeWidth: "4",
+    strokeMiterlimit: "10",
+    strokeLinecap: "round"
+  }))));
+};
 const Settings = ({
   selStore,
   setSelStore,
