@@ -546,10 +546,8 @@ html { -webkit-tap-highlight-color: transparent; }
   100%{stroke-dasharray:90,150;stroke-dashoffset:-124}
 }
 
-.set-spin-screen{position:fixed;inset:0;z-index:800;background:#1F1F1F !important;background-color:#1F1F1F !important}
-html.set-boot,html.set-boot body,html.set-boot #root,html.set-boot .app-shell,html.set-boot .app-main,html.black.set-boot,html.black.set-boot body,html.black.set-boot #root,html.dark.set-boot,html.dark.set-boot body,html.dark.set-boot #root,html.style2.set-boot,html.style2.set-boot body,html.style2.set-boot #root{background:#1F1F1F !important;background-color:#1F1F1F !important}
-html.set-boot .set-spin-screen,html.black .set-spin-screen,html.dark .set-spin-screen,html.style2 .set-spin-screen{background:#1F1F1F !important;background-color:#1F1F1F !important}
-.set-spin{position:absolute;left:50%;top:72px;width:40px;height:40px;margin-left:-20px;display:block}
+.set-spin-screen{position:fixed;inset:0;z-index:800;background:#1F1F1F;display:flex;align-items:center;justify-content:center}
+.set-spin{width:36px;height:36px;display:block;flex:0 0 36px}
 .set-spin-rotor{transform-origin:25px 25px;transform-box:view-box;animation:set-spin-rotate 2s linear infinite}
 .set-spin-arc{stroke:#0B57D0;stroke-linecap:round;fill:none;animation:set-spin-dash 1.5s ease-in-out infinite}
 @keyframes set-spin-rotate{100%{transform:rotate(360deg)}}
