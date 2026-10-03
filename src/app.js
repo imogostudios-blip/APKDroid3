@@ -5419,7 +5419,30 @@ const Music = ({
     className: "w-5 h-5 text-primary shrink-0"
   }))));
 };
-const SVG_SETTINGS_SPIN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40"><g class="material-spinner"><circle class="material-path" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"></circle></g></svg>';
+const SettingsSpinner = () => /*#__PURE__*/React.createElement("div", {
+  className: "set-spin-screen",
+  role: "status",
+  "aria-label": "loading"
+}, /*#__PURE__*/React.createElement("svg", {
+  className: "set-spin",
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 50 50",
+  width: "36",
+  height: "36",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("g", {
+  className: "set-spin-rotor"
+}, /*#__PURE__*/React.createElement("circle", {
+  className: "set-spin-arc",
+  cx: "25",
+  cy: "25",
+  r: "20",
+  fill: "none",
+  stroke: "#0B57D0",
+  strokeWidth: "4",
+  strokeMiterlimit: "10",
+  strokeLinecap: "round"
+}))));
 const Settings = ({
   selStore,
   setSelStore,
@@ -5444,16 +5467,7 @@ const Settings = ({
     setS('apk_store', n);
     setApiOpen(false);
   };
-  if (boot) return /*#__PURE__*/React.createElement("div", {
-    className: "page-cover play-wrap settings-boot",
-    role: "status",
-    "aria-label": "loading"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "settings-spin",
-    dangerouslySetInnerHTML: {
-      __html: SVG_SETTINGS_SPIN
-    }
-  }));
+  if (boot) return /*#__PURE__*/React.createElement(SettingsSpinner, null);
   return /*#__PURE__*/React.createElement("div", {
     className: "page-cover play-wrap"
   }, /*#__PURE__*/React.createElement("div", {

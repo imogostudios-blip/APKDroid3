@@ -2465,17 +2465,21 @@ const Music=({play})=>{
 };
 
 
-const SVG_SETTINGS_SPIN='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40"><g class="material-spinner"><circle class="material-path" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"></circle></g></svg>';
+const SettingsSpinner=()=>(
+  <div className="set-spin-screen" role="status" aria-label="loading">
+    <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="36" height="36" aria-hidden="true">
+      <g className="set-spin-rotor">
+        <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
+      </g>
+    </svg>
+  </div>
+);
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
   const[boot,setBoot]=useState(true);
   useEffect(()=>{const t=setTimeout(()=>setBoot(false),1500);return()=>clearTimeout(t)},[]);
   const pickSrc=id=>{const n=normalizeStore(id);setSelStore(n);setS('apk_store',n);setApiOpen(false)};
-  if(boot)return(
-    <div className="page-cover play-wrap settings-boot" role="status" aria-label="loading">
-      <div className="settings-spin" dangerouslySetInnerHTML={{__html:SVG_SETTINGS_SPIN}}></div>
-    </div>
-  );
+  if(boot)return <SettingsSpinner></SettingsSpinner>;
   return(
     <div className="page-cover play-wrap">
       <div className="flex items-center gap-2 px-3 pt-3 pb-2">
