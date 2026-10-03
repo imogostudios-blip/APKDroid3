@@ -2477,15 +2477,11 @@ const SettingsSpinner=()=>{
     root.style.background='#1F1F1F';
     body.style.background='#1F1F1F';
     if(app)app.style.background='#1F1F1F';
-    const meta=document.querySelector('meta[name="theme-color"]');
-    const prev=meta&&meta.getAttribute('content');
-    if(meta)meta.setAttribute('content','#1F1F1F');
     return()=>{
       root.classList.remove('set-boot');
       root.style.background=prevRoot;
       body.style.background=prevBody;
       if(app)app.style.background=prevApp;
-      if(meta&&prev)meta.setAttribute('content',prev);
     };
   },[]);
   return(
@@ -2501,6 +2497,50 @@ const SettingsSpinner=()=>{
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
   const[boot,setBoot]=useState(true);
+
+  /* Settings page uses a darker system/manifest theme while it is open. */
+  useEffect(()=>{
+    const root=document.documentElement;
+    const body=document.body;
+    const app=document.getElementById('root');
+    const meta=document.querySelector('meta[name="theme-color"]');
+    const manifestLink=document.querySelector('link[rel="manifest"]');
+    const prevRoot=root.style.background;
+    const prevBody=body.style.background;
+    const prevApp=app?app.style.background:'';
+    const prevMeta=meta?meta.getAttribute('content'):null;
+    const prevManifest=manifestLink?manifestLink.getAttribute('href'):null;
+    let blobUrl=null;
+
+    root.style.background='#1F1F1F';
+    body.style.background='#1F1F1F';
+    if(app)app.style.background='#1F1F1F';
+    if(meta)meta.setAttribute('content','#1F1F1F');
+
+    /* Also replace the active manifest with a temporary version whose
+       background_color and theme_color are both #1F1F1F. */
+    if(manifestLink){
+      fetch('./manifest.json',{cache:'no-store'})
+        .then(r=>r.json())
+        .then(manifest=>{
+          manifest.background_color='#1F1F1F';
+          manifest.theme_color='#1F1F1F';
+          blobUrl=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
+          manifestLink.setAttribute('href',blobUrl);
+        })
+        .catch(()=>{});
+    }
+
+    return()=>{
+      root.style.background=prevRoot;
+      body.style.background=prevBody;
+      if(app)app.style.background=prevApp;
+      if(meta&&prevMeta!==null)meta.setAttribute('content',prevMeta);
+      if(manifestLink&&prevManifest!==null)manifestLink.setAttribute('href',prevManifest);
+      if(blobUrl)URL.revokeObjectURL(blobUrl);
+    };
+  },[]);
+
   useEffect(()=>{const t=setTimeout(()=>setBoot(false),1500);return()=>clearTimeout(t)},[]);
   const pickSrc=id=>{const n=normalizeStore(id);setSelStore(n);setS('apk_store',n);setApiOpen(false)};
   if(boot)return <SettingsSpinner></SettingsSpinner>;
