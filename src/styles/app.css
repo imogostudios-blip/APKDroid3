@@ -546,7 +546,8 @@ html { -webkit-tap-highlight-color: transparent; }
   100%{stroke-dasharray:90,150;stroke-dashoffset:-124}
 }
 
-.set-spin-screen{position:fixed;inset:0;z-index:800;background:#1F1F1F}
+.set-spin-screen{position:fixed;inset:0;z-index:800;background:#1F1F1F !important}
+html.set-boot,html.set-boot body,html.set-boot #root,html.set-boot .app-shell,html.set-boot .app-main{background:#1F1F1F !important}
 .set-spin{position:absolute;left:50%;top:72px;width:40px;height:40px;margin-left:-20px;display:block}
 .set-spin-rotor{transform-origin:25px 25px;transform-box:view-box;animation:set-spin-rotate 2s linear infinite}
 .set-spin-arc{stroke:#0B57D0;stroke-linecap:round;fill:none;animation:set-spin-dash 1.5s ease-in-out infinite}
