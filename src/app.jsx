@@ -2465,82 +2465,18 @@ const Music=({play})=>{
 };
 
 
-const SettingsSpinner=()=>{
-  useEffect(()=>{
-    const root=document.documentElement;
-    const body=document.body;
-    const app=document.getElementById('root');
-    root.classList.add('set-boot');
-    const prevRoot=root.style.background;
-    const prevBody=body.style.background;
-    const prevApp=app?app.style.background:'';
-    root.style.background='#1F1F1F';
-    body.style.background='#1F1F1F';
-    if(app)app.style.background='#1F1F1F';
-    return()=>{
-      root.classList.remove('set-boot');
-      root.style.background=prevRoot;
-      body.style.background=prevBody;
-      if(app)app.style.background=prevApp;
-    };
-  },[]);
-  return(
-    <div className="set-spin-screen" style={{background:'#1F1F1F',backgroundColor:'#1F1F1F'}} role="status" aria-label="loading">
-      <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40" aria-hidden="true">
-        <g className="set-spin-rotor">
-          <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
-        </g>
-      </svg>
-    </div>
-  );
-};
+const SettingsSpinner=()=>(
+  <div className="set-spin-screen" role="status" aria-label="loading">
+    <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="36" height="36" aria-hidden="true">
+      <g className="set-spin-rotor">
+        <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
+      </g>
+    </svg>
+  </div>
+);
 const Settings=({selStore,setSelStore,style2,setStyle2,setExpMode,lang,setLang,night,setNight,nav})=>{
   const[apiOpen,setApiOpen]=useState(false);
   const[boot,setBoot]=useState(true);
-
-  /* Settings page uses a darker system/manifest theme while it is open. */
-  useEffect(()=>{
-    const root=document.documentElement;
-    const body=document.body;
-    const app=document.getElementById('root');
-    const meta=document.querySelector('meta[name="theme-color"]');
-    const manifestLink=document.querySelector('link[rel="manifest"]');
-    const prevRoot=root.style.background;
-    const prevBody=body.style.background;
-    const prevApp=app?app.style.background:'';
-    const prevMeta=meta?meta.getAttribute('content'):null;
-    const prevManifest=manifestLink?manifestLink.getAttribute('href'):null;
-    let blobUrl=null;
-
-    root.style.background='#1F1F1F';
-    body.style.background='#1F1F1F';
-    if(app)app.style.background='#1F1F1F';
-    if(meta)meta.setAttribute('content','#1F1F1F');
-
-    /* Also replace the active manifest with a temporary version whose
-       background_color and theme_color are both #1F1F1F. */
-    if(manifestLink){
-      fetch('./manifest.json',{cache:'no-store'})
-        .then(r=>r.json())
-        .then(manifest=>{
-          manifest.background_color='#1F1F1F';
-          manifest.theme_color='#1F1F1F';
-          blobUrl=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
-          manifestLink.setAttribute('href',blobUrl);
-        })
-        .catch(()=>{});
-    }
-
-    return()=>{
-      root.style.background=prevRoot;
-      body.style.background=prevBody;
-      if(app)app.style.background=prevApp;
-      if(meta&&prevMeta!==null)meta.setAttribute('content',prevMeta);
-      if(manifestLink&&prevManifest!==null)manifestLink.setAttribute('href',prevManifest);
-      if(blobUrl)URL.revokeObjectURL(blobUrl);
-    };
-  },[]);
-
   useEffect(()=>{const t=setTimeout(()=>setBoot(false),1500);return()=>clearTimeout(t)},[]);
   const pickSrc=id=>{const n=normalizeStore(id);setSelStore(n);setS('apk_store',n);setApiOpen(false)};
   if(boot)return <SettingsSpinner></SettingsSpinner>;

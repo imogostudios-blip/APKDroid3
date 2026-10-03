@@ -5419,58 +5419,30 @@ const Music = ({
     className: "w-5 h-5 text-primary shrink-0"
   }))));
 };
-const SettingsSpinner = () => {
-  useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
-    const app = document.getElementById('root');
-    root.classList.add('set-boot');
-    const prevRoot = root.style.background;
-    const prevBody = body.style.background;
-    const prevApp = app ? app.style.background : '';
-    root.style.background = '#1F1F1F';
-    body.style.background = '#1F1F1F';
-    if (app) app.style.background = '#1F1F1F';
-    const meta = document.querySelector('meta[name="theme-color"]');
-    const prev = meta && meta.getAttribute('content');
-    if (meta) meta.setAttribute('content', '#1F1F1F');
-    return () => {
-      root.classList.remove('set-boot');
-      root.style.background = prevRoot;
-      body.style.background = prevBody;
-      if (app) app.style.background = prevApp;
-      if (meta && prev) meta.setAttribute('content', prev);
-    };
-  }, []);
-  return /*#__PURE__*/React.createElement("div", {
-    className: "set-spin-screen",
-    role: "status",
-    "aria-label": "loading",
-    style: {
-      background: "#1F1F1F",
-      backgroundColor: "#1F1F1F"
-    }
-  }, /*#__PURE__*/React.createElement("svg", {
-    className: "set-spin",
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 50 50",
-    width: "40",
-    height: "40",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/React.createElement("g", {
-    className: "set-spin-rotor"
-  }, /*#__PURE__*/React.createElement("circle", {
-    className: "set-spin-arc",
-    cx: "25",
-    cy: "25",
-    r: "20",
-    fill: "none",
-    stroke: "#0B57D0",
-    strokeWidth: "4",
-    strokeMiterlimit: "10",
-    strokeLinecap: "round"
-  }))));
-};
+const SettingsSpinner = () => /*#__PURE__*/React.createElement("div", {
+  className: "set-spin-screen",
+  role: "status",
+  "aria-label": "loading"
+}, /*#__PURE__*/React.createElement("svg", {
+  className: "set-spin",
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 50 50",
+  width: "36",
+  height: "36",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("g", {
+  className: "set-spin-rotor"
+}, /*#__PURE__*/React.createElement("circle", {
+  className: "set-spin-arc",
+  cx: "25",
+  cy: "25",
+  r: "20",
+  fill: "none",
+  stroke: "#0B57D0",
+  strokeWidth: "4",
+  strokeMiterlimit: "10",
+  strokeLinecap: "round"
+}))));
 const Settings = ({
   selStore,
   setSelStore,
