@@ -5421,19 +5421,35 @@ const Music = ({
 };
 const SettingsSpinner = () => {
   useEffect(() => {
-    document.documentElement.classList.add('set-boot');
+    const root = document.documentElement;
+    const body = document.body;
+    const app = document.getElementById('root');
+    root.classList.add('set-boot');
+    const prevRoot = root.style.background;
+    const prevBody = body.style.background;
+    const prevApp = app ? app.style.background : '';
+    root.style.background = '#1F1F1F';
+    body.style.background = '#1F1F1F';
+    if (app) app.style.background = '#1F1F1F';
     const meta = document.querySelector('meta[name="theme-color"]');
     const prev = meta && meta.getAttribute('content');
     if (meta) meta.setAttribute('content', '#1F1F1F');
     return () => {
-      document.documentElement.classList.remove('set-boot');
+      root.classList.remove('set-boot');
+      root.style.background = prevRoot;
+      body.style.background = prevBody;
+      if (app) app.style.background = prevApp;
       if (meta && prev) meta.setAttribute('content', prev);
     };
   }, []);
   return /*#__PURE__*/React.createElement("div", {
     className: "set-spin-screen",
     role: "status",
-    "aria-label": "loading"
+    "aria-label": "loading",
+    style: {
+      background: "#1F1F1F",
+      backgroundColor: "#1F1F1F"
+    }
   }, /*#__PURE__*/React.createElement("svg", {
     className: "set-spin",
     xmlns: "http://www.w3.org/2000/svg",
