@@ -2467,7 +2467,7 @@ const Music=({play})=>{
 
 const SettingsSpinner=()=>(
   <div className="set-spin-screen" role="status" aria-label="loading">
-    <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="36" height="36" aria-hidden="true">
+    <svg className="set-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="40" height="40" aria-hidden="true">
       <g className="set-spin-rotor">
         <circle className="set-spin-arc" cx="25" cy="25" r="20" fill="none" stroke="#0B57D0" strokeWidth="4" strokeMiterlimit="10" strokeLinecap="round"></circle>
       </g>

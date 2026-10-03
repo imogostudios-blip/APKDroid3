@@ -5427,8 +5427,8 @@ const SettingsSpinner = () => /*#__PURE__*/React.createElement("div", {
   className: "set-spin",
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 50 50",
-  width: "36",
-  height: "36",
+  width: "40",
+  height: "40",
   "aria-hidden": "true"
 }, /*#__PURE__*/React.createElement("g", {
   className: "set-spin-rotor"
