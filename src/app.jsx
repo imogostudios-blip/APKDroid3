@@ -301,18 +301,20 @@ const openLocalStores=()=>{
   }
 };
 const computeDlProgress=(rec,now)=>{
-  if(!rec||!rec.startMs)return{active:false,phase:'idle',pct:0,ring:false};
+  if(!rec||!rec.startMs)return{active:false,phase:'idle',pct:0,overall:0,ring:false};
   const t=typeof now==='number'?now:Date.now();
   const elapsed=Math.max(0,t-rec.startMs);
   const spinMs=rec.spinMs||DL_SPIN_MS;
   const dlMs=rec.dlMs||4*60*1000;
   const postMs=rec.postSpinMs||DL_SPIN_MS;
-  if(elapsed<spinMs)return{active:true,phase:'spin',pct:0,ring:true};
+  const total=Math.max(1,spinMs+dlMs+postMs);
+  const overall=Math.min(1,elapsed/total);
+  if(elapsed<spinMs)return{active:true,phase:'spin',pct:0,overall,ring:true};
   const dlElapsed=elapsed-spinMs;
-  if(dlElapsed<dlMs)return{active:true,phase:'download',pct:Math.min(1,dlElapsed/dlMs),ring:true};
+  if(dlElapsed<dlMs)return{active:true,phase:'download',pct:Math.min(1,dlElapsed/dlMs),overall,ring:true};
   const postElapsed=dlElapsed-dlMs;
-  if(postElapsed<postMs)return{active:true,phase:'postspin',pct:1,ring:true};
-  return{active:true,phase:'done',pct:1,ring:false};
+  if(postElapsed<postMs)return{active:true,phase:'postspin',pct:1,overall,ring:true};
+  return{active:true,phase:'done',pct:1,overall:1,ring:false};
 };
 const api={
   search:(t,l=25)=>fetchC(`https://itunes.apple.com/search?term=${encodeURIComponent(t)}&entity=software&limit=${l}&country=${country()}`).then(d=>d.results||[]),
@@ -1055,7 +1057,7 @@ const Home=({nav,open,openInstall})=>{
   const booting=!pool.length&&!timedOut;
   const showIntro=intro||booting;
   return(
-    <div className="min-h-[100dvh] pb-24 sm:pb-8">
+    <div className="page-stage pb-24 sm:pb-8">
       {intro&&<NetSpin></NetSpin>}
       {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!pool.length&&!intro} onRetry={()=>setReload(n=>n+1)}/>
@@ -1134,7 +1136,7 @@ const Games=({open})=>{
   const booting=!hasGames&&!timedOut;
   const showIntro=intro||booting;
   return(
-    <div className="pb-20 sm:pb-8 pt-2">
+    <div className="page-stage pb-20 sm:pb-8 pt-2">
       {intro&&<NetSpin></NetSpin>}
       {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!hasGames&&!intro} onRetry={()=>setReload(n=>n+1)}/>
@@ -1823,8 +1825,8 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   );
   if(!app){
     if(failKind==='missing'&&!ld)return <>{topBar}<div className="p-8 text-center text-muted-foreground">{t('app_not_found')}</div></>;
-    if(waited)return <>{topBar}<NetOffline onRetry={()=>setNetTry(n=>n+1)}></NetOffline></>;
-    return <>{topBar}<NetSpin></NetSpin></>;
+    if(waited)return <>{topBar}<div className="page-stage page-stage-detail"><NetOffline onRetry={()=>setNetTry(n=>n+1)}></NetOffline></div></>;
+    return <>{topBar}<div className="page-stage page-stage-detail"><NetSpin></NetSpin></div></>;
   }
 
   const rating=fmtRating(app.averageUserRating);
@@ -1891,6 +1893,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
               <div className="bg-detail-title-row">
                 <h1 className="bg-detail-name">{app.trackName}</h1>
               </div>
+              {dlView.ring&&<div className="dl-name-pct" aria-live="polite">{Math.round(((dlView.overall!=null?dlView.overall:dlView.pct)||0)*100)}%</div>}
               <button className="bg-detail-dev" onClick={()=>nav(`/search?q=${encodeURIComponent(app.artistName||'')}`)}>{app.artistName}</button>
               <div className="bg-detail-meta">
                 <span>★ {rating} {ratingCount}</span>
