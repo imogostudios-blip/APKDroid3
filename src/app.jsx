@@ -432,13 +432,43 @@ const Stars=({r=0,s='w-3 h-3'})=>(
   <div className="flex gap-0.5 text-amber-400">{[1,2,3,4,5].map(i=><Icon key={i} name="star" className={`${s} ${i<=Math.round(r)?'fill-current':'opacity-30'}`}></Icon>)}</div>
 );
 
+const SpinIcon=()=>(
+  <span className="m3-spin" aria-hidden="true">
+    <svg viewBox="0 0 48 48"><g className="m3-container"><circle className="m3-track" cx="24" cy="24" r="18"></circle></g></svg>
+  </span>
+);
+const AdDots=()=>(
+  <span className="ad-dots" aria-hidden="true">
+    <svg viewBox="0 0 100 100">
+      <rect className="grid-dot d-1" x="20" y="20" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-2" x="42" y="20" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-3" x="64" y="20" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-2" x="20" y="42" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-3" x="42" y="42" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-4" x="64" y="42" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-3" x="20" y="64" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-4" x="42" y="64" width="16" height="16" rx="4"></rect>
+      <rect className="grid-dot d-5" x="64" y="64" width="16" height="16" rx="4"></rect>
+    </svg>
+  </span>
+);
+const HoldImg=({src,className,kind,loading})=>{
+  const[ready,setReady]=useState(false);
+  useEffect(()=>{setReady(false)},[src]);
+  return (
+    <span className={`hold ${kind||'ico'} ${ready?'ready':''}`}>
+      {!ready&&(kind==='ad'?<AdDots/>:<SpinIcon/>)}
+      <img src={src||''} alt="" className={className} loading={loading||'lazy'} onLoad={()=>setReady(true)} onError={()=>setReady(true)}/>
+    </span>
+  );
+};
 const AppCard=({app,onClick,small})=>{
   if(!app)return null;
   const img=app.artworkUrl100||app.artworkUrl60;
   if(small){
     return(
       <button onClick={()=>onClick(app)} className="flex flex-col w-[120px] shrink-0 text-left group">
-        <img src={img} alt="" className="w-[120px] h-[120px] rounded-[24px] object-cover shadow-sm border border-[hsl(var(--border))] bg-muted group-hover:shadow-md transition-all" loading="lazy"/>
+        <HoldImg src={img} kind="ico" className="w-[120px] h-[120px] rounded-[24px] object-cover shadow-sm border border-[hsl(var(--border))] bg-muted group-hover:shadow-md transition-all" loading="lazy"/>
         <div className="mt-2 flex flex-col">
           <h3 className="font-medium text-[13px] leading-tight line-clamp-2">{app.trackName}</h3>
           <p className="text-[11px] text-muted-foreground truncate mt-0.5">{app.primaryGenreName||app.artistName}</p>
@@ -448,7 +478,7 @@ const AppCard=({app,onClick,small})=>{
   }
   return(
     <button onClick={()=>onClick(app)} className="flex items-center gap-3 w-full p-3 hover:bg-[hsl(var(--muted))]/50 rounded-xl text-left transition">
-      <img src={img} alt="" className="w-14 h-14 rounded-2xl bg-muted shadow-sm object-cover border border-[hsl(var(--border))]" loading="lazy"/>
+      <HoldImg src={img} kind="ico" className="w-14 h-14 rounded-2xl bg-muted shadow-sm object-cover border border-[hsl(var(--border))]" loading="lazy"/>
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate text-sm">{app.trackName}</p>
         <p className="text-muted-foreground truncate text-xs">{app.artistName}</p>
@@ -744,7 +774,7 @@ const GameShotCard=({app,onClick})=>{
   return(
     <button type="button" className="g-shot-card" onClick={()=>onClick(app)}>
       <div className="g-shot-wrap">
-        <img className="shot" src={shot} alt="" loading="lazy"/>
+        <HoldImg src={shot} kind="banner" className="shot" loading="lazy"/>
         <div className="g-shot-grad"></div>
       </div>
       <div className="g-shot-meta">
@@ -856,7 +886,7 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
                 <div className="promo-ghost">
                   <button type="button" className="promo-banner-wrap" onClick={()=>open(app)}>
                     <span className="promo-banner-clip">
-                      <img className="promo-shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
+                      <HoldImg src={shot} kind="ad" className="promo-shot" loading={i===0?'eager':'lazy'}/>
                       <span className="promo-caption">{(app.description||app.artistName||'').replace(/\s+/g,' ').slice(0,72)}</span>
                     </span>
                   </button>
@@ -1117,7 +1147,7 @@ const GAME_SECTIONS=[
 
 let gamesRowsCache=null;
 const Games=({open})=>{
-  const[rows,setRows]=useState(()=>gamesRowsCache?gamesRowsCache.map(r=>(r||[]).slice()):GAME_SECTIONS.map(()=>[]));
+  const[rows,setRows]=useState(()=>gamesRowsCache?gamesRowsCache.map(r=>(r||[]).filter(isGameApp)):GAME_SECTIONS.map(()=>[]));
   const[ready,setReady]=useState(()=>gamesRowsCache&&gamesRowsCache.some(r=>r&&r.length)?GAME_SECTIONS.length:0);
   const[reload,setReload]=useState(0);
   const[timedOut,setTimedOut]=useState(false);
@@ -1145,7 +1175,7 @@ const Games=({open})=>{
         if(has){got=true;setTimedOut(false);clearTimeout(timer)}
         setRows(prev=>{
           const n=prev.slice();
-          batch.forEach((idx,j)=>{n[idx]=dropSeen('apk_seen_games',pickSlice(results[j]||[],12,seed+idx))});
+          batch.forEach((idx,j)=>{n[idx]=dropSeen('apk_seen_games',pickSlice((results[j]||[]).filter(isGameApp),12,seed+idx))});
           rememberIds('apk_seen_games',n.flat());
           if(n.some(r=>r&&r.length))gamesRowsCache=n.map(r=>(r||[]).slice());
           return n;
@@ -1204,23 +1234,26 @@ const PLAY_APP_CATS=[
 const playCatLabel=c=>_lang==='ar'?c.ar:c.en;
 const PlayGlyph=({icon,color})=>{
   const f=color||'currentColor';
-  if(icon==='heli')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M3 10h9.2l1.4-2.2H20v2.1h-3.2L15.4 12H20a2 2 0 010 4h-5.2l-1.6 2.4H8.2L6.6 16H3v-2h2.4L6.6 12H3v-2zm8.2 0L9.6 12h3.6l1.6-2h-3.6z"/><circle cx="18.2" cy="7.2" r="1.1" fill={f}/></svg>;
-  if(icon==='sim')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 14h16v3H4z"/><path fill={f} d="M6 11h12l-1.2-4H7.2z"/><path fill={f} d="M8 8h2.2L9 5H7zM14 8h2.2L17 5h-2z"/></svg>;
-  if(icon==='puzzle')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 3h5a2 2 0 012 2v1.2a2.2 2.2 0 010 4.1V13H8.7a2.2 2.2 0 01-4.2 0H3V5a2 2 0 012-2h3z"/></svg>;
-  if(icon==='compass')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="8" fill="none" stroke={f} strokeWidth="2"/><path fill={f} d="M14.8 9.2l-1.2 4.4-4.4 1.2 1.2-4.4z"/></svg>;
-  if(icon==='flag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h10l-1.4 3L18 10H8z"/><path fill="#fff" d="M9.2 5.2h1.2v1.2H9.2zm2.4 0h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2zM10.4 6.6h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2z"/></svg>;
-  if(icon==='swords')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14.5 3l2 2-6.2 6.2-2-2zM7.2 12.3l2 2L4 19.5 3 21l1.5-1 5.2-5.2zM9.5 3L7.5 5l6.2 6.2 2-2zM16.8 12.3l-2 2L20 19.5 21 21l-1.5-1-5.2-5.2z"/></svg>;
-  if(icon==='sflag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h11l-2.2 3.2L19 11H8z"/></svg>;
-  if(icon==='tennis')return <svg viewBox="0 0 24 24" width="28" height="28"><ellipse cx="12" cy="13" rx="6" ry="7" fill="none" stroke={f} strokeWidth="2"/><path d="M8 7c2 2 2 8 0 12M16 7c-2 2-2 8 0 12" fill="none" stroke={f} strokeWidth="1.6"/><path d="M12 4v3" stroke={f} strokeWidth="2"/></svg>;
-  if(icon==='cards')return <svg viewBox="0 0 24 24" width="28" height="28"><rect x="7" y="4" width="11" height="15" rx="2" fill={f}/><rect x="4" y="7" width="11" height="14" rx="2" fill="#F8BBD0" stroke={f} strokeWidth="1.2"/></svg>;
-  if(icon==='rook')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M7 20h10v-2H7zm1-3h8l1-8H7zm1-9h6V5h-1.4V3h-1.2v2h-1.2V3H9.6v2H8z"/></svg>;
-  if(icon==='clapper')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 8h16v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path fill={f} d="M4 8l2.2-4h3L7 8zm4.2 0l2.2-4h3L11.2 8zm4.4 0l2.2-4H18l-2.2 4z"/></svg>;
-  if(icon==='people')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="9" cy="8" r="2.4" fill={f}/><circle cx="16" cy="9" r="2" fill={f}/><path fill={f} d="M4 18c.4-2.6 2.4-4 5-4s4.6 1.4 5 4zm8.2-3.2c1.6.2 3 .9 3.6 3.2H20c-.3-2.2-1.8-3.6-4-4-.9 0-1.7.1-2.4.4z"/></svg>;
-  if(icon==='tools')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14 4a4 4 0 00-3.6 5.6L4 16.1 7.9 20l6.5-6.4A4 4 0 0014 4zm0 2.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"/></svg>;
-  if(icon==='camera')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 6l1.4-2h5.2L16 6h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/><circle cx="12" cy="13" r="3.2" fill="#E3F2FD"/></svg>;
-  if(icon==='note')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M9 4h2v9.2a3 3 0 11-2-2.8V4zm6 2h2v7.2a3 3 0 11-2-2.8V6z"/></svg>;
-  if(icon==='bag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 8h12l-1 12H7z"/><path d="M9 8V7a3 3 0 016 0v1" fill="none" stroke="#fff" strokeWidth="1.6"/></svg>;
-  return null;
+  const P=({d})=><svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d={d}></path></svg>;
+  const paths={
+    heli:'M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',
+    sim:'M4 6h16v3H4zm0 5h7v7H4zm9 0h7v7h-7z',
+    puzzle:'M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7S5 16.2 3.5 16.2H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7s2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z',
+    compass:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z',
+    flag:'M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z',
+    swords:'M6.9 3.3 4.8 5.4l2.1 2.1-1.4 1.4L3.4 6.8 2 8.2l3.5 3.5 1.4-1.4 2.1 2.1 1.4-1.4-2.1-2.1 1.4-1.4L13.2 11l6.4-6.4-1.4-1.4L11.8 9.6 9.7 7.5l1.4-1.4L8.3 3.3 6.9 3.3zm10.2 10.2-1.4 1.4 2.1 2.1-1.4 1.4-2.1-2.1-1.4 1.4 3.5 3.5 1.4-1.4-2.1-2.1 1.4-1.4 2.1 2.1 1.4-1.4-3.5-3.6z',
+    sflag:'M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z',
+    tennis:'M19.5 5.5c-1.2-1.2-2.8-1.8-4.5-1.8-1.2 0-2.3.3-3.3.9 1.7 1.2 2.8 3.1 2.8 5.4 0 2.2-1.1 4.1-2.7 5.3 1 .6 2.1.9 3.2.9 1.7 0 3.3-.6 4.5-1.8 2.5-2.5 2.5-6.4 0-8.9zM12 4.7C10.9 4.2 9.7 4 8.5 4 6.8 4 5.2 4.6 4 5.8c-2.5 2.5-2.5 6.4 0 8.9 1.2 1.2 2.8 1.8 4.5 1.8 1.2 0 2.3-.3 3.3-.9-1.6-1.2-2.7-3.1-2.7-5.3 0-2.3 1.1-4.3 2.9-5.6z',
+    cards:'M19 3H9c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 7H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-2H7V7z',
+    rook:'M5 20h14v-2H5v2zm1-3h12l1-8H5l1 8zM8 7V4h2v2h1V4h2v2h1V4h2v3l1 2H7l1-2z',
+    clapper:'M18 4l2 4H4l2-4h12zm2 6H4c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2z',
+    people:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+    tools:'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z',
+    camera:'M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2 7.2 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.2L15 2H9zm3 15c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z',
+    note:'M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z',
+    bag:'M18 6h-2c0-2.2-1.8-4-4-4S8 3.8 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h12v12z'
+  };
+  return <P d={paths[icon]||paths.puzzle}></P>;
 };
 const fmtCount=n=>{
   n=Number(n)||0;
@@ -1311,6 +1344,21 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
     try{ref.current&&ref.current.blur()}catch(e){}
   };
   const openCat=c=>nav(`/category/${encodeURIComponent(c.term)}`);
+  const startMic=()=>{
+    openPanel();
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){try{window.__apkToast&&window.__apkToast(_lang==='ar'?'الميكروفون غير متاح على هذا الجهاز':'Microphone is not available')}catch(e){}return}
+    try{
+      const rec=new SR();
+      rec.lang=_lang==='ar'?'ar':'en-US';
+      rec.interimResults=false;
+      rec.onresult=ev=>{
+        const text=(ev.results&&ev.results[0]&&ev.results[0][0]&&ev.results[0][0].transcript)||'';
+        if(text){setQ(text);doS(text)}
+      };
+      rec.start();
+    }catch(e){try{window.__apkToast&&window.__apkToast(_lang==='ar'?'تعذر تشغيل الميكروفون':'Could not start microphone')}catch(err){}}
+  };
   const ar=_lang==='ar';
   const catGrid=(list,title)=>(
     <section className="ps-sec">
@@ -1332,7 +1380,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
           {photo?<img src={photo} alt=""/>:<span>GO</span>}
         </button>
         <button type="button" className="ps-bar" onClick={openPanel}>
-          <Icon name="mic" className="w-5 h-5"></Icon>
+          <span className="ps-mic-hit" onClick={e=>{e.stopPropagation();startMic()}}><Icon name="mic" className="w-5 h-5"></Icon></span>
           <span>{t('search_placeholder')}</span>
           <Icon name="search" className="w-5 h-5"></Icon>
         </button>
@@ -1361,7 +1409,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
               <Icon name="left" className="w-5 h-5"></Icon>
             </button>
             <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={ar?'البحث عن التطبيقات والألعاب':t('search_placeholder')} className="ps-panel-input"/>
-            <button type="button" className="ps-mic" aria-label="mic" onClick={()=>ref.current&&ref.current.focus()}>
+            <button type="button" className="ps-mic" aria-label="mic" onClick={startMic}>
               <Icon name="mic" className="w-5 h-5"></Icon>
             </button>
           </div>
@@ -1754,6 +1802,8 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   const[lbIdx,setLbIdx]=useState(null);
   const[dlView,setDlView]=useState(()=>computeDlProgress(getDlRec(id)));
   const[reqOpen,setReqOpen]=useState(false);
+  const[iconPrev,setIconPrev]=useState(false);
+  const[iconHide,setIconHide]=useState(false);
   const toastT=useRef(null);
   const touchX=useRef(null);
   const fileInputRef=useRef(null);
@@ -2044,6 +2094,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
                 src={app.artworkUrl512||app.artworkUrl100}
                 alt=""
                 className={`bg-detail-icon ${dlView.ring?'dl-shrunk':''}`}
+                onClick={()=>{setIconHide(false);setIconPrev(true)}}
               />
             </div>
           </div>
@@ -2065,6 +2116,21 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
           </div>
         </div>
 
+        {iconPrev&&(
+          <div className={`icon-prev ${iconHide?'hide-info':''}`}>
+            <button type="button" className="icon-prev-x" onClick={()=>setIconPrev(false)} aria-label="close">×</button>
+            <button type="button" className="icon-prev-eye" onClick={()=>setIconHide(v=>!v)} aria-label="hide">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+            <img className="icon-prev-img" src={app.artworkUrl512||app.artworkUrl100} alt=""/>
+            <div className="icon-prev-info">
+              <div className="icon-prev-name">{app.trackName}</div>
+              <div className="icon-prev-dev">{app.artistName}</div>
+              <div className="icon-prev-meta">★ {rating} {ratingCount} · {fmtSize(app.fileSizeBytes)}</div>
+              <button type="button" className="bg-btn-install" onClick={()=>{setIconPrev(false);setReqOpen(true)}}>{t('install')}</button>
+            </div>
+          </div>
+        )}
         <div className={`bg-req-overlay ${reqOpen?'show':''}`} onClick={e=>{if(e.target===e.currentTarget)setReqOpen(false)}}>
           <div className="bg-req-sheet" onClick={e=>e.stopPropagation()}>
             <div className="bg-plat-handle"></div>
@@ -3128,6 +3194,26 @@ function App(){
   const[track,setTrack]=useState(null);const[playing,setPlaying]=useState(false);const[menuOpen,setMenuOpen]=useState(false);
   const[platOpen,setPlatOpen]=useState(false); // kept unused after moving sources to Settings
   const[accOpen,setAccOpen]=useState(false);
+  const[offBanner,setOffBanner]=useState(false);
+  const probeNet=async()=>{
+    if(typeof navigator!=='undefined'&&navigator.onLine===false)return false;
+    try{
+      const c=new AbortController();
+      const timer=setTimeout(()=>c.abort(),2800);
+      await fetch('https://www.google.com/generate_204',{method:'GET',mode:'no-cors',cache:'no-store',signal:c.signal});
+      clearTimeout(timer);
+      return true;
+    }catch(e){return false}
+  };
+  useEffect(()=>{
+    let cancel=false;
+    probeNet().then(ok=>{if(!cancel&&!ok)setOffBanner(true)});
+    const on=()=>setOffBanner(false);
+    const off=()=>setOffBanner(true);
+    window.addEventListener('online',on);
+    window.addEventListener('offline',off);
+    return()=>{cancel=true;window.removeEventListener('online',on);window.removeEventListener('offline',off)};
+  },[]);
   const[profile,setProfile]=useState(()=>getS('apk_profile',{name:'',photo:''}));
   const[night,setNightS]=useState(()=>{const saved=getS('apk_night',null);if(saved==null)return getS('apk_theme','light')==='black';return !!saved});
   const setNight=v=>{setNightS(!!v);setS('apk_night',!!v)};
@@ -3358,6 +3444,20 @@ function App(){
         <div className="app-scroll-fill">{page}</div>
       </main>
       {!hideMini&&<MiniPlayer track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onClose={closeP} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onOpen={()=>nav('/now-playing')} isFav={isSongFav} onFav={toggleSongFav}/>}
+      {offBanner&&(
+        <div className="net-banner" role="dialog">
+          <div className="net-banner-card">
+            <div className="net-banner-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor"><path d="M2.3 2.3 1 3.6l2.1 2.1C2.4 6.4 2 7.2 2 8.1 2 9.7 3.3 11 4.9 11h.2l2 2H4.2C2 13 0 11.2 0 9c0-1.5.8-2.8 2-3.6L2.3 2.3zM12 4c2.8 0 5.3 1.2 7 3.1l1.4-1.4C18.2 3.4 15.3 2 12 2 9.7 2 7.6 2.7 5.8 4l1.5 1.5C8.6 4.6 10.2 4 12 4zm8.2 7h-2.1l5.6 5.6 1.3-1.3-4.8-4.3zM12 8c.7 0 1.4.2 2 .5l1.6 1.6c.6-.6 1-1.4 1-2.3 0-1.7-1.3-3-3-3-.9 0-1.7.4-2.3 1L13 7.5c.3-.3.7-.5 1-.5zM4.3 15.7 12 23.4l4.2-4.2-1.4-1.4-2.8 2.8-6.3-6.3-1.4 1.4z"></path></svg>
+            </div>
+            <p>{_lang==='ar'?'لا يتوفر اتصال بالإنترنت. تحقق من الشبكة ثم أعد المحاولة.':'No internet connection. Check the network and try again.'}</p>
+            <div className="net-banner-actions">
+              <button type="button" className="net-banner-retry" onClick={()=>{probeNet().then(ok=>setOffBanner(!ok))}}>{_lang==='ar'?'إعادة المحاولة':'Retry'}</button>
+              <button type="button" className="net-banner-cancel" onClick={()=>setOffBanner(false)}>{_lang==='ar'?'إلغاء':'Cancel'}</button>
+            </div>
+          </div>
+        </div>
+      )}
       {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen)&&<BottomNav route={route} nav={nav}></BottomNav>}
     </div>
   );
