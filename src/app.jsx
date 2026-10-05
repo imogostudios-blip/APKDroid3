@@ -1169,7 +1169,7 @@ const Games=({open})=>{
         const list=rows[i]||[];
         const waiting=i>=ready;
         return(
-          <HScroll key={sec.k} title={t(sec.k)} rtl free pad="px-5">
+          <HScroll key={sec.k} title={t(sec.k)} rtl pad="px-5 g-shot-row">
             {waiting||!list.length
               ?Array(3).fill(0).map((_,j)=><div key={j} className="shrink-0 bg-muted animate-pulse" style={{width:'min(88vw,420px)',aspectRatio:'16/9',borderRadius:3}}></div>)
               :list.map(a=><GameShotCard key={a.trackId+'-'+sec.k} app={a} onClick={open}></GameShotCard>)

@@ -1475,7 +1475,7 @@ const Games = ({ open }) => {
     if (i >= ready && i >= ready + 2) return null;
     const list = rows[i] || [];
     const waiting = i >= ready;
-    return /* @__PURE__ */ React.createElement(HScroll, { key: sec.k, title: t(sec.k), rtl: true, free: true, pad: "px-5" }, waiting || !list.length ? Array(3).fill(0).map((_, j) => /* @__PURE__ */ React.createElement("div", { key: j, className: "shrink-0 bg-muted animate-pulse", style: { width: "min(88vw,420px)", aspectRatio: "16/9", borderRadius: 3 } })) : list.map((a) => /* @__PURE__ */ React.createElement(GameShotCard, { key: a.trackId + "-" + sec.k, app: a, onClick: open })));
+    return /* @__PURE__ */ React.createElement(HScroll, { key: sec.k, title: t(sec.k), rtl: true, pad: "px-5 g-shot-row" }, waiting || !list.length ? Array(3).fill(0).map((_, j) => /* @__PURE__ */ React.createElement("div", { key: j, className: "shrink-0 bg-muted animate-pulse", style: { width: "min(88vw,420px)", aspectRatio: "16/9", borderRadius: 3 } })) : list.map((a) => /* @__PURE__ */ React.createElement(GameShotCard, { key: a.trackId + "-" + sec.k, app: a, onClick: open })));
   }));
 };
 const PLAY_GAME_CATS = [
