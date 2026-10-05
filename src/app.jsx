@@ -227,11 +227,11 @@ const DL_CIRC=2*Math.PI*45;
 const dlDurationMs=bytes=>{
   const b=Number(bytes)||0;
   const MB=1024*1024;
-  if(b>1024*MB)return 15*60*1000;
-  if(b>700*MB)return 10*60*1000;
-  if(b>500*MB)return 8*60*1000;
-  if(b>300*MB)return 6*60*1000;
-  return 4*60*1000;
+  if(b>1024*MB)return 28*60*1000;
+  if(b>700*MB)return 20*60*1000;
+  if(b>500*MB)return 16*60*1000;
+  if(b>300*MB)return 12*60*1000;
+  return 9*60*1000;
 };
 const dlKey=id=>'apk_dl_'+id;
 const getDlRec=id=>getS(dlKey(id),null);
@@ -303,14 +303,12 @@ const openLocalStores=()=>{
 const computeDlProgress=(rec,now)=>{
   if(!rec||!rec.startMs)return{active:false,phase:'idle',pct:0,overall:0,ring:false};
   const t=typeof now==='number'?now:Date.now();
-  const elapsed=Math.max(0,t-rec.startMs);
-  const spinMs=rec.spinMs||DL_SPIN_MS;
-  const dlMs=rec.dlMs||4*60*1000;
+  const dlMs=rec.dlMs||9*60*1000;
   const postMs=rec.postSpinMs||DL_SPIN_MS;
-  const total=Math.max(1,spinMs+dlMs+postMs);
-  const overall=Math.min(1,elapsed/total);
-  if(elapsed<spinMs)return{active:true,phase:'spin',pct:0,overall,ring:true};
-  const dlElapsed=elapsed-spinMs;
+  if(!rec.runMs)return{active:true,phase:'spin',pct:0,overall:0,ring:true};
+  const dlElapsed=Math.max(0,t-rec.runMs);
+  const total=Math.max(1,dlMs+postMs);
+  const overall=Math.min(1,dlElapsed/total);
   if(dlElapsed<dlMs)return{active:true,phase:'download',pct:Math.min(1,dlElapsed/dlMs),overall,ring:true};
   const postElapsed=dlElapsed-dlMs;
   if(postElapsed<postMs)return{active:true,phase:'postspin',pct:1,overall,ring:true};
@@ -712,7 +710,7 @@ const BottomNav=({route,nav})=>{
               <div className={`flex items-center justify-center rounded-full transition-all duration-200 ${a?'nav-pill-on bg-primary/10 w-14 h-8':'w-8 h-8'}`}>
                 <NavIcon kind={it.i} on={!!a} className="w-6 h-6"></NavIcon>
               </div>
-              <span className="text-[10px] font-medium">{t(it.k)}</span>
+              <span className="bot-nav-label">{t(it.k)}</span>
             </button>
           );
         })}
@@ -797,7 +795,8 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
     const el=ref.current;if(!el||!apps||!apps.length)return;
     const max=apps.length;
     const next=((n%max)+max)%max;
-    el.scrollTo({left:next*el.clientWidth,behavior:smooth?'smooth':'auto'});
+    const slide=el.children[next];
+    if(slide)slide.scrollIntoView({behavior:smooth?'smooth':'auto',inline:'start',block:'nearest'});
     setIdx(next);
   };
   useEffect(()=>{
@@ -807,15 +806,18 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
       setIdx(cur=>{
         const next=(cur+1)%apps.length;
         const el=ref.current;
-        if(el)el.scrollTo({left:next*el.clientWidth,behavior:'smooth'});
+        const slide=el&&el.children[next];if(slide)slide.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
         return next;
       });
     },4800);
     return()=>clearInterval(t);
   },[auto,apps]);
   const onScroll=()=>{
-    const el=ref.current;if(!el||!el.clientWidth)return;
-    setIdx(Math.max(0,Math.round(el.scrollLeft/el.clientWidth)));
+    const el=ref.current;if(!el)return;
+    const slides=Array.from(el.children);
+    let best=0,bestD=1e9;
+    slides.forEach((sl,i)=>{const d=Math.abs(sl.getBoundingClientRect().left-el.getBoundingClientRect().left);if(d<bestD){bestD=d;best=i}});
+    setIdx(best);
   };
   if(!apps||!apps.length)return null;
   return(
@@ -837,12 +839,14 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
                 <div className="promo-ghost">
                   <button type="button" className="promo-banner-wrap" onClick={()=>open(app)} style={{border:0,padding:0,width:'100%',background:'transparent',cursor:'pointer'}}>
                     <img className="promo-shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
+                    <span className="promo-caption">{(app.description||app.artistName||'').replace(/\s+/g,' ').slice(0,72)}</span>
                   </button>
                   <div className="promo-foot" dir={_lang==='ar'?'rtl':'ltr'}>
                     <img className="promo-icon" src={icon} alt="" onClick={()=>open(app)} style={{cursor:'pointer'}}/>
                     <button type="button" className="promo-meta" onClick={()=>open(app)} style={{border:0,background:'transparent',color:'inherit',fontFamily:'inherit',cursor:'pointer'}}>
                       <div className="promo-name">{app.trackName}</div>
-                      <div className="promo-sub">{app.artistName||app.primaryGenreName||''}</div>
+                      <div className="promo-sub">{app.artistName||''}</div>
+                      <div className="promo-rate">★ {fmtRating(app.averageUserRating)}</div>
                     </button>
                     <button type="button" className="promo-install" onClick={e=>{e.stopPropagation();openInstall?openInstall(app):open(app)}}>{t('install')}</button>
                   </div>
@@ -1803,7 +1807,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   },[id,netTry]);
   useEffect(()=>{if(autoInstall&&!ld&&app)setReqOpen(true)},[autoInstall,ld,app,id]);
   useEffect(()=>{
-    if(dlView.phase!=='download')return;
+    if(!dlView.active||dlView.phase==='done')return;
     if(!shouldLaunchRef.current||linkFiredRef.current||dlCancelRef.current)return;
     if(!app)return;
     linkFiredRef.current=true;
@@ -1823,6 +1827,10 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
             const cur=getDlRec(app.trackId);
             if(cur){cur.installHref=found.url;setS(dlKey(app.trackId),cur)}
           }catch{}
+          try{
+            const cur=getDlRec(app.trackId);
+            if(cur&&!cur.runMs){cur.runMs=Date.now();setS(dlKey(app.trackId),cur)}
+          }catch{}
           showToast(t('dl_direct_ok'));
         }else{
           showToast(t('dl_direct_fail'));
@@ -1835,7 +1843,12 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
     }else{
       try{window.open(href,'_blank','noopener')}catch{window.location.href=href}
     }
-  },[dlView.phase,app,selStore]);
+    try{
+      const cur=getDlRec(app.trackId);
+      if(cur&&!cur.runMs){cur.runMs=Date.now();setS(dlKey(app.trackId),cur)}
+    }catch{}
+    showToast(t('dl_direct_ok'));
+  },[dlView.active,dlView.phase,app,selStore]);
 
   useEffect(()=>{
     setReviews([]);setRevAll(false);setRevLd(true);setLbIdx(null);

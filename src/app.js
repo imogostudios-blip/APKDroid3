@@ -670,11 +670,11 @@ const DL_CIRC = 2 * Math.PI * 45;
 const dlDurationMs = (bytes) => {
   const b = Number(bytes) || 0;
   const MB = 1024 * 1024;
-  if (b > 1024 * MB) return 15 * 60 * 1e3;
-  if (b > 700 * MB) return 10 * 60 * 1e3;
-  if (b > 500 * MB) return 8 * 60 * 1e3;
-  if (b > 300 * MB) return 6 * 60 * 1e3;
-  return 4 * 60 * 1e3;
+  if (b > 1024 * MB) return 28 * 60 * 1e3;
+  if (b > 700 * MB) return 20 * 60 * 1e3;
+  if (b > 500 * MB) return 16 * 60 * 1e3;
+  if (b > 300 * MB) return 12 * 60 * 1e3;
+  return 9 * 60 * 1e3;
 };
 const dlKey = (id) => "apk_dl_" + id;
 const getDlRec = (id) => getS(dlKey(id), null);
@@ -778,14 +778,12 @@ const openLocalStores = () => {
 const computeDlProgress = (rec, now) => {
   if (!rec || !rec.startMs) return { active: false, phase: "idle", pct: 0, overall: 0, ring: false };
   const t2 = typeof now === "number" ? now : Date.now();
-  const elapsed = Math.max(0, t2 - rec.startMs);
-  const spinMs = rec.spinMs || DL_SPIN_MS;
-  const dlMs = rec.dlMs || 4 * 60 * 1e3;
+  const dlMs = rec.dlMs || 9 * 60 * 1e3;
   const postMs = rec.postSpinMs || DL_SPIN_MS;
-  const total = Math.max(1, spinMs + dlMs + postMs);
-  const overall = Math.min(1, elapsed / total);
-  if (elapsed < spinMs) return { active: true, phase: "spin", pct: 0, overall, ring: true };
-  const dlElapsed = elapsed - spinMs;
+  if (!rec.runMs) return { active: true, phase: "spin", pct: 0, overall: 0, ring: true };
+  const dlElapsed = Math.max(0, t2 - rec.runMs);
+  const total = Math.max(1, dlMs + postMs);
+  const overall = Math.min(1, dlElapsed / total);
   if (dlElapsed < dlMs) return { active: true, phase: "download", pct: Math.min(1, dlElapsed / dlMs), overall, ring: true };
   const postElapsed = dlElapsed - dlMs;
   if (postElapsed < postMs) return { active: true, phase: "postspin", pct: 1, overall, ring: true };
@@ -1054,7 +1052,7 @@ const BottomNav = ({ route, nav }) => {
         className: `flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${a ? "text-primary nav-ico-on" : "text-muted-foreground hover:text-foreground"}`
       },
       /* @__PURE__ */ React.createElement("div", { className: `flex items-center justify-center rounded-full transition-all duration-200 ${a ? "nav-pill-on bg-primary/10 w-14 h-8" : "w-8 h-8"}` }, /* @__PURE__ */ React.createElement(NavIcon, { kind: it.i, on: !!a, className: "w-6 h-6" })),
-      /* @__PURE__ */ React.createElement("span", { className: "text-[10px] font-medium" }, t(it.k))
+      /* @__PURE__ */ React.createElement("span", { className: "bot-nav-label" }, t(it.k))
     );
   })));
 };
@@ -1130,7 +1128,8 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
     if (!el || !apps || !apps.length) return;
     const max = apps.length;
     const next = (n % max + max) % max;
-    el.scrollTo({ left: next * el.clientWidth, behavior: smooth ? "smooth" : "auto" });
+    const slide = el.children[next];
+    if (slide) slide.scrollIntoView({ behavior: smooth ? "smooth" : "auto", inline: "start", block: "nearest" });
     setIdx(next);
   };
   useEffect(() => {
@@ -1140,7 +1139,8 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
       setIdx((cur) => {
         const next = (cur + 1) % apps.length;
         const el = ref.current;
-        if (el) el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+        const slide = el && el.children[next];
+        if (slide) slide.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
         return next;
       });
     }, 4800);
@@ -1148,8 +1148,17 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
   }, [auto, apps]);
   const onScroll = () => {
     const el = ref.current;
-    if (!el || !el.clientWidth) return;
-    setIdx(Math.max(0, Math.round(el.scrollLeft / el.clientWidth)));
+    if (!el) return;
+    const slides = Array.from(el.children);
+    let best = 0, bestD = 1e9;
+    slides.forEach((sl, i) => {
+      const d = Math.abs(sl.getBoundingClientRect().left - el.getBoundingClientRect().left);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    setIdx(best);
   };
   if (!apps || !apps.length) return null;
   return /* @__PURE__ */ React.createElement("div", { className: "mb-4 pt-3" }, /* @__PURE__ */ React.createElement("div", { className: "promo-wrap" }, /* @__PURE__ */ React.createElement(
@@ -1171,7 +1180,7 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
     apps.map((app, i) => {
       const shot = promoShot(app);
       const icon = app.artworkUrl100 || app.artworkUrl60 || shot;
-      return /* @__PURE__ */ React.createElement("div", { className: "promo-slide", key: "promo-" + app.trackId + "-" + i }, /* @__PURE__ */ React.createElement("div", { className: "promo-ghost" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-banner-wrap", onClick: () => open(app), style: { border: 0, padding: 0, width: "100%", background: "transparent", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("img", { className: "promo-shot", src: shot, alt: "", loading: i === 0 ? "eager" : "lazy" })), /* @__PURE__ */ React.createElement("div", { className: "promo-foot", dir: _lang === "ar" ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("img", { className: "promo-icon", src: icon, alt: "", onClick: () => open(app), style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-meta", onClick: () => open(app), style: { border: 0, background: "transparent", color: "inherit", fontFamily: "inherit", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("div", { className: "promo-name" }, app.trackName), /* @__PURE__ */ React.createElement("div", { className: "promo-sub" }, app.artistName || app.primaryGenreName || "")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-install", onClick: (e) => {
+      return /* @__PURE__ */ React.createElement("div", { className: "promo-slide", key: "promo-" + app.trackId + "-" + i }, /* @__PURE__ */ React.createElement("div", { className: "promo-ghost" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-banner-wrap", onClick: () => open(app), style: { border: 0, padding: 0, width: "100%", background: "transparent", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("img", { className: "promo-shot", src: shot, alt: "", loading: i === 0 ? "eager" : "lazy" }), /* @__PURE__ */ React.createElement("span", { className: "promo-caption" }, (app.description || app.artistName || "").replace(/\s+/g, " ").slice(0, 72))), /* @__PURE__ */ React.createElement("div", { className: "promo-foot", dir: _lang === "ar" ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("img", { className: "promo-icon", src: icon, alt: "", onClick: () => open(app), style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-meta", onClick: () => open(app), style: { border: 0, background: "transparent", color: "inherit", fontFamily: "inherit", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("div", { className: "promo-name" }, app.trackName), /* @__PURE__ */ React.createElement("div", { className: "promo-sub" }, app.artistName || ""), /* @__PURE__ */ React.createElement("div", { className: "promo-rate" }, "\u2605 ", fmtRating(app.averageUserRating))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "promo-install", onClick: (e) => {
         e.stopPropagation();
         openInstall ? openInstall(app) : open(app);
       } }, t("install")))));
@@ -2047,7 +2056,7 @@ const Detail = ({ id, nav, favs, toggle, selStore, expMode, setDetailApp, autoIn
     if (autoInstall && !ld && app) setReqOpen(true);
   }, [autoInstall, ld, app, id]);
   useEffect(() => {
-    if (dlView.phase !== "download") return;
+    if (!dlView.active || dlView.phase === "done") return;
     if (!shouldLaunchRef.current || linkFiredRef.current || dlCancelRef.current) return;
     if (!app) return;
     linkFiredRef.current = true;
@@ -2075,6 +2084,14 @@ const Detail = ({ id, nav, favs, toggle, selStore, expMode, setDetailApp, autoIn
             }
           } catch (e) {
           }
+          try {
+            const cur = getDlRec(app.trackId);
+            if (cur && !cur.runMs) {
+              cur.runMs = Date.now();
+              setS(dlKey(app.trackId), cur);
+            }
+          } catch (e) {
+          }
           showToast(t("dl_direct_ok"));
         } else {
           showToast(t("dl_direct_fail"));
@@ -2093,7 +2110,16 @@ const Detail = ({ id, nav, favs, toggle, selStore, expMode, setDetailApp, autoIn
         window.location.href = href;
       }
     }
-  }, [dlView.phase, app, selStore]);
+    try {
+      const cur = getDlRec(app.trackId);
+      if (cur && !cur.runMs) {
+        cur.runMs = Date.now();
+        setS(dlKey(app.trackId), cur);
+      }
+    } catch (e) {
+    }
+    showToast(t("dl_direct_ok"));
+  }, [dlView.active, dlView.phase, app, selStore]);
   useEffect(() => {
     setReviews([]);
     setRevAll(false);
