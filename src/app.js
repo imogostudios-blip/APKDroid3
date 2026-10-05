@@ -1123,13 +1123,21 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
   const ref = useRef(null);
   const [idx, setIdx] = useState(0);
   const hold = useRef(false);
+  const scrollSlide = (el, next, smooth) => {
+    const slide = el.children[next];
+    if (!slide) return;
+    const page = document.getElementById("app-scroll");
+    const y = page ? page.scrollTop : 0;
+    const delta = slide.getBoundingClientRect().left - el.getBoundingClientRect().left;
+    el.scrollBy({ left: delta, behavior: smooth ? "smooth" : "auto" });
+    if (page) page.scrollTop = y;
+  };
   const goTo = (n, smooth = true) => {
     const el = ref.current;
     if (!el || !apps || !apps.length) return;
     const max = apps.length;
     const next = (n % max + max) % max;
-    const slide = el.children[next];
-    if (slide) slide.scrollIntoView({ behavior: smooth ? "smooth" : "auto", inline: "start", block: "nearest" });
+    scrollSlide(el, next, smooth);
     setIdx(next);
   };
   useEffect(() => {
@@ -1139,8 +1147,18 @@ const PromoCarousel = ({ apps, open, openInstall, auto }) => {
       setIdx((cur) => {
         const next = (cur + 1) % apps.length;
         const el = ref.current;
-        const slide = el && el.children[next];
-        if (slide) slide.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+        if (el) {
+          const slide = el.children[next];
+          if (slide) {
+            const page = document.getElementById("app-scroll");
+            const y = page ? page.scrollTop : 0;
+            const delta = slide.getBoundingClientRect().left - el.getBoundingClientRect().left;
+            el.scrollBy({ left: delta, behavior: "smooth" });
+            if (page) requestAnimationFrame(() => {
+              page.scrollTop = y;
+            });
+          }
+        }
         return next;
       });
     }, 4800);
