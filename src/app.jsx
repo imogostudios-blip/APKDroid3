@@ -124,7 +124,7 @@ const STRINGS={
     store_direct:'مباشر',store_direct_hint:'تحميل APK مباشرة بدون فتح صفحة خارجية',
     api_search_app:'API Search Application',api_search_app_desc:'اختر مصدر التثبيت الافتراضي للتطبيقات',
     store_play:'Google Play Store',store_happymod:'HappyMod',store_uptodown:'Uptodown',
-    dl_resolving:'جاري جلب رابط التحميل المباشر…',
+    dl_resolving:'جاري جلب رابط التحميل المباشر…',dl_fetch_badge:'جاري جلب رابط التحميل',dl_run_badge:'جاري التحميل',
     dl_direct_ok:'بدأ التحميل المباشر',
     dl_direct_fail:'تعذر إيجاد رابط مباشر لهذا التطبيق',
     more_options:'خيارات',toggle_theme:'تبديل الثيم',
@@ -188,7 +188,7 @@ const STRINGS={
     store_direct:'Direct',store_direct_hint:'Download the APK directly without opening another page',
     api_search_app:'API Search Application',api_search_app_desc:'Choose the default install source for apps',
     store_play:'Google Play Store',store_happymod:'HappyMod',store_uptodown:'Uptodown',
-    dl_resolving:'Fetching a direct download link…',
+    dl_resolving:'Fetching a direct download link…',dl_fetch_badge:'Fetching download link',dl_run_badge:'Downloading',
     dl_direct_ok:'Direct download started',
     dl_direct_fail:'Could not find a direct link for this app',
     more_options:'Options',toggle_theme:'Toggle theme',
@@ -398,6 +398,7 @@ const Icon=({name,className='w-5 h-5'})=>{
   const p={
     home:<><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></>,
     search:<><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></>,
+    mic:<><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"></path><path d="M19 10v2a7 7 0 01-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></>,
     heart:<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>,
     person:<path fill="currentColor" stroke="none" d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"></path>,
     bookmark:<path fill="currentColor" stroke="none" d="M11.539 17.112C11.876 16.937 12.288 16.967 12.6 17.2L17.4 20.8C18.06 21.294 19 20.824 19 20V5C19 3.895 18.105 3 17 3H7C5.895 3 5 3.895 5 5V20C5 20.824 5.94 21.294 6.6 20.8L11.4 17.2L11.539 17.112ZM21 20C21 22.472 18.178 23.883 16.2 22.4L12 19.249L7.8 22.4C5.822 23.883 3 22.472 3 20V5C3 2.791 4.791 1 7 1H17C19.209 1 21 2.791 21 5V20Z"></path>,
@@ -669,10 +670,13 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
     );
   }
   if(kind==='home'){
-    return on?(
-      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm9 0h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0-9h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2z" fill="currentColor"></path></svg>
-    ):(
-      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3H6zm9-2h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3h-3zm0-11h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6h-3zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6H6z" fill="currentColor"></path></svg>
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" aria-hidden="true">
+        <rect className="cube c1" x="3" y="3" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
+        <rect className="cube c2" x="13.8" y="3" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
+        <rect className="cube c3" x="3" y="13.8" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
+        <rect className="cube c4" x="13.8" y="13.8" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
+      </svg>
     );
   }
   if(kind==='heart'){
@@ -694,21 +698,24 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
 
 const BottomNav=({route,nav})=>{
   const items=[
-    {k:'nav_games',p:'/games',i:'game'},
-    {k:'nav_apps',p:'/',i:'home',root:true},
-    {k:'nav_search',p:'/search',i:'search'},
-    {k:'nav_library',p:'/favorites',i:'heart'},
-    {k:'nav_music',p:'/music',i:'head'}
+    {k:'nav_games',p:'/games',i:'game',anim:'game'},
+    {k:'nav_apps',p:'/',i:'home',root:true,anim:'apps'},
+    {k:'nav_search',p:'/search',i:'search',anim:'search'},
+    {k:'nav_library',p:'/favorites',i:'heart',anim:'lib'},
+    {k:'nav_music',p:'/music',i:'head',anim:'music'}
   ];
+  const[pulse,setPulse]=useState(0);
+  const[bumped,setBumped]=useState('');
   return(
     <nav className="app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden">
       <div className="flex justify-around items-center h-16 px-2">
         {items.map(it=>{
           const a=it.root ? route==='/' : route.startsWith(it.p);
+          const play=a&&bumped===it.k;
           return (
-            <button key={it.k} onClick={()=>nav(it.p)}
+            <button key={it.k} onClick={()=>{setBumped(it.k);setPulse(n=>n+1);nav(it.p)}}
               className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${a?'text-primary nav-ico-on':'text-muted-foreground hover:text-foreground'}`}>
-              <div className={`flex items-center justify-center rounded-full transition-all duration-200 ${a?'nav-pill-on bg-primary/10 w-14 h-8':'w-8 h-8'}`}>
+              <div key={play?it.k+'-'+pulse:it.k} className={`nav-ico nav-anim-${it.anim} ${play?'play':''} flex items-center justify-center rounded-full transition-all duration-200 ${a?'nav-pill-on bg-primary/10 w-14 h-8':'w-8 h-8'}`}>
                 <NavIcon kind={it.i} on={!!a} className="w-6 h-6"></NavIcon>
               </div>
               <span className="text-[10px] font-medium">{t(it.k)}</span>
@@ -907,8 +914,8 @@ const SVG_ANDROID_PH = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 
 const SVG_SHOT_OFF = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="175" height="175"><g><path d="M512,843.9a62.6,62.6 0,1 0,0 -125.1,62.6 62.6,0 0,0 0,125.1zM366.5,671.8a44.4,44.4 0,0 1,-34.4 -15.7,46.8 46.8,0 0,1 3.2,-65.7A262.2,262.2 0,0 1,512 523.2c9.4,0 18.8,0 28.2,1.5 25,3.2 43.8,26.6 42.2,51.6 -3.1,25 -26.6,43.8 -51.6,42.2a175.9,175.9 0,0 0,-131.4 42.2,55.1 55.1,0 0,1 -32.9,11zM235.1,540.4c-12.5,0 -25,-4.7 -34.4,-14.1a48.7,48.7 0,0 1,1.6 -67.3c45.4,-42.2 97,-75.1 154.9,-95.4 25,-9.4 51.6,3.1 59.4,28.2 9.4,25 -3.1,51.6 -28.2,59.4 -45.4,17.2 -87.6,42.2 -123.6,76.7 -6.3,9.4 -18.8,12.5 -29.7,12.5zM788.9,540.4c-11,0 -23.5,-4.7 -32.9,-12.5a351.2,351.2 0,0 0,-209.6 -95.4c-25,-3.1 -45.4,-25 -42.2,-51.6 3.1,-26.6 25,-43.8 51.6,-42.2 98.6,9.4 192.4,53.2 264.4,120.4 18.8,17.2 20.4,46.9 1.6,65.7 -7.8,11 -20.4,15.7 -32.9,15.7zM89.6,394.9c-12.5,0 -25,-4.7 -34.4,-14.1 -17.2,-18.8 -17.2,-48.5 1.6,-65.7 46.9,-45.4 98.6,-82.9 156.5,-111.1a45,45 0,0 1,62.5 20.3c12.5,23.5 3.2,51.6 -20.3,62.6a618.3,618.3 0,0 0,-134.6 95.4c-7.8,9.4 -20.3,12.5 -31.3,12.5zM934.4,394.9c-11,0 -23.5,-4.7 -32.9,-12.5 -104.8,-101.7 -244.1,-156.5 -389.5,-156.5 -45.4,0 -90.8,4.7 -134.5,15.7a46.6,46.6 0,1 1,-21.9 -90.8c51.6,-12.5 103.3,-18.8 156.5,-18.8 170.5,0 331.6,65.7 455.3,183 18.8,17.2 18.8,46.9 1.6,65.7 -9.4,9.4 -21.9,14.1 -34.4,14.1z" fill="#BEC2C6"/><path d="M932.8,978.4c-12.5,0 -23.5,-4.7 -32.9,-14.1L56.7,121.1c-18.8,-18.8 -18.8,-48.5 0,-65.7 18.8,-18.8 48.5,-18.8 65.7,0l843.2,843.3c18.8,18.8 18.8,48.5 0,65.7 -9.4,9.4 -20.3,14.1 -32.9,14.1z" fill="#BEC2C6"/></g></svg>`;
 const SVG_WIFI_OFF = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="72" height="72"><path fill="#e3e3e3" d="M73-536 2-607q97-94 220.5-143.5T480-800q134 0 257.5 49.5T958-607l-71 71q-82-79-187-121.5T480-700q-115 0-220 42.5T73-536Zm350.5 352.5Q400-207 400-240t23.5-56.5Q447-320 480-320t56.5 23.5Q560-273 560-240t-23.5 56.5Q513-160 480-160t-56.5-23.5ZM298-309l-70-71q51-48 116-74t136-26q41 0 80.5 8.5T636-446q-17 17-33 38.5T574-363q-23-8-46.5-12.5T480-380q-51 0-97.5 18T298-309ZM186-422l-70-71q74-71 168-109t197-38q103 0 196.5 37.5T845-494l-15 16q-20-3-36.5-7.5T760-490q-14 0-28.5 3.5T701-478q-50-30-106-46t-115-16q-83 0-158.5 30.5T186-422Zm545.5 250.5Q720-183 720-200t11.5-28.5Q743-240 760-240t28.5 11.5Q800-217 800-200t-11.5 28.5Q777-160 760-160t-28.5-11.5ZM720-280v-140h80v140h-80Z"/></svg>`;
 const svgDataUri = svg => 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-const NetSpin = ({full}) => (
-  <div className={full ? 'net-spin net-full' : 'net-spin net-in'} role="status" aria-label="loading">
+const NetSpin = ({full,center}) => (
+  <div className={center ? 'net-spin net-center' : full ? 'net-spin net-full' : 'net-spin net-in'} role="status" aria-label="loading">
     <div className="net-spin-mark" dangerouslySetInnerHTML={{__html:SVG_NET_SPIN}}></div>
   </div>
 );
@@ -1058,7 +1065,7 @@ const Home=({nav,open,openInstall})=>{
   const showIntro=intro||booting;
   return(
     <div className="page-stage pb-24 sm:pb-8">
-      {intro&&<NetSpin></NetSpin>}
+      {intro&&<NetSpin center></NetSpin>}
       {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!pool.length&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&pool.length>0&&<PromoCarousel apps={topAds} open={open} openInstall={openInstall} auto></PromoCarousel>}
@@ -1137,7 +1144,7 @@ const Games=({open})=>{
   const showIntro=intro||booting;
   return(
     <div className="page-stage pb-20 sm:pb-8 pt-2">
-      {intro&&<NetSpin></NetSpin>}
+      {intro&&<NetSpin center></NetSpin>}
       {!intro&&booting&&<NetSpin full></NetSpin>}
       <LoadTimeout show={timedOut&&!hasGames&&!intro} onRetry={()=>setReload(n=>n+1)}/>
       {!showIntro&&GAME_SECTIONS.map((sec,i)=>{
@@ -1157,7 +1164,74 @@ const Games=({open})=>{
   );
 };
 
-const Search=({nav,open,initQ})=>{
+const PLAY_GAME_CATS=[
+  {ar:'الحركة',en:'Action',term:'action games',icon:'heli',color:'#E53935'},
+  {ar:'المحاكاة',en:'Simulation',term:'simulation games',icon:'sim',color:'#26A69A'},
+  {ar:'ألغاز',en:'Puzzle',term:'puzzle games',icon:'puzzle',color:'#1E88E5'},
+  {ar:'المغامرات',en:'Adventure',term:'adventure games',icon:'compass',color:'#F6BF26'},
+  {ar:'سباق',en:'Racing',term:'racing games',icon:'flag',color:'#7E57C2'},
+  {ar:'تقمص الأدوار',en:'Role playing',term:'role playing games',icon:'swords',color:'#5C6BC0'},
+  {ar:'استراتيجية',en:'Strategy',term:'strategy games',icon:'sflag',color:'#43A047'},
+  {ar:'رياضة',en:'Sports',term:'sports games',icon:'tennis',color:'#EC407A'},
+  {ar:'الورق',en:'Cards',term:'card games',icon:'cards',color:'#F06292'},
+  {ar:'لوحية',en:'Board',term:'board games',icon:'rook',color:'#43A047'},
+];
+const PLAY_APP_CATS=[
+  {ar:'ترفيه',en:'Entertainment',term:'entertainment',icon:'clapper',color:'#7E57C2'},
+  {ar:'اجتماعي',en:'Social',term:'social',icon:'people',color:'#EF5350'},
+  {ar:'أدوات',en:'Tools',term:'tools utilities',icon:'tools',color:'#26A69A'},
+  {ar:'تصوير',en:'Photography',term:'photo video',icon:'camera',color:'#42A5F5'},
+  {ar:'موسيقى',en:'Music',term:'music',icon:'note',color:'#FF7043'},
+  {ar:'تسوق',en:'Shopping',term:'shopping',icon:'bag',color:'#26C6DA'},
+];
+const playCatLabel=c=>_lang==='ar'?c.ar:c.en;
+const PlayGlyph=({icon,color})=>{
+  const f=color||'currentColor';
+  if(icon==='heli')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M3 10h9.2l1.4-2.2H20v2.1h-3.2L15.4 12H20a2 2 0 010 4h-5.2l-1.6 2.4H8.2L6.6 16H3v-2h2.4L6.6 12H3v-2zm8.2 0L9.6 12h3.6l1.6-2h-3.6z"/><circle cx="18.2" cy="7.2" r="1.1" fill={f}/></svg>;
+  if(icon==='sim')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 14h16v3H4z"/><path fill={f} d="M6 11h12l-1.2-4H7.2z"/><path fill={f} d="M8 8h2.2L9 5H7zM14 8h2.2L17 5h-2z"/></svg>;
+  if(icon==='puzzle')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 3h5a2 2 0 012 2v1.2a2.2 2.2 0 010 4.1V13H8.7a2.2 2.2 0 01-4.2 0H3V5a2 2 0 012-2h3z"/></svg>;
+  if(icon==='compass')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="8" fill="none" stroke={f} strokeWidth="2"/><path fill={f} d="M14.8 9.2l-1.2 4.4-4.4 1.2 1.2-4.4z"/></svg>;
+  if(icon==='flag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h10l-1.4 3L18 10H8z"/><path fill="#fff" d="M9.2 5.2h1.2v1.2H9.2zm2.4 0h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2zM10.4 6.6h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2z"/></svg>;
+  if(icon==='swords')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14.5 3l2 2-6.2 6.2-2-2zM7.2 12.3l2 2L4 19.5 3 21l1.5-1 5.2-5.2zM9.5 3L7.5 5l6.2 6.2 2-2zM16.8 12.3l-2 2L20 19.5 21 21l-1.5-1-5.2-5.2z"/></svg>;
+  if(icon==='sflag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h11l-2.2 3.2L19 11H8z"/></svg>;
+  if(icon==='tennis')return <svg viewBox="0 0 24 24" width="28" height="28"><ellipse cx="12" cy="13" rx="6" ry="7" fill="none" stroke={f} strokeWidth="2"/><path d="M8 7c2 2 2 8 0 12M16 7c-2 2-2 8 0 12" fill="none" stroke={f} strokeWidth="1.6"/><path d="M12 4v3" stroke={f} strokeWidth="2"/></svg>;
+  if(icon==='cards')return <svg viewBox="0 0 24 24" width="28" height="28"><rect x="7" y="4" width="11" height="15" rx="2" fill={f}/><rect x="4" y="7" width="11" height="14" rx="2" fill="#F8BBD0" stroke={f} strokeWidth="1.2"/></svg>;
+  if(icon==='rook')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M7 20h10v-2H7zm1-3h8l1-8H7zm1-9h6V5h-1.4V3h-1.2v2h-1.2V3H9.6v2H8z"/></svg>;
+  if(icon==='clapper')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 8h16v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path fill={f} d="M4 8l2.2-4h3L7 8zm4.2 0l2.2-4h3L11.2 8zm4.4 0l2.2-4H18l-2.2 4z"/></svg>;
+  if(icon==='people')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="9" cy="8" r="2.4" fill={f}/><circle cx="16" cy="9" r="2" fill={f}/><path fill={f} d="M4 18c.4-2.6 2.4-4 5-4s4.6 1.4 5 4zm8.2-3.2c1.6.2 3 .9 3.6 3.2H20c-.3-2.2-1.8-3.6-4-4-.9 0-1.7.1-2.4.4z"/></svg>;
+  if(icon==='tools')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14 4a4 4 0 00-3.6 5.6L4 16.1 7.9 20l6.5-6.4A4 4 0 0014 4zm0 2.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"/></svg>;
+  if(icon==='camera')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 6l1.4-2h5.2L16 6h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/><circle cx="12" cy="13" r="3.2" fill="#E3F2FD"/></svg>;
+  if(icon==='note')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M9 4h2v9.2a3 3 0 11-2-2.8V4zm6 2h2v7.2a3 3 0 11-2-2.8V6z"/></svg>;
+  if(icon==='bag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 8h12l-1 12H7z"/><path d="M9 8V7a3 3 0 016 0v1" fill="none" stroke="#fff" strokeWidth="1.6"/></svg>;
+  return null;
+};
+const fmtCount=n=>{
+  n=Number(n)||0;
+  const ar=_lang==='ar';
+  if(n>=1e9)return (n/1e9).toFixed(1)+(ar?' مليار+':'B+');
+  if(n>=1e6)return Math.max(1,Math.round(n/1e6))+(ar?' مليون+':'M+');
+  if(n>=1e3)return Math.max(1,Math.round(n/1e3))+(ar?' ألف+':'K+');
+  return n?String(n):'';
+};
+const SearchAdRow=({app,onOpen})=>{
+  if(!app)return null;
+  const rating=fmtRating(app.averageUserRating);
+  const count=fmtCount(app.userRatingCount);
+  return (
+    <button type="button" className="ps-ad-row" onClick={()=>onOpen(app)}>
+      <img src={app.artworkUrl100||app.artworkUrl60||''} alt="" className="ps-ad-icon"/>
+      <span className="ps-ad-mid">
+        <span className="ps-ad-name">{app.trackName}</span>
+        <span className="ps-ad-dev">{app.artistName||''}</span>
+        <span className="ps-ad-pills">
+          {rating!=='—'&&<span className="ps-pill">★ {rating}</span>}
+          {count&&<span className="ps-pill">↓ {count}</span>}
+        </span>
+      </span>
+    </button>
+  );
+};
+const Search=({nav,open,initQ,photo,onOpenAccount})=>{
   const[q,setQ]=useState(initQ||'');
   const[res,setRes]=useState([]);
   const[ld,setLd]=useState(false);
@@ -1165,7 +1239,13 @@ const Search=({nav,open,initQ})=>{
   const[panel,setPanel]=useState(!!(initQ&&String(initQ).trim()));
   const[submitted,setSubmitted]=useState(!!(initQ&&String(initQ).trim()));
   const[suggest,setSuggest]=useState([]);
+  const[ads,setAds]=useState([]);
   const ref=useRef(null);
+  useEffect(()=>{
+    let cancel=false;
+    api.search('best apps',12).then(list=>{if(!cancel)setAds((list||[]).slice(0,8))}).catch(()=>{});
+    return()=>{cancel=true};
+  },[]);
   useEffect(()=>{
     if(!panel||submitted){setSuggest([]);return}
     const term=q.trim();
@@ -1174,7 +1254,7 @@ const Search=({nav,open,initQ})=>{
     const timer=setTimeout(async()=>{
       try{
         const list=await api.search(term,8);
-        if(!cancel)setSuggest((list||[]).slice(0,8));
+        if(!cancel)setSuggest((list||[]).slice(0,6));
       }catch{if(!cancel)setSuggest([])}
     },220);
     return()=>{cancel=true;clearTimeout(timer)};
@@ -1213,73 +1293,86 @@ const Search=({nav,open,initQ})=>{
     setSuggest([]);
     try{ref.current&&ref.current.blur()}catch(e){}
   };
-  const openCat=c=>{nav(`/category/${encodeURIComponent(c.term)}`);};
-  const histBlock=hist.length>0?(
-    <div className="px-4 mt-4">
-      <p className="text-xs font-semibold text-muted-foreground mb-2">{t('search_log')}</p>
-      {hist.map(h=>(
-        <button key={h} type="button" onClick={()=>doS(h)} className="flex items-center gap-3 w-full py-3 hover:bg-[hsl(var(--muted))]/50 rounded-lg px-2 text-sm">
-          <Icon name="hist" className="w-4 h-4 text-muted-foreground"></Icon>
-          <span className="truncate">{h}</span>
-        </button>
-      ))}
-    </div>
-  ):(
-    <div className="px-4 mt-8 text-center text-muted-foreground text-sm">{t('search_log_empty')}</div>
+  const openCat=c=>nav(`/category/${encodeURIComponent(c.term)}`);
+  const ar=_lang==='ar';
+  const catGrid=(list,title)=>(
+    <section className="ps-sec">
+      <h2 className="ps-sec-title">{title}</h2>
+      <div className="ps-cat-grid">
+        {list.map(c=>(
+          <button key={c.term} type="button" className="ps-cat" onClick={()=>openCat(c)}>
+            <span className="ps-cat-ico"><PlayGlyph icon={c.icon} color={c.color}></PlayGlyph></span>
+            <span className="ps-cat-name">{playCatLabel(c)}</span>
+          </button>
+        ))}
+      </div>
+    </section>
   );
   return(
-    <div className="pb-20 sm:pb-8">
-      {!panel&&(
-        <>
-          <div className="px-4 pt-3 sticky top-0 z-30 bg-[hsl(var(--bg))]/90 backdrop-blur">
-            <button type="button" onClick={openPanel} className="flex items-center gap-2 w-full bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5 border border-transparent text-start">
-              <Icon name="search" className="w-5 h-5 text-muted-foreground shrink-0"></Icon>
-              <span className="flex-1 text-muted-foreground text-sm">{t('search_placeholder')}</span>
+    <div className="ps-search" dir={ar?'rtl':'ltr'}>
+      <div className="ps-top">
+        <button type="button" className="ps-avatar" onClick={onOpenAccount} aria-label={t('account')}>
+          {photo?<img src={photo} alt=""/>:<span>GO</span>}
+        </button>
+        <button type="button" className="ps-bar" onClick={openPanel}>
+          <Icon name="mic" className="w-5 h-5"></Icon>
+          <span>{t('search_placeholder')}</span>
+          <Icon name="search" className="w-5 h-5"></Icon>
+        </button>
+      </div>
+      {catGrid(PLAY_GAME_CATS, ar?'استكشاف الألعاب':'Explore games')}
+      <section className="ps-sec">
+        <div className="ps-ad-head">
+          <span>{ar?'إعلان • إعلانات مقترحة لك':'Ad • Suggested for you'}</span>
+          <span className="ps-dots">⋮</span>
+        </div>
+        <div className="ps-ad-scroller">
+          {(ads.length?ads:[]).slice(0,6).map(a=>(
+            <button key={a.trackId} type="button" className="ps-ad-card" onClick={()=>open(a)}>
+              <img src={a.artworkUrl100||a.artworkUrl60||''} alt=""/>
+              <span>{a.trackName}</span>
+              <em>★ {fmtRating(a.averageUserRating)}</em>
             </button>
-          </div>
-          <div className="px-4 mt-5 mb-1"><p className="text-xs font-semibold text-muted-foreground">{t('categories')}</p></div>
-          <div className="bg-cat-grid">
-            {SEARCH_CATEGORIES.map(c=>(
-              <button key={c.k} type="button" className="bg-cat-card" onClick={()=>openCat(c)}>
-                <div className="bg-cat-icon" style={{background:c.color+'22'}}><CatIcon name={c.icon} color={c.color}></CatIcon></div>
-                <span className="bg-cat-name">{t(c.k)}</span>
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+          ))}
+        </div>
+      </section>
+      {catGrid(PLAY_APP_CATS, ar?'استكشاف التطبيقات':'Explore apps')}
       {panel&&(
-        <div className="search-page">
-          <div className="px-3 pt-3 pb-2 flex items-center gap-2">
-            <button type="button" className="nav-chip shrink-0" onClick={closePanel} aria-label={t('back')}>
+        <div className="search-page ps-panel" dir={ar?'rtl':'ltr'}>
+          <div className="ps-panel-bar">
+            <button type="button" className="ps-back" onClick={closePanel} aria-label={t('back')}>
               <Icon name="left" className="w-5 h-5"></Icon>
             </button>
-            <div className="flex items-center gap-2 flex-1 bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5 border border-transparent focus-within:border-[hsl(var(--border))] focus-within:bg-[hsl(var(--bg))]">
-              <Icon name="search" className="w-5 h-5 text-muted-foreground shrink-0"></Icon>
-              <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={t('search_placeholder')} className="flex-1 bg-transparent outline-none text-sm" enterKeyHint="search"/>
-              {q&&<button type="button" onClick={()=>{setQ('');setSubmitted(false);setSuggest([]);setRes([]);ref.current&&ref.current.focus()}}><Icon name="x" className="w-4 h-4 text-muted-foreground"></Icon></button>}
-            </div>
+            <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={ar?'البحث عن التطبيقات والألعاب':t('search_placeholder')} className="ps-panel-input"/>
+            <button type="button" className="ps-mic" aria-label="mic" onClick={()=>ref.current&&ref.current.focus()}>
+              <Icon name="mic" className="w-5 h-5"></Icon>
+            </button>
           </div>
           <div className="search-page-body">
             {submitted?(
               <>
                 {ld&&<div className="px-4 mt-4 space-y-3">{Array(5).fill(0).map((_,i)=><Skel key={i} c="h-16 w-full"></Skel>)}</div>}
-                {!ld&&res.length>0&&<div className="px-2 mt-3">{res.map(a=><AppCard key={a.trackId} app={a} onClick={open}></AppCard>)}</div>}
+                {!ld&&res.length>0&&<div className="ps-result-list">{res.map(a=><SearchAdRow key={a.trackId} app={a} onOpen={open}></SearchAdRow>)}</div>}
                 {!ld&&res.length===0&&<div className="px-4 mt-8 text-center text-muted-foreground text-sm">{t('app_not_found')}</div>}
               </>
             ):(
               <>
-                {q.trim()&&suggest.length>0&&(
-                  <div className="search-suggest">
-                    {suggest.map(a=>(
-                      <button key={a.trackId} type="button" className="search-suggest-item" onClick={()=>open(a)}>
-                        <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
-                        <span className="search-suggest-name">{a.trackName}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {histBlock}
+                <div className="ps-ad-head px">
+                  <span>{ar?'إعلان • إعلانات مقترحة لك':'Ad • Suggested for you'}</span>
+                  <span className="ps-dots">⋮</span>
+                </div>
+                <div className="ps-result-list">
+                  {(q.trim()&&suggest.length?suggest:ads).slice(0,4).map(a=><SearchAdRow key={a.trackId} app={a} onOpen={open}></SearchAdRow>)}
+                </div>
+                <h3 className="ps-block-title">{ar?'الأحداث الجارية الآن':'Happening now'}</h3>
+                <h3 className="ps-block-title">{ar?'عمليات البحث التي تمت مؤخرًا':'Recent searches'}</h3>
+                {hist.length===0?<div className="px-4 text-sm text-muted-foreground">{_lang==='ar'?'لا توجد عمليات بحث حديثة':'No recent searches'}</div>:hist.slice(0,8).map(h=>(
+                  <button key={h} type="button" className="ps-hist" onClick={()=>doS(h)}>
+                    <span className="ps-hist-go">↗</span>
+                    <span className="ps-hist-txt">{h}</span>
+                    <span className="ps-hist-ico">↻</span>
+                  </button>
+                ))}
               </>
             )}
           </div>
@@ -1893,7 +1986,8 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
               <div className="bg-detail-title-row">
                 <h1 className="bg-detail-name">{app.trackName}</h1>
               </div>
-              {dlView.ring&&<div className="dl-name-pct" aria-live="polite">{Math.round(((dlView.overall!=null?dlView.overall:dlView.pct)||0)*100)}%</div>}
+              {dlView.ring&&<div className={`dl-status-badge ${dlView.phase==='spin'?'wait':''}`}>{dlView.phase==='spin'?t('dl_fetch_badge'):t('dl_run_badge')}</div>}
+              {(dlView.phase==='download'||dlView.phase==='postspin')&&<div className="dl-name-pct" aria-live="polite">{Math.round((dlView.pct||0)*100)}%</div>}
               <button className="bg-detail-dev" onClick={()=>nav(`/search?q=${encodeURIComponent(app.artistName||'')}`)}>{app.artistName}</button>
               <div className="bg-detail-meta">
                 <span>★ {rating} {ratingCount}</span>
@@ -1906,7 +2000,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
               {dlView.ring&&(
                 <svg className="dl-ring" viewBox="0 0 100 100" aria-hidden="true">
                   <circle className="dl-ring-track" cx="50" cy="50" r="45"></circle>
-                  {(dlView.phase==='spin'||dlView.phase==='postspin')?(
+                  {dlView.phase==='spin'?(
                     <g className="dl-spin-g">
                       <circle className="dl-ring-spin" cx="50" cy="50" r="45"></circle>
                     </g>
@@ -3201,7 +3295,7 @@ function App(){
   if(route==='/'||route==='')page=<Home nav={nav} open={open} openInstall={openInstall}></Home>;
   else if(route==='/games')page=<Games open={open}></Games>;
   else if(route==='/search-log')page=<SearchLogPage nav={nav}></SearchLogPage>;
-  else if(route==='/search'||route.startsWith('/search?')){const q=new URLSearchParams(route.split('?')[1]||'').get('q')||'';page=<Search nav={nav} open={open} initQ={q}></Search>}
+  else if(route==='/search'||route.startsWith('/search?')){const q=new URLSearchParams(route.split('?')[1]||'').get('q')||'';page=<Search nav={nav} open={open} initQ={q} photo={profile&&profile.photo} onOpenAccount={()=>setAccOpen(true)}></Search>}
   else if(isDetail){const _p=route.split('?');const _id=(_p[0].split('/')[2]||'');const _qi=new URLSearchParams(_p[1]||'').get('install')==='1';page=<Detail id={_id} nav={nav} favs={favs} toggle={toggle} selStore={selStore} expMode={expMode} setDetailApp={setDetailApp} autoInstall={_qi} onToggleTheme={toggleTheme} isDark={isDarkNow}></Detail>}
   else if(route==='/favorites')page=<Favs favs={favs} songFavs={songFavs} open={open} toggle={toggle} toggleSongFav={toggleSongFav} play={playFromList}></Favs>;
   else if(route==='/downloads')page=<DownloadsManager open={open}></DownloadsManager>;
@@ -3234,7 +3328,7 @@ function App(){
         ))}
       </AccPick>
       <main id="app-scroll" className="app-main max-w-screen-2xl mx-auto w-full">
-        {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||isDetail)&&<TopNav nav={nav} isDetail={isDetail} onOpenAccount={()=>setAccOpen(true)} route={route} photo={profile&&profile.photo}></TopNav>}
+        {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||isDetail||route.startsWith('/search'))&&<TopNav nav={nav} isDetail={isDetail} onOpenAccount={()=>setAccOpen(true)} route={route} photo={profile&&profile.photo}></TopNav>}
         <div className="app-scroll-fill">{page}</div>
       </main>
       {!hideMini&&<MiniPlayer track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onClose={closeP} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onOpen={()=>nav('/now-playing')} isFav={isSongFav} onFav={toggleSongFav}/>}
