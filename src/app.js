@@ -1026,7 +1026,7 @@ const NavIcon = ({ kind, on, className = "w-6 h-6" }) => {
     return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 960 960" }, /* @__PURE__ */ React.createElement("path", { d: "M182,760q-51,0 -79,-35.5T82,638l42,-300q9,-60 53.5,-99T282,200h396q60,0 104.5,39t53.5,99l42,300q7,51 -21,86.5T778,760q-21,0 -39,-7.5T706,730l-90,-90L344,640l-90,90q-15,15 -33,22.5t-39,7.5ZM680,520q17,0 28.5,-11.5T720,480q0,-17 -11.5,-28.5T680,440q-17,0 -28.5,11.5T640,480q0,17 11.5,28.5T680,520ZM600,400q17,0 28.5,-11.5T640,360q0,-17 -11.5,-28.5T600,320q-17,0 -28.5,11.5T560,360q0,17 11.5,28.5T600,400ZM310,520h60v-70h70v-60h-70v-70h-60v70h-70v60h70v70Z", fill: "currentColor" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 -960 960 960" }, /* @__PURE__ */ React.createElement("path", { d: "M182-200q-51 0-79-35.5T82-322l42-300q9-60 53.5-99T282-760h396q60 0 104.5 39t53.5 99l42 300q7 51-21 86.5T778-200q-21 0-39-7.5T706-230l-90-90H344l-90 90q-15 15-33 22.5t-39 7.5Zm16-86 114-114h336l114 114q2 2 16 6 11 0 17.5-6.5T800-304l-44-308q-4-29-26-48.5T678-680H282q-30 0-52 19.5T204-612l-44 308q-2 11 4.5 17.5T182-280q2 0 16-6Zm510.5-165.5Q720-463 720-480t-11.5-28.5Q697-520 680-520t-28.5 11.5Q640-497 640-480t11.5 28.5Q663-440 680-440t28.5-11.5Zm-80-120Q640-583 640-600t-11.5-28.5Q617-640 600-640t-28.5 11.5Q560-617 560-600t11.5 28.5Q583-560 600-560t28.5-11.5ZM310-440h60v-70h70v-60h-70v-70h-60v70h-70v60h70v70Zm170-40Z", fill: "currentColor" }));
   }
   if (kind === "home") {
-    return /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("rect", { className: "cube c1", x: "3", y: "3", width: "7.2", height: "7.2", rx: "1.7", fill: on ? "currentColor" : "none", stroke: "currentColor", strokeWidth: on ? 0 : 1.7 }), /* @__PURE__ */ React.createElement("rect", { className: "cube c2", x: "13.8", y: "3", width: "7.2", height: "7.2", rx: "1.7", fill: on ? "currentColor" : "none", stroke: "currentColor", strokeWidth: on ? 0 : 1.7 }), /* @__PURE__ */ React.createElement("rect", { className: "cube c3", x: "3", y: "13.8", width: "7.2", height: "7.2", rx: "1.7", fill: on ? "currentColor" : "none", stroke: "currentColor", strokeWidth: on ? 0 : 1.7 }), /* @__PURE__ */ React.createElement("rect", { className: "cube c4", x: "13.8", y: "13.8", width: "7.2", height: "7.2", rx: "1.7", fill: on ? "currentColor" : "none", stroke: "currentColor", strokeWidth: on ? 0 : 1.7 }));
+    return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm9 0h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0-9h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2z", fill: "currentColor" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3H6zm9-2h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3h-3zm0-11h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6h-3zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6H6z", fill: "currentColor" }));
   }
   if (kind === "heart") {
     return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M3,5C3,2.791 4.791,1 7,1H17C19.209,1 21,2.791 21,5V20C21,22.472 18.178,23.883 16.2,22.4L12,19.25L7.8,22.4C5.822,23.883 3,22.472 3,20V5Z", fill: "currentColor" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M11.539,17.112C11.876,16.937 12.288,16.967 12.6,17.2L17.4,20.8C18.06,21.294 19,20.824 19,20V5C19,3.895 18.105,3 17,3H7C5.895,3 5,3.895 5,5V20C5,20.824 5.94,21.294 6.6,20.8L11.4,17.2L11.539,17.112ZM21,20C21,22.472 18.178,23.883 16.2,22.4L12,19.249L7.8,22.4C5.822,23.883 3,22.472 3,20V5C3,2.791 4.791,1 7,1H17C19.209,1 21,2.791 21,5V20Z", fill: "currentColor" }));
@@ -1038,29 +1038,22 @@ const NavIcon = ({ kind, on, className = "w-6 h-6" }) => {
 };
 const BottomNav = ({ route, nav }) => {
   const items = [
-    { k: "nav_games", p: "/games", i: "game", anim: "game" },
-    { k: "nav_apps", p: "/", i: "home", root: true, anim: "apps" },
-    { k: "nav_search", p: "/search", i: "search", anim: "search" },
-    { k: "nav_library", p: "/favorites", i: "heart", anim: "lib" },
-    { k: "nav_music", p: "/music", i: "head", anim: "music" }
+    { k: "nav_games", p: "/games", i: "game" },
+    { k: "nav_apps", p: "/", i: "home", root: true },
+    { k: "nav_search", p: "/search", i: "search" },
+    { k: "nav_library", p: "/favorites", i: "heart" },
+    { k: "nav_music", p: "/music", i: "head" }
   ];
-  const [pulse, setPulse] = useState(0);
-  const [bumped, setBumped] = useState("");
   return /* @__PURE__ */ React.createElement("nav", { className: "app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden" }, /* @__PURE__ */ React.createElement("div", { className: "flex justify-around items-center h-16 px-2" }, items.map((it) => {
     const a = it.root ? route === "/" : route.startsWith(it.p);
-    const play = a && bumped === it.k;
     return /* @__PURE__ */ React.createElement(
       "button",
       {
         key: it.k,
-        onClick: () => {
-          setBumped(it.k);
-          setPulse((n) => n + 1);
-          nav(it.p);
-        },
+        onClick: () => nav(it.p),
         className: `flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${a ? "text-primary nav-ico-on" : "text-muted-foreground hover:text-foreground"}`
       },
-      /* @__PURE__ */ React.createElement("div", { key: play ? it.k + "-" + pulse : it.k, className: `nav-ico nav-anim-${it.anim} ${play ? "play" : ""} flex items-center justify-center rounded-full transition-all duration-200 ${a ? "nav-pill-on bg-primary/10 w-14 h-8" : "w-8 h-8"}` }, /* @__PURE__ */ React.createElement(NavIcon, { kind: it.i, on: !!a, className: "w-6 h-6" })),
+      /* @__PURE__ */ React.createElement("div", { className: `flex items-center justify-center rounded-full transition-all duration-200 ${a ? "nav-pill-on bg-primary/10 w-14 h-8" : "w-8 h-8"}` }, /* @__PURE__ */ React.createElement(NavIcon, { kind: it.i, on: !!a, className: "w-6 h-6" })),
       /* @__PURE__ */ React.createElement("span", { className: "text-[10px] font-medium" }, t(it.k))
     );
   })));

@@ -670,13 +670,10 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
     );
   }
   if(kind==='home'){
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" aria-hidden="true">
-        <rect className="cube c1" x="3" y="3" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
-        <rect className="cube c2" x="13.8" y="3" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
-        <rect className="cube c3" x="3" y="13.8" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
-        <rect className="cube c4" x="13.8" y="13.8" width="7.2" height="7.2" rx="1.7" fill={on?'currentColor':'none'} stroke="currentColor" strokeWidth={on?0:1.7}></rect>
-      </svg>
+    return on?(
+      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm9 0h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0-9h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2z" fill="currentColor"></path></svg>
+    ):(
+      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M6 13h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3H6zm9-2h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2v-3c0-1.1 0.9-2 2-2zm0 2v3h3v-3h-3zm0-11h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2h-3c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6h-3zM6 4h3c1.1 0 2 0.9 2 2v3c0 1.1-0.9 2-2 2H6c-1.1 0-2-0.9-2-2V6c0-1.1 0.9-2 2-2zm0 2v3h3V6H6z" fill="currentColor"></path></svg>
     );
   }
   if(kind==='heart'){
@@ -698,24 +695,21 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
 
 const BottomNav=({route,nav})=>{
   const items=[
-    {k:'nav_games',p:'/games',i:'game',anim:'game'},
-    {k:'nav_apps',p:'/',i:'home',root:true,anim:'apps'},
-    {k:'nav_search',p:'/search',i:'search',anim:'search'},
-    {k:'nav_library',p:'/favorites',i:'heart',anim:'lib'},
-    {k:'nav_music',p:'/music',i:'head',anim:'music'}
+    {k:'nav_games',p:'/games',i:'game'},
+    {k:'nav_apps',p:'/',i:'home',root:true},
+    {k:'nav_search',p:'/search',i:'search'},
+    {k:'nav_library',p:'/favorites',i:'heart'},
+    {k:'nav_music',p:'/music',i:'head'}
   ];
-  const[pulse,setPulse]=useState(0);
-  const[bumped,setBumped]=useState('');
   return(
     <nav className="app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden">
       <div className="flex justify-around items-center h-16 px-2">
         {items.map(it=>{
           const a=it.root ? route==='/' : route.startsWith(it.p);
-          const play=a&&bumped===it.k;
           return (
-            <button key={it.k} onClick={()=>{setBumped(it.k);setPulse(n=>n+1);nav(it.p)}}
+            <button key={it.k} onClick={()=>nav(it.p)}
               className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${a?'text-primary nav-ico-on':'text-muted-foreground hover:text-foreground'}`}>
-              <div key={play?it.k+'-'+pulse:it.k} className={`nav-ico nav-anim-${it.anim} ${play?'play':''} flex items-center justify-center rounded-full transition-all duration-200 ${a?'nav-pill-on bg-primary/10 w-14 h-8':'w-8 h-8'}`}>
+              <div className={`flex items-center justify-center rounded-full transition-all duration-200 ${a?'nav-pill-on bg-primary/10 w-14 h-8':'w-8 h-8'}`}>
                 <NavIcon kind={it.i} on={!!a} className="w-6 h-6"></NavIcon>
               </div>
               <span className="text-[10px] font-medium">{t(it.k)}</span>
