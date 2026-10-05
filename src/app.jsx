@@ -854,9 +854,11 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
             return(
               <div className="promo-slide" key={'promo-'+app.trackId+'-'+i}>
                 <div className="promo-ghost">
-                  <button type="button" className="promo-banner-wrap" onClick={()=>open(app)} style={{border:0,padding:0,width:'100%',background:'transparent',cursor:'pointer'}}>
-                    <img className="promo-shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
-                    <span className="promo-caption">{(app.description||app.artistName||'').replace(/\s+/g,' ').slice(0,72)}</span>
+                  <button type="button" className="promo-banner-wrap" onClick={()=>open(app)}>
+                    <span className="promo-banner-clip">
+                      <img className="promo-shot" src={shot} alt="" loading={i===0?'eager':'lazy'}/>
+                      <span className="promo-caption">{(app.description||app.artistName||'').replace(/\s+/g,' ').slice(0,72)}</span>
+                    </span>
                   </button>
                   <div className="promo-foot" dir={_lang==='ar'?'rtl':'ltr'}>
                     <img className="promo-icon" src={icon} alt="" onClick={()=>open(app)} style={{cursor:'pointer'}}/>
