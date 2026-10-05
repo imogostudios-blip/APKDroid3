@@ -432,47 +432,27 @@ const Stars=({r=0,s='w-3 h-3'})=>(
   <div className="flex gap-0.5 text-amber-400">{[1,2,3,4,5].map(i=><Icon key={i} name="star" className={`${s} ${i<=Math.round(r)?'fill-current':'opacity-30'}`}></Icon>)}</div>
 );
 
-const M3Spin=({size=18})=> (
-  <svg className="m3-spin" width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
-    <g className="m3-container"><circle className="m3-track" cx="24" cy="24" r="18"></circle></g>
-  </svg>
-);
-const GridPulse=({size=42})=> (
-  <svg className="grid-pulse" width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
-    <rect className="grid-dot d-1" x="20" y="20" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-2" x="42" y="20" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-3" x="64" y="20" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-2" x="20" y="42" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-3" x="42" y="42" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-4" x="64" y="42" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-3" x="20" y="64" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-4" x="42" y="64" width="16" height="16" rx="4"></rect>
-    <rect className="grid-dot d-5" x="64" y="64" width="16" height="16" rx="4"></rect>
-  </svg>
-);
-const PhImg=({src, kind='icon', className='', imgClass='', alt='', eager, onClick})=>{
-  const [on,setOn]=useState(false);
-  useEffect(()=>{setOn(false)},[src]);
-  const done=()=>setOn(true);
-  const spinSize=kind==='banner'?28:kind==='ad'?40:16;
+const SVG_M3_SPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%"><g class="apk-m3-container"><circle class="apk-m3-track" cx="24" cy="24" r="18"></circle></g></svg>`;
+const SVG_AD_DOTS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%"><rect class="apk-grid-dot d-1" x="20" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-2" x="42" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="64" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-2" x="20" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="42" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-4" x="64" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="20" y="64" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-4" x="42" y="64" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-5" x="64" y="64" width="16" height="16" rx="4"></rect></svg>`;
+const MediaSpin=({kind})=> <span className={kind==='dots'?'media-spin media-dots':'media-spin media-ring'} aria-hidden="true" dangerouslySetInnerHTML={{__html:kind==='dots'?SVG_AD_DOTS:SVG_M3_SPIN}}></span>;
+const SmartImg=({src,alt='',className='',kind='icon',eager,onClick})=>{
+  const [on,setOn]=useState(!src);
+  useEffect(()=>{setOn(!src)},[src]);
   return (
-    <span className={`ph-wrap ph-${kind} ${on?'ready':''} ${className}`} onClick={onClick}>
-      {!on&&<span className="ph-shimmer"></span>}
-      {!on&&<span className="ph-ind">{kind==='ad'?<GridPulse size={spinSize}></GridPulse>:<M3Spin size={spinSize}></M3Spin>}</span>}
-      {src?<img src={src} alt={alt||''} className={imgClass} loading={eager?'eager':'lazy'} onLoad={done} onError={done}/>:null}
+    <span className={`media-box media-${kind} ${on?'is-on':'is-wait'} ${className||''}`} onClick={onClick}>
+      {!on&&<span className="media-shimmer"></span>}
+      {!on&&<MediaSpin kind={kind==='ad'?'dots':'ring'}></MediaSpin>}
+      <img src={src||BLANK_PX} alt={alt} className="media-img" loading={eager?'eager':'lazy'} onLoad={()=>setOn(true)} onError={()=>setOn(true)}/>
     </span>
   );
 };
-
-let _navMoved=false;
-window.addEventListener('hashchange',()=>{_navMoved=true});
 const AppCard=({app,onClick,small})=>{
   if(!app)return null;
   const img=app.artworkUrl100||app.artworkUrl60;
   if(small){
     return(
       <button onClick={()=>onClick(app)} className="flex flex-col w-[120px] shrink-0 text-left group">
-        <PhImg src={img} kind="icon" className="w-[120px] h-[120px] rounded-[24px] shadow-sm border border-[hsl(var(--border))]" imgClass="w-full h-full object-cover rounded-[24px]"/>
+        <SmartImg src={img} kind="icon" className="w-[120px] h-[120px] rounded-[24px] object-cover shadow-sm border border-[hsl(var(--border))] bg-muted group-hover:shadow-md transition-all"/>
         <div className="mt-2 flex flex-col">
           <h3 className="font-medium text-[13px] leading-tight line-clamp-2">{app.trackName}</h3>
           <p className="text-[11px] text-muted-foreground truncate mt-0.5">{app.primaryGenreName||app.artistName}</p>
@@ -482,7 +462,7 @@ const AppCard=({app,onClick,small})=>{
   }
   return(
     <button onClick={()=>onClick(app)} className="flex items-center gap-3 w-full p-3 hover:bg-[hsl(var(--muted))]/50 rounded-xl text-left transition">
-      <PhImg src={img} kind="icon" className="w-14 h-14 rounded-2xl shadow-sm border border-[hsl(var(--border))]" imgClass="w-full h-full object-cover rounded-2xl"/>
+      <SmartImg src={img} kind="icon" className="w-14 h-14 rounded-2xl bg-muted shadow-sm object-cover border border-[hsl(var(--border))]"/>
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate text-sm">{app.trackName}</p>
         <p className="text-muted-foreground truncate text-xs">{app.artistName}</p>
@@ -506,6 +486,9 @@ const HScroll=({title,children,onSeeAll,ltr,rtl,pad,free})=>(
 );
 
 const Skel=({c})=><div className={`animate-pulse bg-muted rounded-2xl ${c}`}></div>;
+
+let _navMoved=false;
+window.addEventListener('hashchange',()=>{_navMoved=true});
 const useHash=()=>{
   const [r,setR]=useState(()=>location.hash.slice(1)||'/');
   useEffect(()=>{const f=()=>setR(location.hash.slice(1)||'/');window.addEventListener('hashchange',f);return()=>window.removeEventListener('hashchange',f)},[]);
@@ -775,11 +758,11 @@ const GameShotCard=({app,onClick})=>{
   return(
     <button type="button" className="g-shot-card" onClick={()=>onClick(app)}>
       <div className="g-shot-wrap">
-        <PhImg src={shot} kind="banner" className="g-shot-ph" imgClass="shot"/>
+        <SmartImg className="shot" kind="banner" src={shot}/>
         <div className="g-shot-grad"></div>
       </div>
       <div className="g-shot-meta">
-        <PhImg src={icon} kind="icon" className="g-shot-icon" imgClass="g-shot-icon-img"/>
+        <SmartImg className="g-shot-icon" kind="icon" src={icon}/>
         <span className="g-shot-name">{app.trackName}</span>
       </div>
     </button>
@@ -887,12 +870,12 @@ const PromoCarousel=({apps,open,openInstall,auto})=>{
                 <div className="promo-ghost">
                   <button type="button" className="promo-banner-wrap" onClick={()=>open(app)}>
                     <span className="promo-banner-clip">
-                      <PhImg src={shot} kind="ad" eager={i===0} className="promo-shot-ph" imgClass="promo-shot"/>
+                      <SmartImg className="promo-shot" kind="ad" src={shot} eager={i===0}/>
                       <span className="promo-caption">{(app.description||app.artistName||'').replace(/\s+/g,' ').slice(0,72)}</span>
                     </span>
                   </button>
                   <div className="promo-foot" dir={_lang==='ar'?'rtl':'ltr'}>
-                    <PhImg src={icon} kind="icon" className="promo-icon" imgClass="promo-icon-img" onClick={()=>open(app)}/>
+                    <SmartImg className="promo-icon" kind="icon" src={icon} onClick={()=>open(app)}/>
                     <button type="button" className="promo-meta" onClick={()=>open(app)} style={{border:0,background:'transparent',color:'inherit',fontFamily:'inherit',cursor:'pointer'}}>
                       <div className="promo-name">{app.trackName}</div>
                       <div className="promo-sub">{app.artistName||''}</div>
@@ -928,7 +911,7 @@ const StackedAppsPager=({frames,open,title})=>{
             <div className="stack-card">
               {group.map(app=>(
                 <button type="button" className="stack-row" key={app.trackId} onClick={()=>open(app)} dir={_lang==='ar'?'rtl':'ltr'}>
-                  <PhImg src={app.artworkUrl100||app.artworkUrl60} kind="icon" className="stack-row-icon" imgClass="stack-row-icon-img"/>
+                  <SmartImg className="stack-row-icon" kind="icon" src={app.artworkUrl100||app.artworkUrl60}/>
                   <div className="stack-row-body">
                     <div className="stack-row-name">{app.trackName}</div>
                     <div className="stack-row-sub">{[app.primaryGenreName,app.artistName].filter(Boolean).slice(0,2).join(' • ')}</div>
@@ -982,6 +965,33 @@ const sendNetNotice = () => {
   } catch {}
   done();
 };
+const probeOnline=()=>new Promise(resolve=>{
+  if(typeof navigator!=='undefined'&&navigator.onLine===false){resolve(false);return}
+  let done=false;
+  const finish=v=>{if(done)return;done=true;resolve(!!v)};
+  const timer=setTimeout(()=>finish(false),2800);
+  try{
+    fetch('https://www.gstatic.com/generate_204',{method:'GET',mode:'no-cors',cache:'no-store'}).then(()=>{clearTimeout(timer);finish(true)}).catch(()=>{clearTimeout(timer);finish(false)});
+  }catch(e){clearTimeout(timer);finish(false)}
+});
+const OfflineSheet=({onRetry,onCancel})=> (
+  <div className="off-sheet-mask" role="dialog" aria-modal="true">
+    <div className="off-sheet">
+      <div className="off-sheet-ico" aria-hidden="true">
+        <span className="off-wifi">
+          <svg viewBox="0 0 24 24" width="28" height="28"><path fill="#fff" d="M1 9l2 2c2.88-2.88 6.79-4.08 10.53-3.62l1.19-1.19C9.89 5.15 4.86 6.16 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c1.42-1.42 3.28-2.08 5.12-1.96l1.47-1.47C10.54 11.18 7.36 11.72 5 13z"></path></svg>
+        </span>
+        <span className="off-face">🤔</span>
+      </div>
+      <h3>{_lang==='ar'?'أنت غير متصل بالإنترنت':'You are offline'}</h3>
+      <p>{_lang==='ar'?'بعض الميزات غير متوفرة.':'Some features are unavailable.'}</p>
+      <div className="off-sheet-actions">
+        <button type="button" className="off-btn off-btn-go" onClick={onRetry}>{_lang==='ar'?'إعادة المحاولة':'Retry'}</button>
+        <button type="button" className="off-btn off-btn-no" onClick={onCancel}>{_lang==='ar'?'إلغاء':'Cancel'}</button>
+      </div>
+    </div>
+  </div>
+);
 const NetOffline = ({onRetry}) => (
   <div className="net-off net-in" role="alert">
     <div className="net-off-block">
@@ -1176,7 +1186,7 @@ const Games=({open})=>{
         if(has){got=true;setTimedOut(false);clearTimeout(timer)}
         setRows(prev=>{
           const n=prev.slice();
-          batch.forEach((idx,j)=>{n[idx]=dropSeen('apk_seen_games',pickSlice((results[j]||[]).filter(a=>a&&isGameApp(a)),12,seed+idx))});
+          batch.forEach((idx,j)=>{n[idx]=dropSeen('apk_seen_games',pickSlice((results[j]||[]).filter(isGameApp),12,seed+idx))});
           rememberIds('apk_seen_games',n.flat());
           if(n.some(r=>r&&r.length))gamesRowsCache=n.map(r=>(r||[]).slice());
           return n;
@@ -1202,8 +1212,8 @@ const Games=({open})=>{
         return(
           <HScroll key={sec.k} title={t(sec.k)} rtl pad="px-5 g-shot-row">
             {waiting||!list.length
-              ?Array(3).fill(0).map((_,j)=><div key={j} className="shrink-0 g-shot-ph ph-wait" style={{width:'min(88vw,420px)',aspectRatio:'16/9',borderRadius:16}}><M3Spin size={28}></M3Spin></div>)
-              :list.map(a=><GameShotCard key={a.trackId+'-'+sec.k} app={a} onClick={open}></GameShotCard>)
+              ?Array(3).fill(0).map((_,j)=><div key={j} className="g-shot-skel shrink-0 bg-muted animate-pulse"><MediaSpin kind="ring"></MediaSpin></div>)
+              :list.filter(isGameApp).map(a=><GameShotCard key={a.trackId+'-'+sec.k} app={a} onClick={open}></GameShotCard>)
             }
           </HScroll>
         );
@@ -1232,50 +1242,29 @@ const PLAY_APP_CATS=[
   {ar:'موسيقى',en:'Music',term:'music',icon:'note',color:'#FF7043'},
   {ar:'تسوق',en:'Shopping',term:'shopping',icon:'bag',color:'#26C6DA'},
 ];
-
-const MAT_PATH={
-  heli:'M21.58 16.09l-1.09-7.66C20.21 6.46 18.52 5 16.53 5H7.47C5.48 5 3.79 6.46 3.51 8.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.56 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z',
-  sim:'M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7.5 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S9.83 13 9 13s-1.5-.67-1.5-1.5zM16 17H8v-2h8v2zm-1-4c-.83 0-1.5-.67-1.5-1.5S14.17 10 15 10s1.5.67 1.5 1.5S15.83 13 15 13z',
-  puzzle:'M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z',
-  compass:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z',
-  flag:'M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z',
-  swords:'M6.92 5L8 6.07l-2.12 2.12-1.06-1.06L6.92 5zM14 11.17l1.41 1.42L20.83 7.17 19.41 5.76 14 11.17zM3.27 20.73l6.36-6.36 1.41 1.41-6.36 6.36-1.41-1.41zM16.24 4.59l1.41 1.41-5.66 5.66-1.41-1.41 5.66-5.66zM19.07 2.93l2 2-1.41 1.41-2-2 1.41-1.41zM4.93 19.07l2 2-1.41 1.41-2-2 1.41-1.41zM11.17 14l1.42 1.41-5.66 5.66-1.41-1.41L11.17 14z',
-  sflag:'M21 9V7l-2-2V3h-2v2l-2 2v2h-2V3h-2v6H9V3H7v2L5 7v2H3v12h8v-4h2v4h8V9h-2zm-10 8H9v-2h2v2zm6 0h-2v-2h2v2z',
-  tennis:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 3.3l1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7V5.3zM7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.12.01-.23.02-.35l1-.73 1.38.48 1.46 4.34-.78 1.37zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.1-.7 1.49zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54L14.27 15z',
-  cards:'M2.53 19.65l1.34.56v-9.03l-2.43 5.86c-.41 1.02.08 2.19 1.09 2.61zm19.5-3.7L17.07 3.98c-.31-.75-1.04-1.21-1.81-1.23-.26 0-.53.04-.79.15L7.1 5.95c-.75.31-1.21 1.03-1.23 1.8-.01.27.04.54.15.8l4.96 11.97c.31.76 1.05 1.22 1.83 1.23.26 0 .52-.05.77-.15l7.36-3.05c1.02-.42 1.51-1.59 1.09-2.6zM7.88 8.75c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z',
-  rook:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z',
-  clapper:'M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z',
-  people:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
-  tools:'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z',
-  camera:'M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z',
-  note:'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z',
-  bag:'M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z'
-};
-const MatIco=({name})=> (
-  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
-    <path fill="currentColor" d={MAT_PATH[name]||MAT_PATH.puzzle}></path>
-  </svg>
-);
 const playCatLabel=c=>_lang==='ar'?c.ar:c.en;
 const PlayGlyph=({icon,color})=>{
   const f=color||'currentColor';
-  if(icon==='heli')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M3 10h9.2l1.4-2.2H20v2.1h-3.2L15.4 12H20a2 2 0 010 4h-5.2l-1.6 2.4H8.2L6.6 16H3v-2h2.4L6.6 12H3v-2zm8.2 0L9.6 12h3.6l1.6-2h-3.6z"/><circle cx="18.2" cy="7.2" r="1.1" fill={f}/></svg>;
-  if(icon==='sim')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 14h16v3H4z"/><path fill={f} d="M6 11h12l-1.2-4H7.2z"/><path fill={f} d="M8 8h2.2L9 5H7zM14 8h2.2L17 5h-2z"/></svg>;
-  if(icon==='puzzle')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 3h5a2 2 0 012 2v1.2a2.2 2.2 0 010 4.1V13H8.7a2.2 2.2 0 01-4.2 0H3V5a2 2 0 012-2h3z"/></svg>;
-  if(icon==='compass')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="8" fill="none" stroke={f} strokeWidth="2"/><path fill={f} d="M14.8 9.2l-1.2 4.4-4.4 1.2 1.2-4.4z"/></svg>;
-  if(icon==='flag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h10l-1.4 3L18 10H8z"/><path fill="#fff" d="M9.2 5.2h1.2v1.2H9.2zm2.4 0h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2zM10.4 6.6h1.2v1.2h-1.2zm2.4 0h1.2v1.2h-1.2z"/></svg>;
-  if(icon==='swords')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14.5 3l2 2-6.2 6.2-2-2zM7.2 12.3l2 2L4 19.5 3 21l1.5-1 5.2-5.2zM9.5 3L7.5 5l6.2 6.2 2-2zM16.8 12.3l-2 2L20 19.5 21 21l-1.5-1-5.2-5.2z"/></svg>;
-  if(icon==='sflag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 3h2v18H6z"/><path fill={f} d="M8 4h11l-2.2 3.2L19 11H8z"/></svg>;
-  if(icon==='tennis')return <svg viewBox="0 0 24 24" width="28" height="28"><ellipse cx="12" cy="13" rx="6" ry="7" fill="none" stroke={f} strokeWidth="2"/><path d="M8 7c2 2 2 8 0 12M16 7c-2 2-2 8 0 12" fill="none" stroke={f} strokeWidth="1.6"/><path d="M12 4v3" stroke={f} strokeWidth="2"/></svg>;
-  if(icon==='cards')return <svg viewBox="0 0 24 24" width="28" height="28"><rect x="7" y="4" width="11" height="15" rx="2" fill={f}/><rect x="4" y="7" width="11" height="14" rx="2" fill="#F8BBD0" stroke={f} strokeWidth="1.2"/></svg>;
-  if(icon==='rook')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M7 20h10v-2H7zm1-3h8l1-8H7zm1-9h6V5h-1.4V3h-1.2v2h-1.2V3H9.6v2H8z"/></svg>;
-  if(icon==='clapper')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M4 8h16v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path fill={f} d="M4 8l2.2-4h3L7 8zm4.2 0l2.2-4h3L11.2 8zm4.4 0l2.2-4H18l-2.2 4z"/></svg>;
-  if(icon==='people')return <svg viewBox="0 0 24 24" width="28" height="28"><circle cx="9" cy="8" r="2.4" fill={f}/><circle cx="16" cy="9" r="2" fill={f}/><path fill={f} d="M4 18c.4-2.6 2.4-4 5-4s4.6 1.4 5 4zm8.2-3.2c1.6.2 3 .9 3.6 3.2H20c-.3-2.2-1.8-3.6-4-4-.9 0-1.7.1-2.4.4z"/></svg>;
-  if(icon==='tools')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M14 4a4 4 0 00-3.6 5.6L4 16.1 7.9 20l6.5-6.4A4 4 0 0014 4zm0 2.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"/></svg>;
-  if(icon==='camera')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M8 6l1.4-2h5.2L16 6h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/><circle cx="12" cy="13" r="3.2" fill="#E3F2FD"/></svg>;
-  if(icon==='note')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M9 4h2v9.2a3 3 0 11-2-2.8V4zm6 2h2v7.2a3 3 0 11-2-2.8V6z"/></svg>;
-  if(icon==='bag')return <svg viewBox="0 0 24 24" width="28" height="28"><path fill={f} d="M6 8h12l-1 12H7z"/><path d="M9 8V7a3 3 0 016 0v1" fill="none" stroke="#fff" strokeWidth="1.6"/></svg>;
-  return null;
+  const I=d=> <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill={f} d={d}></path></svg>;
+  const paths={
+    heli:'M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z',
+    sim:'M18.25 7.6l-5.5-3.18c-.46-.27-1.04-.27-1.5 0L5.75 7.6c-.46.27-.75.76-.75 1.3v6.35c0 .54.29 1.03.75 1.3l5.5 3.18c.46.27 1.04.27 1.5 0l5.5-3.18c.46-.27.75-.76.75-1.3V8.9c0-.54-.29-1.03-.75-1.3zM7 14.96v-4.62l4 2.32v4.61l-4-2.31zm5-4.03L8 8.61l4-2.31 4 2.31-4 2.32zm1 6.34v-4.61l4-2.32v4.62l-4 2.31z',
+    puzzle:'M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z',
+    compass:'M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z',
+    flag:'M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z',
+    swords:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z',
+    sflag:'M17 10.43V2H7v8.43c0 .35.18.68.49.86l4.18 2.51-.99 2.34-3.41-.29 2.59 2.24L9.07 22 12 20.23 14.93 22l-.78-3.91 2.59-2.24-3.41.29-.99-2.34 4.18-2.51c.3-.18.48-.5.48-.86zM13 12.23l-1 .6-1-.6V3h2v9.23z',
+    tennis:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 3.3l1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7V5.3zm-3.35.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.57 2.56-2.77 4.38-3.34zM7.08 17.11l-1.14.1A7.94 7.94 0 014 12c0-.12.01-.23.01-.35l1-.73 1.38.48 1.46 4.34-.77 1.37zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.11-.7 1.48zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54L14.27 15zm3.79 2.21l-.77-1.37 1.46-4.34 1.38-.48 1 .73c.01.11.01.23.01.35 0 1.99-.73 3.81-1.94 5.21l-1.14-.1z',
+    cards:'M2.53 19.65l1.34.56v-9.03l-2.43 5.86c-.41 1.02.08 2.19 1.09 2.61zm19.5-3.7L17.07 3.98c-.31-.75-1.04-1.21-1.81-1.23-.26 0-.53.04-.79.15L7.1 5.95c-.75.31-1.21 1.03-1.23 1.8-.01.27.04.54.15.8l4.96 11.97c.31.76 1.05 1.22 1.83 1.23.26 0 .52-.05.77-.15l7.36-3.05c1.02-.42 1.51-1.59 1.09-2.6zM7.88 8.75c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-2 11c0 1.1.9 2 2 2h1.45l-3.45-8.34v6.34z',
+    rook:'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',
+    clapper:'M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z',
+    people:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+    tools:'M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z',
+    camera:'M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z',
+    note:'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z',
+    bag:'M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z'
+  };
+  return paths[icon]?I(paths[icon]):null;
 };
 const fmtCount=n=>{
   n=Number(n)||0;
@@ -1291,7 +1280,7 @@ const SearchAdRow=({app,onOpen})=>{
   const count=fmtCount(app.userRatingCount);
   return (
     <button type="button" className="ps-ad-row" onClick={()=>onOpen(app)}>
-      <PhImg src={app.artworkUrl100||app.artworkUrl60||''} kind="ad" className="ps-ad-icon" imgClass="ps-ad-icon-img"/>
+      <SmartImg src={app.artworkUrl100||app.artworkUrl60||''} kind="icon" className="ps-ad-icon"/>
       <span className="ps-ad-mid">
         <span className="ps-ad-name">{app.trackName}</span>
         <span className="ps-ad-dev">{app.artistName||''}</span>
@@ -1305,8 +1294,6 @@ const SearchAdRow=({app,onOpen})=>{
 };
 const Search=({nav,open,initQ,photo,onOpenAccount})=>{
   const[q,setQ]=useState(initQ||'');
-  const recRef=useRef(null);
-  const [listening,setListening]=useState(false);
   const[res,setRes]=useState([]);
   const[ld,setLd]=useState(false);
   const[hist,setHist]=useState(()=>getS('apk_search_history',[]));
@@ -1314,40 +1301,9 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
   const[submitted,setSubmitted]=useState(!!(initQ&&String(initQ).trim()));
   const[suggest,setSuggest]=useState([]);
   const[ads,setAds]=useState([]);
+  const[hearing,setHearing]=useState(false);
   const ref=useRef(null);
-  const startMic=()=>{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    setPanel(true);
-    if(!SR){
-      setTimeout(()=>{try{ref.current&&ref.current.focus()}catch(e){}}, 40);
-      return;
-    }
-    try{if(recRef.current)recRef.current.stop()}catch(e){}
-    const rec=new SR();
-    rec.lang=_lang==='ar'?'ar-SA':'en-US';
-    rec.interimResults=true;
-    rec.continuous=false;
-    rec.onresult=(ev)=>{
-      let text='';
-      for(let i=0;i<ev.results.length;i++) text+=ev.results[i][0].transcript;
-      setQ(text);
-      const last=ev.results[ev.results.length-1];
-      if(last&&last.isFinal){
-        const v=text.trim();
-        if(v){
-          pushSearchHist(v,'apps');
-          setHist(getS('apk_search_history',[]));
-          setSubmitted(true);
-          setSuggest([]);
-        }
-      }
-    };
-    rec.onerror=()=>setListening(false);
-    rec.onend=()=>setListening(false);
-    recRef.current=rec;
-    setListening(true);
-    try{rec.start()}catch(e){setListening(false)}
-  };
+  const recRef=useRef(null);
   useEffect(()=>{
     let cancel=false;
     api.search('best apps',12).then(list=>{if(!cancel)setAds((list||[]).slice(0,8))}).catch(()=>{});
@@ -1400,6 +1356,35 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
     setSuggest([]);
     try{ref.current&&ref.current.blur()}catch(e){}
   };
+  const startVoice=e=>{
+    if(e&&e.stopPropagation)e.stopPropagation();
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    setPanel(true);
+    setSubmitted(false);
+    if(!SR){
+      try{ if(window.__apkToast) window.__apkToast(_lang==='ar'?'التعرف على الصوت غير متاح في هذا المتصفح':'Voice search is not available in this browser'); }catch(err){}
+      setTimeout(()=>{try{ref.current&&ref.current.focus()}catch(err){}},40);
+      return;
+    }
+    try{ if(recRef.current) recRef.current.abort(); }catch(err){}
+    const rec=new SR();
+    recRef.current=rec;
+    rec.lang=_lang==='ar'?'ar-SA':'en-US';
+    rec.interimResults=true;
+    rec.maxAlternatives=1;
+    rec.onstart=()=>setHearing(true);
+    rec.onend=()=>setHearing(false);
+    rec.onerror=()=>setHearing(false);
+    rec.onresult=ev=>{
+      let said='';
+      for(let i=0;i<ev.results.length;i++) said+=ev.results[i][0].transcript;
+      said=said.trim();
+      if(!said)return;
+      setQ(said);
+      if(ev.results[ev.results.length-1].isFinal) doS(said);
+    };
+    try{ rec.start(); }catch(err){ setHearing(false); }
+  };
   const openCat=c=>nav(`/category/${encodeURIComponent(c.term)}`);
   const ar=_lang==='ar';
   const catGrid=(list,title)=>(
@@ -1408,7 +1393,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
       <div className="ps-cat-grid">
         {list.map(c=>(
           <button key={c.term} type="button" className="ps-cat" onClick={()=>openCat(c)}>
-            <span className="ps-cat-ico" style={{color:c.color}}><MatIco name={c.icon}></MatIco></span>
+            <span className="ps-cat-ico"><PlayGlyph icon={c.icon} color={c.color}></PlayGlyph></span>
             <span className="ps-cat-name">{playCatLabel(c)}</span>
           </button>
         ))}
@@ -1421,13 +1406,13 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
         <button type="button" className="ps-avatar" onClick={onOpenAccount} aria-label={t('account')}>
           {photo?<img src={photo} alt=""/>:<span>GO</span>}
         </button>
-        <button type="button" className="ps-bar" onClick={openPanel}>
-          <span className={`ps-mic-hit ${listening?'on':''}`} role="button" aria-label="mic" onClick={e=>{e.stopPropagation();startMic()}}>
+        <div className="ps-bar" onClick={openPanel} role="button" tabIndex={0}>
+          <button type="button" className={`ps-mic-in ${hearing?'on':''}`} aria-label="mic" onClick={startVoice}>
             <Icon name="mic" className="w-5 h-5"></Icon>
-          </span>
+          </button>
           <span>{t('search_placeholder')}</span>
           <Icon name="search" className="w-5 h-5"></Icon>
-        </button>
+        </div>
       </div>
       {catGrid(PLAY_GAME_CATS, ar?'استكشاف الألعاب':'Explore games')}
       <section className="ps-sec">
@@ -1436,12 +1421,16 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
           <span className="ps-dots">⋮</span>
         </div>
         <div className="ps-ad-scroller">
-          {(ads.length?ads:[]).slice(0,6).map(a=>(
+          {(ads.length?ads:[null,null,null,null]).slice(0,6).map((a,i)=>a?(
             <button key={a.trackId} type="button" className="ps-ad-card" onClick={()=>open(a)}>
-              <PhImg src={a.artworkUrl100||a.artworkUrl60||''} kind="ad" className="ps-ad-card-ph" imgClass="ps-ad-card-img"/>
+              <SmartImg kind="ad" className="ps-ad-img" src={a.artworkUrl100||a.artworkUrl60||''}/>
               <span>{a.trackName}</span>
               <em>★ {fmtRating(a.averageUserRating)}</em>
             </button>
+          ):(
+            <div key={'ad-ph-'+i} className="ps-ad-card">
+              <span className="ps-ad-ph"><MediaSpin kind="dots"></MediaSpin></span>
+            </div>
           ))}
         </div>
       </section>
@@ -1453,7 +1442,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
               <Icon name="left" className="w-5 h-5"></Icon>
             </button>
             <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={ar?'البحث عن التطبيقات والألعاب':t('search_placeholder')} className="ps-panel-input"/>
-            <button type="button" className={`ps-mic ${listening?'on':''}`} aria-label="mic" onClick={startMic}>
+            <button type="button" className={`ps-mic ${hearing?'on':''}`} aria-label="mic" onClick={startVoice}>
               <Icon name="mic" className="w-5 h-5"></Icon>
             </button>
           </div>
@@ -1844,9 +1833,9 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   const[reviews,setReviews]=useState([]);const[revLd,setRevLd]=useState(true);const[revAll,setRevAll]=useState(false);const[revAllLd,setRevAllLd]=useState(false);
   const[toastMsg,setToastMsg]=useState('');
   const[lbIdx,setLbIdx]=useState(null);
-  const[peek,setPeek]=useState(null);
-  const[peekHide,setPeekHide]=useState(false);
-  const openPeek=(src)=>{if(!src)return; setPeekHide(false); setPeek(src)};
+  const[peek,setPeek]=useState(false);
+  const[peekBare,setPeekBare]=useState(false);
+  const[peekSrc,setPeekSrc]=useState('');
   const[dlView,setDlView]=useState(()=>computeDlProgress(getDlRec(id)));
   const[reqOpen,setReqOpen]=useState(false);
   const toastT=useRef(null);
@@ -2091,33 +2080,31 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
     setShareOpen(false);
   };
 
-  const peekInfo=(
-    <div className={`peek-meta ${peekHide?'gone':''}`}>
-      <div className="peek-name">{app.trackName}</div>
-      <button type="button" className="peek-dev" onClick={()=>nav(`/search?q=${encodeURIComponent(app.artistName||'')}`)}>{app.artistName}</button>
-      <div className="peek-line">★ {rating} {ratingCount} · {fmtSize(app.fileSizeBytes)} · {app.primaryGenreName||''}</div>
-      <button type="button" className="bg-btn-install peek-install" onClick={()=>{setPeek(null); setReqOpen(true)}}>{t('install')}</button>
-    </div>
-  );
+  const openPeek=src=>{setPeekSrc(src||app.artworkUrl512||app.artworkUrl100||'');setPeekBare(false);setPeek(true)};
   return(
     <div className="pb-24 sm:pb-8">
       {peek&&(
-        <div className="peek-layer" onClick={()=>setPeek(null)}>
-          <button type="button" className="peek-eye" aria-label="hide" onClick={e=>{e.stopPropagation(); setPeekHide(v=>!v)}}>
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle>{peekHide&&<line x1="3" y1="3" x2="21" y2="21"></line>}</svg>
+        <div className={`peek-root ${peekBare?'bare':''}`} onClick={()=>setPeek(false)}>
+          <button type="button" className={`peek-eye ${peekBare?'on':''}`} aria-label="hide info" onClick={e=>{e.stopPropagation();setPeekBare(v=>!v)}}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
           </button>
-          <button type="button" className="peek-x" aria-label="close" onClick={e=>{e.stopPropagation(); setPeek(null)}}>×</button>
-          <div className="peek-stage" onClick={e=>e.stopPropagation()}>
-            <img className="peek-img" src={peek} alt=""/>
-            {peekInfo}
+          <button type="button" className="peek-x" aria-label="close" onClick={e=>{e.stopPropagation();setPeek(false)}}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+          </button>
+          <img className="peek-img" src={peekSrc||app.artworkUrl512||app.artworkUrl100} alt="" onClick={e=>e.stopPropagation()}/>
+          <div className={`peek-meta ${peekBare?'hide':''}`} onClick={e=>e.stopPropagation()}>
+            <h2>{app.trackName}</h2>
+            <p>{app.artistName}</p>
+            <p className="peek-sub">★ {rating} · {fmtSize(app.fileSizeBytes)} · {app.primaryGenreName||''}</p>
+            <button type="button" className="bg-btn-install" onClick={()=>setReqOpen(true)}>{t('install')}</button>
           </div>
         </div>
       )}
       {topBar}
       <div className="bg-detail">
         {promoShot&&(
-          <div className="bg-exp-hero" onClick={()=>openPeek(promoShot)} role="button" tabIndex={0}>
-            <img className="bg-exp-img" src={promoShot} alt="" loading="eager"/>
+          <div className="bg-exp-hero">
+            <img className="bg-exp-img" src={promoShot} alt="" loading="eager" onClick={()=>{setPeekSrc(promoShot);setPeekBare(false);setPeek(true)}} style={{cursor:'pointer'}}/>
             <div className="bg-exp-grad"></div>
           </div>
         )}
@@ -2155,12 +2142,11 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
                   )}
                 </svg>
               )}
-              <img
+              <SmartImg
                 src={app.artworkUrl512||app.artworkUrl100}
-                alt=""
+                kind="icon"
                 className={`bg-detail-icon ${dlView.ring?'dl-shrunk':''}`}
-                onClick={()=>openPeek(app.artworkUrl512||app.artworkUrl100)}
-                style={{cursor:'pointer'}}
+                onClick={e=>{if(e&&e.stopPropagation)e.stopPropagation();setPeekSrc(app.artworkUrl512||app.artworkUrl100);setPeekBare(false);setPeek(true)}}
               />
             </div>
           </div>
@@ -2777,7 +2763,7 @@ const Category=({genre,open})=>{
   const fromGenres=GENRES[decoded];
   const g=fromSearch?{id:fromSearch.gid,term:fromSearch.term,title:t(fromSearch.k)}:fromGames?{id:fromGames.gid,term:fromGames.term,title:t(fromGames.k)}:fromGenres?{id:fromGenres.id,term:fromGenres.term,title:decoded}:{id:6000,term:decoded,title:decoded};
   const[apps,setApps]=useState([]);const[ld,setLd]=useState(true);
-  useEffect(()=>{setLd(true);api.cat(g.term,g.id,40).then(setApps).catch(()=>setApps([])).finally(()=>setLd(false))},[genre]);
+  useEffect(()=>{setLd(true);api.cat(g.term,g.id,40).then(list=>setApps(fromGames?(list||[]).filter(isGameApp):(list||[]))).catch(()=>setApps([])).finally(()=>setLd(false))},[genre]);
   return <div className="pb-20 sm:pb-8 px-2 pt-4"><h1 className="text-xl font-bold px-2 mb-4 capitalize">{g.title||decoded}</h1>{ld?Array(8).fill(0).map((_,i)=><Skel key={i} c="h-16 m-2"></Skel>):apps.map(a=><AppCard key={a.trackId} app={a} onClick={open}></AppCard>)}</div>;
 };
 
@@ -3245,25 +3231,8 @@ function App(){
   const[track,setTrack]=useState(null);const[playing,setPlaying]=useState(false);const[menuOpen,setMenuOpen]=useState(false);
   const[platOpen,setPlatOpen]=useState(false); // kept unused after moving sources to Settings
   const[accOpen,setAccOpen]=useState(false);
-  const[offOpen,setOffOpen]=useState(false);
-  const[offBusy,setOffBusy]=useState(false);
-  const probeNet=async()=>{
-    if(typeof navigator!=='undefined'&&navigator.onLine===false) return false;
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),2800);
-    try{
-      await fetch('https://www.gstatic.com/generate_204',{method:'GET',mode:'no-cors',cache:'no-store',signal:ctrl.signal});
-      return true;
-    }catch(e){
-      return false;
-    }finally{clearTimeout(timer)}
-  };
-  const retryNet=async()=>{
-    setOffBusy(true);
-    const ok=await probeNet();
-    setOffBusy(false);
-    if(ok) setOffOpen(false);
-  };
+  const[offSheet,setOffSheet]=useState(false);
+  const offHold=useRef(false);
   const[profile,setProfile]=useState(()=>getS('apk_profile',{name:'',photo:''}));
   const[night,setNightS]=useState(()=>{const saved=getS('apk_night',null);if(saved==null)return getS('apk_theme','light')==='black';return !!saved});
   const setNight=v=>{setNightS(!!v);setS('apk_night',!!v)};
@@ -3277,13 +3246,16 @@ function App(){
   const queueRef=useRef([]);const qIdxRef=useRef(0);
   useEffect(()=>{queueRef.current=queue;qIdxRef.current=qIdx},[queue,qIdx]);
   useEffect(()=>{
-    let cancel=false;
-    probeNet().then(ok=>{if(!cancel&&!ok)setOffOpen(true)});
-    const off=()=>setOffOpen(true);
-    const on=()=>setOffOpen(false);
-    window.addEventListener('offline',off);
-    window.addEventListener('online',on);
-    return()=>{cancel=true; window.removeEventListener('offline',off); window.removeEventListener('online',on)};
+    let stop=false;
+    const run=()=>{
+      probeOnline().then(ok=>{ if(!stop && !ok && !offHold.current) setOffSheet(true); if(!stop && ok) setOffSheet(false); });
+    };
+    run();
+    const onOff=()=>{ offHold.current=false; setOffSheet(true); };
+    const onOn=()=>{ offHold.current=false; setOffSheet(false); };
+    window.addEventListener('offline', onOff);
+    window.addEventListener('online', onOn);
+    return()=>{ stop=true; window.removeEventListener('offline', onOff); window.removeEventListener('online', onOn); };
   },[]);
 
   useEffect(()=>{
@@ -3504,22 +3476,7 @@ function App(){
       </main>
       {!hideMini&&<MiniPlayer track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onClose={closeP} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onOpen={()=>nav('/now-playing')} isFav={isSongFav} onFav={toggleSongFav}/>}
       {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen)&&<BottomNav route={route} nav={nav}></BottomNav>}
-      {offOpen&&(
-        <div className="off-layer" role="dialog" aria-modal="true">
-          <div className="off-sheet">
-            <div className="off-badge">
-              <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="#8ab4f8" d="M12 6c3.3 0 6.2 1.3 8.4 3.4l1.4-1.4C19.4 5.6 15.9 4 12 4S4.6 5.6 2.2 8l1.4 1.4C5.8 7.3 8.7 6 12 6zm0 4c2.2 0 4.2.9 5.6 2.3l1.4-1.4C17.1 9 14.7 8 12 8s-5.1 1-7 2.9l1.4 1.4C7.8 10.9 9.8 10 12 10zm0 4c1.1 0 2.1.4 2.8 1.2L12 18l-2.8-2.8C9.9 14.4 10.9 14 12 14z"/><path fill="#f28b82" d="M3.3 3.3L2 4.6 6.2 8.8C4.7 9.8 3.4 11.1 2.2 12.6l1.4 1.4c1-.1.2 0 0 0z" opacity="0"/><path fill="#e8eaed" d="M2.1 3.5l1.4-1.4 18.4 18.4-1.4 1.4z"/></svg>
-              <span className="off-emoji">🤔</span>
-            </div>
-            <div className="off-title">{_lang==='ar'?'أنت غير متصل بالإنترنت':'You are offline'}</div>
-            <div className="off-sub">{_lang==='ar'?'بعض الميزات غير متوفرة.':'Some features are unavailable.'}</div>
-            <div className="off-actions">
-              <button type="button" className="off-retry" onClick={retryNet} disabled={offBusy}>{offBusy?(_lang==='ar'?'جارٍ التحقق…':'Checking…'):(_lang==='ar'?'إعادة المحاولة':'Retry')}</button>
-              <button type="button" className="off-cancel" onClick={()=>setOffOpen(false)}>{_lang==='ar'?'إلغاء':'Cancel'}</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {offSheet&&<OfflineSheet onRetry={()=>{probeOnline().then(ok=>setOffSheet(!ok))}} onCancel={()=>{offHold.current=true;setOffSheet(false)}}></OfflineSheet>}
     </div>
   );
 }
