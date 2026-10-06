@@ -164,7 +164,7 @@
       nav_apps: "\u062A\u0637\u0628\u064A\u0642\u0627\u062A",
       nav_search: "\u0628\u062D\u062B",
       nav_library: "\u0645\u0643\u062A\u0628\u0629",
-      nav_music: "\u0645\u0648\u0633\u064A\u0642\u0649",
+      nav_you: "\u0627\u0646\u062A",
       featured: "\u0645\u0645\u064A\u0632",
       top_free_apps: "\u0623\u0641\u0636\u0644 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0627\u0644\u0645\u062C\u0627\u0646\u064A\u0629",
       productivity: "\u0627\u0644\u0625\u0646\u062A\u0627\u062C\u064A\u0629",
@@ -408,7 +408,7 @@
       nav_apps: "Apps",
       nav_search: "Search",
       nav_library: "Library",
-      nav_music: "Music",
+      nav_you: "You",
       featured: "Featured",
       top_free_apps: "Top Free Apps",
       productivity: "Productivity",
@@ -805,7 +805,7 @@
     const p = {
       home: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" }), /* @__PURE__ */ React.createElement("polyline", { points: "9 22 9 12 15 12 15 22" })),
       search: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("circle", { cx: "11", cy: "11", r: "8" }), /* @__PURE__ */ React.createElement("line", { x1: "21", y1: "21", x2: "16.65", y2: "16.65" })),
-      mic: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { d: "M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" }), /* @__PURE__ */ React.createElement("path", { d: "M19 10v2a7 7 0 01-14 0v-2" }), /* @__PURE__ */ React.createElement("line", { x1: "12", y1: "19", x2: "12", y2: "23" }), /* @__PURE__ */ React.createElement("line", { x1: "8", y1: "23", x2: "16", y2: "23" })),
+      mic: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", stroke: "none", d: "M395-435q-35-35-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35q-50 0-85-35Zm85-205Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm68.5-371.5Q520-503 520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480q17 0 28.5-11.5Z" })),
       heart: /* @__PURE__ */ React.createElement("path", { d: "M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" }),
       person: /* @__PURE__ */ React.createElement("path", { fill: "currentColor", stroke: "none", d: "M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z" }),
       bookmark: /* @__PURE__ */ React.createElement("path", { fill: "currentColor", stroke: "none", d: "M11.539 17.112C11.876 16.937 12.288 16.967 12.6 17.2L17.4 20.8C18.06 21.294 19 20.824 19 20V5C19 3.895 18.105 3 17 3H7C5.895 3 5 3.895 5 5V20C5 20.824 5.94 21.294 6.6 20.8L11.4 17.2L11.539 17.112ZM21 20C21 22.472 18.178 23.883 16.2 22.4L12 19.249L7.8 22.4C5.822 23.883 3 22.472 3 20V5C3 2.791 4.791 1 7 1H17C19.209 1 21 2.791 21 5V20Z" }),
@@ -956,7 +956,7 @@
       { p: "/", k: "nav_apps" },
       { p: "/games", k: "nav_games" },
       { p: "/favorites", k: "nav_library" },
-      { p: "/music", k: "nav_music" },
+      { p: "/you", k: "nav_you" },
       { p: "/search", k: "nav_search" }
     ].map((it) => /* @__PURE__ */ React.createElement("button", { key: it.p, type: "button", className: "acc-pick-item", onClick: () => {
       setPagesOpen(false);
@@ -975,18 +975,18 @@
     if (kind === "heart") {
       return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M3,5C3,2.791 4.791,1 7,1H17C19.209,1 21,2.791 21,5V20C21,22.472 18.178,23.883 16.2,22.4L12,19.25L7.8,22.4C5.822,23.883 3,22.472 3,20V5Z", fill: "currentColor" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M11.539,17.112C11.876,16.937 12.288,16.967 12.6,17.2L17.4,20.8C18.06,21.294 19,20.824 19,20V5C19,3.895 18.105,3 17,3H7C5.895,3 5,3.895 5,5V20C5,20.824 5.94,21.294 6.6,20.8L11.4,17.2L11.539,17.112ZM21,20C21,22.472 18.178,23.883 16.2,22.4L12,19.249L7.8,22.4C5.822,23.883 3,22.472 3,20V5C3,2.791 4.791,1 7,1H17C19.209,1 21,2.791 21,5V20Z", fill: "currentColor" }));
     }
-    if (kind === "head") {
-      return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { d: "M12,3a9,9 0,0 0,-9 9v7a2,2 0,0 0,2 2h2a2,2 0,0 0,2 -2v-4a2,2 0,0 0,-2 -2H5v-1a7,7 0,1 1,14 0v1h-2a2,2 0,0 0,-2 2v4a2,2 0,0 0,2 2h2a2,2 0,0 0,2 -2v-7a9,9 0,0 0,-9 -9Z", fill: "currentColor" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 960 960" }, /* @__PURE__ */ React.createElement("path", { d: "M360,840H200q-33,0-56.5-23.5T120,760V480q0-75 28.5-140.5t77-114t114-77T480,120t140.5,28.5t114,77t77,114T840,480V760q0,33-23.5,56.5T760,840H600V520H760V480q0-117-81.5-198.5T480,200T281.5,281.5T200,480v40H360V840ZM280,600H200V760h80V600Zm400,0V760h80V600H680Zm-400,0H200H200Zm400,0H680H680Z", fill: "currentColor" }));
+    if (kind === "you") {
+      return on ? /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 0 24 24" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M12,12c2.21,0 4,-1.79 4,-4s-1.79,-4 -4,-4 -4,1.79 -4,4 1.79,4 4,4zM12,14c-2.67,0 -8,1.34 -8,4v2h16v-2c0,-2.66 -5.33,-4 -8,-4z" })) : /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", className, viewBox: "0 -960 960 960" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M367-527q-47-47-47-113t47-113q47-47 113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm296.5-343.5Q560-607 560-640t-23.5-56.5Q513-720 480-720t-56.5 23.5Q400-673 400-640t23.5 56.5Q447-560 480-560t56.5-23.5ZM480-640Zm0 400Z" }));
     }
     return null;
   };
   const BottomNav = ({ route, nav }) => {
     const items = [
-      { k: "nav_games", p: "/games", i: "game" },
-      { k: "nav_apps", p: "/", i: "home", root: true },
-      { k: "nav_search", p: "/search", i: "search" },
+      { k: "nav_you", p: "/you", i: "you" },
       { k: "nav_library", p: "/favorites", i: "heart" },
-      { k: "nav_music", p: "/music", i: "head" }
+      { k: "nav_search", p: "/search", i: "search" },
+      { k: "nav_apps", p: "/", i: "home", root: true },
+      { k: "nav_games", p: "/games", i: "game" }
     ];
     return /* @__PURE__ */ React.createElement("nav", { className: "app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden" }, /* @__PURE__ */ React.createElement("div", { className: "flex justify-around items-center h-16 px-2" }, items.map((it) => {
       const a = it.root ? route === "/" : route.startsWith(it.p);
@@ -1446,7 +1446,7 @@
       if (i >= ready && i >= ready + 2) return null;
       const list = rows[i] || [];
       const waiting = i >= ready;
-      return /* @__PURE__ */ React.createElement(HScroll, { key: sec.k, title: t(sec.k), rtl: true, pad: "px-5 g-shot-row" }, waiting || !list.length ? Array(3).fill(0).map((_, j) => /* @__PURE__ */ React.createElement("div", { key: j, className: "g-shot-skel shrink-0 bg-muted animate-pulse" }, /* @__PURE__ */ React.createElement(MediaSpin, { kind: "ring" }))) : list.filter(isGameApp).map((a) => /* @__PURE__ */ React.createElement(GameShotCard, { key: a.trackId + "-" + sec.k, app: a, onClick: open })));
+      return /* @__PURE__ */ React.createElement(HScroll, { key: sec.k, title: t(sec.k), rtl: true, pad: "px-5 g-shot-row" }, waiting || !list.length ? Array(3).fill(0).map((_, j) => /* @__PURE__ */ React.createElement("div", { key: j, className: "g-shot-skel shrink-0" }, /* @__PURE__ */ React.createElement(MediaSpin, { kind: "ring" }))) : list.filter(isGameApp).map((a) => /* @__PURE__ */ React.createElement(GameShotCard, { key: a.trackId + "-" + sec.k, app: a, onClick: open })));
     }));
   };
   const PLAY_GAME_CATS = [
@@ -1507,6 +1507,7 @@
     const count = fmtCount(app.userRatingCount);
     return /* @__PURE__ */ React.createElement("button", { type: "button", className: "ps-ad-row", onClick: () => onOpen(app) }, /* @__PURE__ */ React.createElement(SmartImg, { src: app.artworkUrl100 || app.artworkUrl60 || "", kind: "icon", className: "ps-ad-icon" }), /* @__PURE__ */ React.createElement("span", { className: "ps-ad-mid" }, /* @__PURE__ */ React.createElement("span", { className: "ps-ad-name" }, app.trackName), /* @__PURE__ */ React.createElement("span", { className: "ps-ad-dev" }, app.artistName || ""), /* @__PURE__ */ React.createElement("span", { className: "ps-ad-pills" }, rating !== "\u2014" && /* @__PURE__ */ React.createElement("span", { className: "ps-pill" }, "\u2605 ", rating), count && /* @__PURE__ */ React.createElement("span", { className: "ps-pill" }, "\u2193 ", count))));
   };
+  const MicGlyph = ({ cancel }) => cancel ? /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" })) : /* @__PURE__ */ React.createElement("svg", { viewBox: "0 -960 960 960", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M395-435q-35-35-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35q-50 0-85-35Zm85-205Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm68.5-371.5Q520-503 520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480q17 0 28.5-11.5Z" }));
   const Search = ({ nav, open, initQ, photo, onOpenAccount }) => {
     const [q, setQ] = useState(initQ || "");
     const [res, setRes] = useState([]);
@@ -1612,6 +1613,14 @@
     };
     const startVoice = (e) => {
       if (e && e.stopPropagation) e.stopPropagation();
+      if (hearing && recRef.current) {
+        try {
+          recRef.current.abort();
+        } catch (err) {
+        }
+        setHearing(false);
+        return;
+      }
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       setPanel(true);
       setSubmitted(false);
@@ -1657,12 +1666,12 @@
     const openCat = (c) => nav(`/category/${encodeURIComponent(c.term)}`);
     const ar = _lang === "ar";
     const catGrid = (list, title) => /* @__PURE__ */ React.createElement("section", { className: "ps-sec" }, /* @__PURE__ */ React.createElement("h2", { className: "ps-sec-title" }, title), /* @__PURE__ */ React.createElement("div", { className: "ps-cat-grid" }, list.map((c) => /* @__PURE__ */ React.createElement("button", { key: c.term, type: "button", className: "ps-cat", onClick: () => openCat(c) }, /* @__PURE__ */ React.createElement("span", { className: "ps-cat-ico" }, /* @__PURE__ */ React.createElement(PlayGlyph, { icon: c.icon, color: c.color })), /* @__PURE__ */ React.createElement("span", { className: "ps-cat-name" }, playCatLabel(c))))));
-    return /* @__PURE__ */ React.createElement("div", { className: "ps-search", dir: ar ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("div", { className: "ps-top" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ps-avatar", onClick: onOpenAccount, "aria-label": t("account") }, photo ? /* @__PURE__ */ React.createElement("img", { src: photo, alt: "" }) : /* @__PURE__ */ React.createElement("span", null, "GO")), /* @__PURE__ */ React.createElement("div", { className: "ps-bar", onClick: openPanel, role: "button", tabIndex: 0 }, /* @__PURE__ */ React.createElement("button", { type: "button", className: `ps-mic-in ${hearing ? "on" : ""}`, "aria-label": "mic", onClick: startVoice }, /* @__PURE__ */ React.createElement(Icon, { name: "mic", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("span", null, t("search_placeholder")), /* @__PURE__ */ React.createElement(Icon, { name: "search", className: "w-5 h-5" }))), catGrid(PLAY_GAME_CATS, ar ? "\u0627\u0633\u062A\u0643\u0634\u0627\u0641 \u0627\u0644\u0623\u0644\u0639\u0627\u0628" : "Explore games"), /* @__PURE__ */ React.createElement("section", { className: "ps-sec" }, /* @__PURE__ */ React.createElement("div", { className: "ps-ad-head" }, /* @__PURE__ */ React.createElement("span", null, ar ? "\u0625\u0639\u0644\u0627\u0646 \u2022 \u0625\u0639\u0644\u0627\u0646\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629 \u0644\u0643" : "Ad \u2022 Suggested for you"), /* @__PURE__ */ React.createElement("span", { className: "ps-dots" }, "\u22EE")), /* @__PURE__ */ React.createElement("div", { className: "ps-ad-scroller" }, (ads.length ? ads : [null, null, null, null]).slice(0, 6).map((a, i) => a ? /* @__PURE__ */ React.createElement("button", { key: a.trackId, type: "button", className: "ps-ad-card", onClick: () => open(a) }, /* @__PURE__ */ React.createElement(SmartImg, { kind: "ad", className: "ps-ad-img", src: a.artworkUrl100 || a.artworkUrl60 || "" }), /* @__PURE__ */ React.createElement("span", null, a.trackName), /* @__PURE__ */ React.createElement("em", null, "\u2605 ", fmtRating(a.averageUserRating))) : /* @__PURE__ */ React.createElement("div", { key: "ad-ph-" + i, className: "ps-ad-card" }, /* @__PURE__ */ React.createElement("span", { className: "ps-ad-ph" }, /* @__PURE__ */ React.createElement(MediaSpin, { kind: "dots" })))))), catGrid(PLAY_APP_CATS, ar ? "\u0627\u0633\u062A\u0643\u0634\u0627\u0641 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A" : "Explore apps"), panel && /* @__PURE__ */ React.createElement("div", { className: "search-page ps-panel", dir: ar ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("div", { className: "ps-panel-bar" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ps-back", onClick: closePanel, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "left", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("input", { ref, value: q, onChange: (e) => {
+    return /* @__PURE__ */ React.createElement("div", { className: "ps-search", dir: ar ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("div", { className: "ps-top" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ps-avatar", onClick: onOpenAccount, "aria-label": t("account") }, photo ? /* @__PURE__ */ React.createElement("img", { src: photo, alt: "" }) : /* @__PURE__ */ React.createElement("span", null, "GO")), /* @__PURE__ */ React.createElement("div", { className: "ps-bar", onClick: openPanel, role: "button", tabIndex: 0 }, /* @__PURE__ */ React.createElement("button", { type: "button", className: `ps-mic-in ${hearing ? "on" : ""}`, "aria-label": "mic", onClick: startVoice }, /* @__PURE__ */ React.createElement(MicGlyph, { cancel: hearing })), /* @__PURE__ */ React.createElement("span", null, t("search_placeholder")), /* @__PURE__ */ React.createElement(Icon, { name: "search", className: "w-5 h-5" }))), catGrid(PLAY_GAME_CATS, ar ? "\u0627\u0633\u062A\u0643\u0634\u0627\u0641 \u0627\u0644\u0623\u0644\u0639\u0627\u0628" : "Explore games"), /* @__PURE__ */ React.createElement("section", { className: "ps-sec" }, /* @__PURE__ */ React.createElement("div", { className: "ps-ad-head" }, /* @__PURE__ */ React.createElement("span", null, ar ? "\u0625\u0639\u0644\u0627\u0646 \u2022 \u0625\u0639\u0644\u0627\u0646\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629 \u0644\u0643" : "Ad \u2022 Suggested for you"), /* @__PURE__ */ React.createElement("span", { className: "ps-dots" }, "\u22EE")), /* @__PURE__ */ React.createElement("div", { className: "ps-ad-scroller" }, (ads.length ? ads : [null, null, null, null]).slice(0, 6).map((a, i) => a ? /* @__PURE__ */ React.createElement("button", { key: a.trackId, type: "button", className: "ps-ad-card", onClick: () => open(a) }, /* @__PURE__ */ React.createElement(SmartImg, { kind: "ad", className: "ps-ad-img", src: a.artworkUrl100 || a.artworkUrl60 || "" }), /* @__PURE__ */ React.createElement("span", null, a.trackName), /* @__PURE__ */ React.createElement("em", null, "\u2605 ", fmtRating(a.averageUserRating))) : /* @__PURE__ */ React.createElement("div", { key: "ad-ph-" + i, className: "ps-ad-card" }, /* @__PURE__ */ React.createElement("span", { className: "ps-ad-ph" }, /* @__PURE__ */ React.createElement(MediaSpin, { kind: "dots" })))))), catGrid(PLAY_APP_CATS, ar ? "\u0627\u0633\u062A\u0643\u0634\u0627\u0641 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A" : "Explore apps"), panel && /* @__PURE__ */ React.createElement("div", { className: "search-page ps-panel", dir: ar ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("div", { className: "ps-panel-bar" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ps-back", onClick: closePanel, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "left", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("input", { ref, value: q, onChange: (e) => {
       setQ(e.target.value);
       setSubmitted(false);
     }, onKeyDown: (e) => {
       if (e.key === "Enter") doS(q);
-    }, placeholder: ar ? "\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0648\u0627\u0644\u0623\u0644\u0639\u0627\u0628" : t("search_placeholder"), className: "ps-panel-input" }), /* @__PURE__ */ React.createElement("button", { type: "button", className: `ps-mic ${hearing ? "on" : ""}`, "aria-label": "mic", onClick: startVoice }, /* @__PURE__ */ React.createElement(Icon, { name: "mic", className: "w-5 h-5" }))), /* @__PURE__ */ React.createElement("div", { className: "search-page-body" }, submitted ? /* @__PURE__ */ React.createElement(React.Fragment, null, ld && /* @__PURE__ */ React.createElement("div", { className: "px-4 mt-4 space-y-3" }, Array(5).fill(0).map((_, i) => /* @__PURE__ */ React.createElement(Skel, { key: i, c: "h-16 w-full" }))), !ld && res.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "ps-result-list" }, res.map((a) => /* @__PURE__ */ React.createElement(SearchAdRow, { key: a.trackId, app: a, onOpen: open }))), !ld && res.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "px-4 mt-8 text-center text-muted-foreground text-sm" }, t("app_not_found"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ps-ad-head px" }, /* @__PURE__ */ React.createElement("span", null, ar ? "\u0625\u0639\u0644\u0627\u0646 \u2022 \u0625\u0639\u0644\u0627\u0646\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629 \u0644\u0643" : "Ad \u2022 Suggested for you"), /* @__PURE__ */ React.createElement("span", { className: "ps-dots" }, "\u22EE")), /* @__PURE__ */ React.createElement("div", { className: "ps-result-list" }, (q.trim() && suggest.length ? suggest : ads).slice(0, 4).map((a) => /* @__PURE__ */ React.createElement(SearchAdRow, { key: a.trackId, app: a, onOpen: open }))), /* @__PURE__ */ React.createElement("h3", { className: "ps-block-title" }, ar ? "\u0627\u0644\u0623\u062D\u062F\u0627\u062B \u0627\u0644\u062C\u0627\u0631\u064A\u0629 \u0627\u0644\u0622\u0646" : "Happening now"), /* @__PURE__ */ React.createElement("h3", { className: "ps-block-title" }, ar ? "\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u062A\u064A \u062A\u0645\u062A \u0645\u0624\u062E\u0631\u064B\u0627" : "Recent searches"), hist.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "px-4 text-sm text-muted-foreground" }, _lang === "ar" ? "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0645\u0644\u064A\u0627\u062A \u0628\u062D\u062B \u062D\u062F\u064A\u062B\u0629" : "No recent searches") : hist.slice(0, 8).map((h) => /* @__PURE__ */ React.createElement("button", { key: h, type: "button", className: "ps-hist", onClick: () => doS(h) }, /* @__PURE__ */ React.createElement("span", { className: "ps-hist-go" }, "\u2197"), /* @__PURE__ */ React.createElement("span", { className: "ps-hist-txt" }, h), /* @__PURE__ */ React.createElement("span", { className: "ps-hist-ico" }, "\u21BB")))))));
+    }, placeholder: ar ? "\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0648\u0627\u0644\u0623\u0644\u0639\u0627\u0628" : t("search_placeholder"), className: "ps-panel-input" }), /* @__PURE__ */ React.createElement("button", { type: "button", className: `ps-mic ${hearing ? "on" : ""}`, "aria-label": "mic", onClick: startVoice }, /* @__PURE__ */ React.createElement(MicGlyph, { cancel: hearing }))), /* @__PURE__ */ React.createElement("div", { className: "search-page-body" }, submitted ? /* @__PURE__ */ React.createElement(React.Fragment, null, ld && /* @__PURE__ */ React.createElement("div", { className: "px-4 mt-4 space-y-3" }, Array(5).fill(0).map((_, i) => /* @__PURE__ */ React.createElement(Skel, { key: i, c: "h-16 w-full" }))), !ld && res.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "ps-result-list" }, res.map((a) => /* @__PURE__ */ React.createElement(SearchAdRow, { key: a.trackId, app: a, onOpen: open }))), !ld && res.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "px-4 mt-8 text-center text-muted-foreground text-sm" }, t("app_not_found"))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ps-ad-head px" }, /* @__PURE__ */ React.createElement("span", null, ar ? "\u0625\u0639\u0644\u0627\u0646 \u2022 \u0625\u0639\u0644\u0627\u0646\u0627\u062A \u0645\u0642\u062A\u0631\u062D\u0629 \u0644\u0643" : "Ad \u2022 Suggested for you"), /* @__PURE__ */ React.createElement("span", { className: "ps-dots" }, "\u22EE")), /* @__PURE__ */ React.createElement("div", { className: "ps-result-list" }, (q.trim() && suggest.length ? suggest : ads).slice(0, 4).map((a) => /* @__PURE__ */ React.createElement(SearchAdRow, { key: a.trackId, app: a, onOpen: open }))), /* @__PURE__ */ React.createElement("h3", { className: "ps-block-title" }, ar ? "\u0627\u0644\u0623\u062D\u062F\u0627\u062B \u0627\u0644\u062C\u0627\u0631\u064A\u0629 \u0627\u0644\u0622\u0646" : "Happening now"), /* @__PURE__ */ React.createElement("h3", { className: "ps-block-title" }, ar ? "\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u062A\u064A \u062A\u0645\u062A \u0645\u0624\u062E\u0631\u064B\u0627" : "Recent searches"), hist.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "px-4 text-sm text-muted-foreground" }, _lang === "ar" ? "\u0644\u0627 \u062A\u0648\u062C\u062F \u0639\u0645\u0644\u064A\u0627\u062A \u0628\u062D\u062B \u062D\u062F\u064A\u062B\u0629" : "No recent searches") : hist.slice(0, 8).map((h) => /* @__PURE__ */ React.createElement("button", { key: h, type: "button", className: "ps-hist", onClick: () => doS(h) }, /* @__PURE__ */ React.createElement("span", { className: "ps-hist-go" }, "\u2197"), /* @__PURE__ */ React.createElement("span", { className: "ps-hist-txt" }, h), /* @__PURE__ */ React.createElement("span", { className: "ps-hist-ico" }, "\u21BB")))))));
   };
   const fmtSize = (bytes) => {
     if (!bytes) return "\u2014";
@@ -1987,6 +1996,8 @@
     const [peek, setPeek] = useState(false);
     const [peekBare, setPeekBare] = useState(false);
     const [peekSrc, setPeekSrc] = useState("");
+    const [peekFrom, setPeekFrom] = useState(null);
+    const [peekGo, setPeekGo] = useState(false);
     const [dlView, setDlView] = useState(() => computeDlProgress(getDlRec(id)));
     const [reqOpen, setReqOpen] = useState(false);
     const toastT = useRef(null);
@@ -2315,22 +2326,29 @@
       }
       setShareOpen(false);
     };
-    const openPeek = (src) => {
+    const openPeek = (e, src) => {
+      const el = e && e.currentTarget;
+      if (el && el.getBoundingClientRect) {
+        const r = el.getBoundingClientRect();
+        setPeekFrom({ l: r.left, t: r.top, w: r.width, h: r.height });
+      } else setPeekFrom(null);
       setPeekSrc(src || app.artworkUrl512 || app.artworkUrl100 || "");
       setPeekBare(false);
+      setPeekGo(false);
       setPeek(true);
+      requestAnimationFrame(() => requestAnimationFrame(() => setPeekGo(true)));
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "pb-24 sm:pb-8" }, peek && /* @__PURE__ */ React.createElement("div", { className: `peek-root ${peekBare ? "bare" : ""}`, onClick: () => setPeek(false) }, /* @__PURE__ */ React.createElement("button", { type: "button", className: `peek-eye ${peekBare ? "on" : ""}`, "aria-label": "hide info", onClick: (e) => {
+    const closePeek = () => {
+      setPeekGo(false);
+      setTimeout(() => setPeek(false), 300);
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "pb-24 sm:pb-8" }, peek && /* @__PURE__ */ React.createElement("div", { className: `peek-root ${peekBare ? "bare" : ""} ${peekGo ? "go" : ""}`, onClick: closePeek }, /* @__PURE__ */ React.createElement("button", { type: "button", className: `peek-eye ${peekBare ? "on" : ""}`, "aria-label": "hide info", onClick: (e) => {
       e.stopPropagation();
       setPeekBare((v) => !v);
     } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" }))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "peek-x", "aria-label": "close", onClick: (e) => {
       e.stopPropagation();
-      setPeek(false);
-    } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" }))), /* @__PURE__ */ React.createElement("img", { className: "peek-img", src: peekSrc || app.artworkUrl512 || app.artworkUrl100, alt: "", onClick: (e) => e.stopPropagation() }), /* @__PURE__ */ React.createElement("div", { className: `peek-meta ${peekBare ? "hide" : ""}`, onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", null, app.trackName), /* @__PURE__ */ React.createElement("p", null, app.artistName), /* @__PURE__ */ React.createElement("p", { className: "peek-sub" }, "\u2605 ", rating, " \xB7 ", fmtSize(app.fileSizeBytes), " \xB7 ", app.primaryGenreName || ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install", onClick: () => setReqOpen(true) }, t("install")))), topBar, /* @__PURE__ */ React.createElement("div", { className: "bg-detail" }, promoShot2 && /* @__PURE__ */ React.createElement("div", { className: "bg-exp-hero" }, /* @__PURE__ */ React.createElement("img", { className: "bg-exp-img", src: promoShot2, alt: "", loading: "eager", onClick: () => {
-      setPeekSrc(promoShot2);
-      setPeekBare(false);
-      setPeek(true);
-    }, style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("div", { className: "bg-exp-grad" })), /* @__PURE__ */ React.createElement("div", { className: promoShot2 ? "bg-exp-content" : "" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-header" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-info" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-title-row" }, /* @__PURE__ */ React.createElement("h1", { className: "bg-detail-name" }, app.trackName)), dlView.ring && /* @__PURE__ */ React.createElement("div", { className: `dl-status-badge ${dlView.phase === "spin" ? "wait" : ""}` }, dlView.phase === "spin" ? t("dl_fetch_badge") : t("dl_run_badge")), (dlView.phase === "download" || dlView.phase === "postspin") && /* @__PURE__ */ React.createElement("div", { className: "dl-name-pct", "aria-live": "polite" }, Math.round((dlView.pct || 0) * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "bg-detail-dev", onClick: () => nav(`/search?q=${encodeURIComponent(app.artistName || "")}`) }, app.artistName), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-meta" }, /* @__PURE__ */ React.createElement("span", null, "\u2605 ", rating, " ", ratingCount), /* @__PURE__ */ React.createElement("span", null, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", null, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("span", null, app.primaryGenreName || ""))), /* @__PURE__ */ React.createElement("div", { className: `dl-icon-wrap ${dlView.ring ? "active" : ""}` }, dlView.ring && /* @__PURE__ */ React.createElement("svg", { className: "dl-ring", viewBox: "0 0 100 100", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-track", cx: "50", cy: "50", r: "45" }), dlView.phase === "spin" ? /* @__PURE__ */ React.createElement("g", { className: "dl-spin-g" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-spin", cx: "50", cy: "50", r: "45" })) : /* @__PURE__ */ React.createElement(
+      closePeek();
+    } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" }))), /* @__PURE__ */ React.createElement("img", { className: `peek-img ${peekGo ? "go" : ""}`, style: peekFrom ? { "--l": peekFrom.l + "px", "--t": peekFrom.t + "px", "--w": peekFrom.w + "px", "--h": peekFrom.h + "px" } : void 0, src: peekSrc || app.artworkUrl512 || app.artworkUrl100, alt: "", onClick: (e) => e.stopPropagation() }), /* @__PURE__ */ React.createElement("div", { className: `peek-meta ${peekBare ? "hide" : ""}`, onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", null, app.trackName), /* @__PURE__ */ React.createElement("p", null, app.artistName), /* @__PURE__ */ React.createElement("p", { className: "peek-sub" }, "\u2605 ", rating, " \xB7 ", fmtSize(app.fileSizeBytes), " \xB7 ", app.primaryGenreName || ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install", onClick: () => setReqOpen(true) }, t("install")))), topBar, /* @__PURE__ */ React.createElement("div", { className: "bg-detail" }, promoShot2 && /* @__PURE__ */ React.createElement("div", { className: "bg-exp-hero" }, /* @__PURE__ */ React.createElement("img", { className: "bg-exp-img", src: promoShot2, alt: "", loading: "eager", onClick: (e) => openPeek(e, promoShot2), style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("div", { className: "bg-exp-grad" })), /* @__PURE__ */ React.createElement("div", { className: promoShot2 ? "bg-exp-content" : "" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-header" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-info" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-title-row" }, /* @__PURE__ */ React.createElement("h1", { className: "bg-detail-name" }, app.trackName)), dlView.ring && /* @__PURE__ */ React.createElement("div", { className: `dl-status-badge ${dlView.phase === "spin" ? "wait" : ""}` }, dlView.phase === "spin" ? t("dl_fetch_badge") : t("dl_run_badge")), (dlView.phase === "download" || dlView.phase === "postspin") && /* @__PURE__ */ React.createElement("div", { className: "dl-name-pct", "aria-live": "polite" }, Math.round((dlView.pct || 0) * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "bg-detail-dev", onClick: () => nav(`/search?q=${encodeURIComponent(app.artistName || "")}`) }, app.artistName), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-meta" }, /* @__PURE__ */ React.createElement("span", null, "\u2605 ", rating, " ", ratingCount), /* @__PURE__ */ React.createElement("span", null, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", null, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("span", null, app.primaryGenreName || ""))), /* @__PURE__ */ React.createElement("div", { className: `dl-icon-wrap ${dlView.ring ? "active" : ""}` }, dlView.ring && /* @__PURE__ */ React.createElement("svg", { className: "dl-ring", viewBox: "0 0 100 100", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-track", cx: "50", cy: "50", r: "45" }), dlView.phase === "spin" ? /* @__PURE__ */ React.createElement("g", { className: "dl-spin-g" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-spin", cx: "50", cy: "50", r: "45" })) : /* @__PURE__ */ React.createElement(
       "circle",
       {
         className: "dl-ring-prog",
@@ -2346,12 +2364,7 @@
         src: app.artworkUrl512 || app.artworkUrl100,
         kind: "icon",
         className: `bg-detail-icon ${dlView.ring ? "dl-shrunk" : ""}`,
-        onClick: (e) => {
-          if (e && e.stopPropagation) e.stopPropagation();
-          setPeekSrc(app.artworkUrl512 || app.artworkUrl100);
-          setPeekBare(false);
-          setPeek(true);
-        }
+        onClick: (e) => openPeek(e, app.artworkUrl512 || app.artworkUrl100)
       }
     ))), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-actions" }, dlView.active ? /* @__PURE__ */ React.createElement("div", { className: "flex gap-2 w-full" }, /* @__PURE__ */ React.createElement("input", { type: "file", ref: fileInputRef, style: { display: "none" }, accept: "*/*", onChange: () => {
     } }), dlView.phase === "done" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel", onClick: openFilesPicker }, t("req_open_files")) : /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel", onClick: cancelInstall }, t("req_cancel")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-store", onClick: () => beginInstall(true) }, t("reinstall"))) : /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install", onClick: () => setReqOpen(true) }, t("install")))), /* @__PURE__ */ React.createElement("div", { className: `bg-req-overlay ${reqOpen ? "show" : ""}`, onClick: (e) => {
@@ -2624,38 +2637,43 @@
     const typeColor = (ty) => ty === "music" ? "#a855f7" : ty === "games" ? "#ea4335" : "#4285f4";
     return /* @__PURE__ */ React.createElement("div", { className: "page-cover play-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "sticky top-0 z-30 px-0 pt-3 pb-1" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 mb-3 px-3" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "nav-chip", onClick: () => window.history.back(), "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "left", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("h1", { className: "font-bold text-base flex-1" }, t("search_log")), /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground" }, items.length)), /* @__PURE__ */ React.createElement("div", { className: "play-seg-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: selectAll, className: `play-seg ${allSelected ? "on" : ""}` }, allSelected ? t("req_cancel") : t("select_all")), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: delSelected, disabled: !selected.length, className: `play-seg ${selected.length ? "on" : ""}` }, t("delete_sel"), selected.length ? ` (${selected.length})` : ""))), /* @__PURE__ */ React.createElement("div", { className: "py-2" }, items.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "play-list" }, /* @__PURE__ */ React.createElement("div", { className: "text-center py-16 text-muted-foreground text-sm" }, /* @__PURE__ */ React.createElement(Icon, { name: "hist", className: "w-12 h-12 mx-auto mb-3 opacity-30" }), /* @__PURE__ */ React.createElement("p", null, t("search_log_empty")))) : /* @__PURE__ */ React.createElement("div", { className: "play-list" }, items.map((it) => /* @__PURE__ */ React.createElement("div", { key: it.id, className: "play-item" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => setSel((p) => ({ ...p, [it.id]: !p[it.id] })), className: `w-6 h-6 rounded-md border flex items-center justify-center shrink-0 ${sel[it.id] ? "bg-primary border-primary text-white" : "border-[hsl(var(--border))]"}` }, sel[it.id] ? "\u2713" : ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "flex-1 min-w-0 text-left flex items-center gap-2", onClick: () => openItem(it) }, /* @__PURE__ */ React.createElement(Icon, { name: "hist", className: "w-4 h-4 text-muted-foreground shrink-0" }), /* @__PURE__ */ React.createElement("span", { className: "text-sm font-medium truncate flex-1" }, it.term), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] font-semibold shrink-0 px-1.5 py-0.5 rounded-full text-white", style: { background: typeColor(it.type) } }, typeLabel(it.type))), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => delOne(it.id), className: "p-2 text-muted-foreground hover:text-red-500", "aria-label": "delete" }, /* @__PURE__ */ React.createElement(Icon, { name: "x", className: "w-4 h-4" })))))));
   };
-  const Music = ({ play }) => {
-    const initQ = (() => {
-      try {
-        return new URLSearchParams(location.hash.split("?")[1] || "").get("q") || "";
-      } catch (e) {
-        return "";
-      }
-    })();
-    const [songs, setSongs] = useState([]);
-    const [q, setQ] = useState(initQ);
-    const [ld, setLd] = useState(true);
+  const YOU_FOLDERS = [
+    { id: "minecraft", ar: "Minecraft", en: "Minecraft", q: "minecraft" },
+    { id: "chat", ar: "\u062A\u0648\u0627\u0635\u0644", en: "Connect", q: "messenger whatsapp chat social" },
+    { id: "tools", ar: "\u0627\u062F\u0648\u0627\u062A", en: "Tools", q: "tools calculator file manager" },
+    { id: "fun", ar: "\u0631\u0641\u0627\u0647\u064A\u0629", en: "Leisure", q: "entertainment lifestyle video relax" }
+  ];
+  const FolderArt = () => /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 135 135", className: "you-folder-art", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("rect", { x: "0.5", y: "0.5", width: "134", height: "134", rx: "36", fill: "rgba(255,255,255,0.18)", stroke: "rgba(151,151,151,0.28)" }), /* @__PURE__ */ React.createElement("rect", { x: "16", y: "16", width: "46", height: "46", rx: "12", fill: "#E3F0FF" }), /* @__PURE__ */ React.createElement("rect", { x: "73", y: "16", width: "46", height: "46", rx: "12", fill: "#D8F4EE" }), /* @__PURE__ */ React.createElement("rect", { x: "16", y: "73", width: "46", height: "46", rx: "12", fill: "#FFE3DB" }), /* @__PURE__ */ React.createElement("rect", { x: "73", y: "73", width: "46", height: "46", rx: "12", fill: "#E3FFF3" }));
+  const YouPage = ({ open }) => {
+    const [games, setGames] = useState([]);
+    const [folder, setFolder] = useState(null);
+    const [apps, setApps] = useState([]);
+    const [fldLd, setFldLd] = useState(false);
+    const [from, setFrom] = useState(null);
+    const [grown, setGrown] = useState(false);
+    const [play, setPlay] = useState(null);
     useEffect(() => {
-      if (initQ) {
-        setLd(true);
-        api.songs(initQ).then(setSongs).catch(() => {
-        }).finally(() => setLd(false));
-      } else {
-        api.songs().then(setSongs).catch(() => {
-        }).finally(() => setLd(false));
-      }
+      fetch("res/list_games.json").then((r) => r.json()).then((d) => setGames(Array.isArray(d) ? d : [])).catch(() => setGames([]));
     }, []);
-    useEffect(() => {
-      if (!q.trim()) return;
-      const timer = setTimeout(() => {
-        setLd(true);
-        pushSearchHist(q, "music");
-        api.songs(q).then(setSongs).catch(() => {
-        }).finally(() => setLd(false));
-      }, 350);
-      return () => clearTimeout(timer);
-    }, [q]);
-    return /* @__PURE__ */ React.createElement("div", { className: "pb-20 sm:pb-8" }, /* @__PURE__ */ React.createElement("div", { className: "px-4 pt-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 bg-[hsl(var(--muted))]/60 rounded-full px-4 py-2.5" }, /* @__PURE__ */ React.createElement(Icon, { name: "search", className: "w-4 h-4 text-muted-foreground" }), /* @__PURE__ */ React.createElement("input", { value: q, onChange: (e) => setQ(e.target.value), placeholder: t("search_songs"), className: "flex-1 bg-transparent outline-none text-sm" }))), /* @__PURE__ */ React.createElement("h2", { className: "font-semibold px-4 mt-5 mb-3" }, q ? t("results") : t("top_songs")), ld ? /* @__PURE__ */ React.createElement("div", { className: "px-4 space-y-3" }, Array(6).fill(0).map((_, i) => /* @__PURE__ */ React.createElement(Skel, { key: i, c: "h-14" }))) : songs.map((s) => /* @__PURE__ */ React.createElement("button", { key: s.trackId, onClick: () => play(s, songs), className: "flex items-center gap-3 w-full px-4 py-2.5 hover:bg-[hsl(var(--muted))]/50 text-left" }, /* @__PURE__ */ React.createElement("img", { src: s.artworkUrl100 || s.artworkUrl60, className: "w-12 h-12 rounded-lg object-cover", alt: "" }), /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, /* @__PURE__ */ React.createElement("p", { className: "text-sm font-medium truncate" }, s.trackName), /* @__PURE__ */ React.createElement("p", { className: "text-xs text-muted-foreground truncate" }, s.artistName)), s.previewUrl && /* @__PURE__ */ React.createElement(Icon, { name: "play", className: "w-5 h-5 text-primary shrink-0" }))));
+    const openFolder = (e, f) => {
+      const r = e.currentTarget.getBoundingClientRect();
+      setFrom({ l: r.left, t: r.top, w: r.width, h: r.height });
+      setFolder(f);
+      setGrown(false);
+      setApps([]);
+      setFldLd(true);
+      requestAnimationFrame(() => requestAnimationFrame(() => setGrown(true)));
+      api.search(f.q, 18).then((list) => setApps(list || [])).catch(() => setApps([])).finally(() => setFldLd(false));
+    };
+    const closeFolder = () => {
+      setGrown(false);
+      setTimeout(() => {
+        setFolder(null);
+        setFrom(null);
+      }, 300);
+    };
+    const ar = _lang === "ar";
+    return /* @__PURE__ */ React.createElement("div", { className: "you-page pb-24" }, /* @__PURE__ */ React.createElement("section", { className: "you-sec" }, /* @__PURE__ */ React.createElement("h2", null, ar ? "\u0627\u062E\u062A\u0631\u0646\u0627\u0647 \u0644\u0643" : "Chosen for you"), /* @__PURE__ */ React.createElement("div", { className: "you-folders" }, YOU_FOLDERS.map((f) => /* @__PURE__ */ React.createElement("button", { key: f.id, type: "button", className: "you-folder", onClick: (e) => openFolder(e, f) }, /* @__PURE__ */ React.createElement(FolderArt, null), /* @__PURE__ */ React.createElement("span", null, ar ? f.ar : f.en))))), /* @__PURE__ */ React.createElement("section", { className: "you-sec" }, /* @__PURE__ */ React.createElement("h2", null, ar ? "\u0627\u0644\u0639\u0628 \u0627\u0644\u0622\u0646" : "Play now"), /* @__PURE__ */ React.createElement("div", { className: "you-games" }, games.map((g) => /* @__PURE__ */ React.createElement("button", { key: g.id, type: "button", className: "you-game", onClick: () => setPlay(g) }, /* @__PURE__ */ React.createElement("img", { src: "res/game/" + g.file, alt: "" }), /* @__PURE__ */ React.createElement("span", null, g.name))))), folder && /* @__PURE__ */ React.createElement("div", { className: `you-fold ${grown ? "go" : ""}`, onClick: closeFolder }, /* @__PURE__ */ React.createElement("div", { className: "you-fold-card", onClick: (e) => e.stopPropagation(), style: Object.assign({ backgroundImage: "url(res/game/folder-bg.jpg)" }, from ? { "--l": from.l + "px", "--t": from.t + "px", "--w": from.w + "px", "--h": from.h + "px" } : {}) }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "peek-x", onClick: closeFolder }, "\xD7"), /* @__PURE__ */ React.createElement("h3", null, ar ? folder.ar : folder.en), /* @__PURE__ */ React.createElement("div", { className: "you-fold-grid" }, fldLd && !apps.length && Array(9).fill(0).map((_, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "you-fold-ph" })), apps.map((a) => /* @__PURE__ */ React.createElement("button", { key: a.trackId, type: "button", className: "you-fold-app", onClick: () => open(a) }, /* @__PURE__ */ React.createElement("img", { src: a.artworkUrl100 || a.artworkUrl60, alt: "" }), /* @__PURE__ */ React.createElement("span", null, a.trackName)))))), play && /* @__PURE__ */ React.createElement("div", { className: "you-play" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "peek-x", onClick: () => setPlay(null) }, "\xD7"), /* @__PURE__ */ React.createElement("img", { src: "res/game/" + play.file, alt: "" }), /* @__PURE__ */ React.createElement("h2", null, play.name), /* @__PURE__ */ React.createElement("a", { className: "you-play-btn", href: play.https, target: "_blank", rel: "noopener noreferrer" }, ar ? "\u0627\u0644\u0639\u0628" : "Play")));
   };
   const SettingsSpinner = () => /* @__PURE__ */ React.createElement("div", { className: "set-spin-screen", role: "status", "aria-label": "loading" }, /* @__PURE__ */ React.createElement("svg", { className: "set-spin", xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 50 50", width: "36", height: "36", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("g", { className: "set-spin-rotor" }, /* @__PURE__ */ React.createElement("circle", { className: "set-spin-arc", cx: "25", cy: "25", r: "20", fill: "none", stroke: "#0B57D0", strokeWidth: "4", strokeMiterlimit: "10", strokeLinecap: "round" }))));
   const Settings = ({ selStore, setSelStore, style2, setStyle2, setExpMode, lang, setLang, night, setNight, nav }) => {
@@ -3457,7 +3475,7 @@
       page = /* @__PURE__ */ React.createElement(Detail, { id: _id, nav, favs, toggle, selStore, expMode, setDetailApp, autoInstall: _qi, onToggleTheme: toggleTheme, isDark: isDarkNow });
     } else if (route === "/favorites") page = /* @__PURE__ */ React.createElement(Favs, { favs, songFavs, open, toggle, toggleSongFav, play: playFromList });
     else if (route === "/downloads") page = /* @__PURE__ */ React.createElement(DownloadsManager, { open });
-    else if (route === "/music") page = /* @__PURE__ */ React.createElement(Music, { play: playFromList });
+    else if (route === "/you" || route === "/music") page = /* @__PURE__ */ React.createElement(YouPage, { open });
     else if (route === "/now-playing") page = /* @__PURE__ */ React.createElement(NowPlaying, { track, playing, progress, duration, onToggle: togglePlay, onPrev: playPrev, onNext: playNext, onSeek: seekTo, onFav: toggleSongFav, isFav: isSongFav, nav });
     else if (route === "/equalizer") page = /* @__PURE__ */ React.createElement(EqualizerPage, { eqOn, setEqOn, bands, setBand, volume, setVolume, nav });
     else if (route === "/settings") page = /* @__PURE__ */ React.createElement(Settings, { selStore, setSelStore, style2, setStyle2, setExpMode, lang, setLang, night, setNight, nav });

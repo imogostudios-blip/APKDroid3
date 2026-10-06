@@ -72,7 +72,7 @@ const STRINGS={
     menu:'القائمة',home:'الرئيسية',top_rated:'الأعلى تقييماً',favorites:'المفضلة',games:'الألعاب',music:'الموسيقى',settings:'الإعدادات',
     terms:'بنود الخدمة',privacy:'سياسة الخصوصية',
     search_placeholder:'ابحث عن تطبيقات وألعاب',search_apps:'Search apps & games',
-    nav_games:'ألعاب',nav_apps:'تطبيقات',nav_search:'بحث',nav_library:'مكتبة',nav_music:'موسيقى',
+    nav_games:'ألعاب',nav_apps:'تطبيقات',nav_search:'بحث',nav_library:'مكتبة',nav_you:'انت',
     featured:'مميز',top_free_apps:'أفضل التطبيقات المجانية',productivity:'الإنتاجية',education:'التعليم',entertainment:'الترفيه',top_paid_apps:'أفضل التطبيقات المدفوعة',see_all:'عرض الكل',
     top_game:'أفضل لعبة',top_free_games:'أفضل الألعاب المجانية',action_games:'ألعاب الأكشن',
     recent_searches:'عمليات البحث الأخيرة',
@@ -136,7 +136,7 @@ const STRINGS={
     menu:'Menu',home:'Home',top_rated:'Top Rated',favorites:'Favorites',games:'Games',music:'Music',settings:'Settings',
     terms:'Terms of Service',privacy:'Privacy Policy',
     search_placeholder:'Search apps & games',search_apps:'Search apps & games',
-    nav_games:'Games',nav_apps:'Apps',nav_search:'Search',nav_library:'Library',nav_music:'Music',
+    nav_games:'Games',nav_apps:'Apps',nav_search:'Search',nav_library:'Library',nav_you:'You',
     featured:'Featured',top_free_apps:'Top Free Apps',productivity:'Productivity',education:'Education',entertainment:'Entertainment',top_paid_apps:'Top Paid Apps',see_all:'See All',
     top_game:'Top Game',top_free_games:'Top Free Games',action_games:'Action Games',
     recent_searches:'RECENT SEARCHES',
@@ -396,7 +396,7 @@ const Icon=({name,className='w-5 h-5'})=>{
   const p={
     home:<><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></>,
     search:<><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></>,
-    mic:<><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"></path><path d="M19 10v2a7 7 0 01-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></>,
+    mic:<><path fill="currentColor" stroke="none" d="M395-435q-35-35-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35q-50 0-85-35Zm85-205Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm68.5-371.5Q520-503 520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480q17 0 28.5-11.5Z"></path></>,
     heart:<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>,
     person:<path fill="currentColor" stroke="none" d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"></path>,
     bookmark:<path fill="currentColor" stroke="none" d="M11.539 17.112C11.876 16.937 12.288 16.967 12.6 17.2L17.4 20.8C18.06 21.294 19 20.824 19 20V5C19 3.895 18.105 3 17 3H7C5.895 3 5 3.895 5 5V20C5 20.824 5.94 21.294 6.6 20.8L11.4 17.2L11.539 17.112ZM21 20C21 22.472 18.178 23.883 16.2 22.4L12 19.249L7.8 22.4C5.822 23.883 3 22.472 3 20V5C3 2.791 4.791 1 7 1H17C19.209 1 21 2.791 21 5V20Z"></path>,
@@ -659,7 +659,7 @@ const AccountHub=({open,onClose,nav,theme,setTheme,profile,setProfile,lang,night
           {p:'/',k:'nav_apps'},
           {p:'/games',k:'nav_games'},
           {p:'/favorites',k:'nav_library'},
-          {p:'/music',k:'nav_music'},
+          {p:'/you',k:'nav_you'},
           {p:'/search',k:'nav_search'},
         ].map(it=>(
           <button key={it.p} type="button" className="acc-pick-item" onClick={()=>{setPagesOpen(false);go(it.p)}}>
@@ -695,11 +695,11 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
       <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M11.539,17.112C11.876,16.937 12.288,16.967 12.6,17.2L17.4,20.8C18.06,21.294 19,20.824 19,20V5C19,3.895 18.105,3 17,3H7C5.895,3 5,3.895 5,5V20C5,20.824 5.94,21.294 6.6,20.8L11.4,17.2L11.539,17.112ZM21,20C21,22.472 18.178,23.883 16.2,22.4L12,19.249L7.8,22.4C5.822,23.883 3,22.472 3,20V5C3,2.791 4.791,1 7,1H17C19.209,1 21,2.791 21,5V20Z" fill="currentColor"></path></svg>
     );
   }
-  if(kind==='head'){
+  if(kind==='you'){
     return on?(
-      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path d="M12,3a9,9 0,0 0,-9 9v7a2,2 0,0 0,2 2h2a2,2 0,0 0,2 -2v-4a2,2 0,0 0,-2 -2H5v-1a7,7 0,1 1,14 0v1h-2a2,2 0,0 0,-2 2v4a2,2 0,0 0,2 2h2a2,2 0,0 0,2 -2v-7a9,9 0,0 0,-9 -9Z" fill="currentColor"></path></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24"><path fill="currentColor" d="M12,12c2.21,0 4,-1.79 4,-4s-1.79,-4 -4,-4 -4,1.79 -4,4 1.79,4 4,4zM12,14c-2.67,0 -8,1.34 -8,4v2h16v-2c0,-2.66 -5.33,-4 -8,-4z"></path></svg>
     ):(
-      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 960 960"><path d="M360,840H200q-33,0-56.5-23.5T120,760V480q0-75 28.5-140.5t77-114t114-77T480,120t140.5,28.5t114,77t77,114T840,480V760q0,33-23.5,56.5T760,840H600V520H760V480q0-117-81.5-198.5T480,200T281.5,281.5T200,480v40H360V840ZM280,600H200V760h80V600Zm400,0V760h80V600H680Zm-400,0H200H200Zm400,0H680H680Z" fill="currentColor"></path></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 -960 960 960"><path fill="currentColor" d="M367-527q-47-47-47-113t47-113q47-47 113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm296.5-343.5Q560-607 560-640t-23.5-56.5Q513-720 480-720t-56.5 23.5Q400-673 400-640t23.5 56.5Q447-560 480-560t56.5-23.5ZM480-640Zm0 400Z"></path></svg>
     );
   }
   return null;
@@ -707,11 +707,11 @@ const NavIcon=({kind,on,className='w-6 h-6'})=>{
 
 const BottomNav=({route,nav})=>{
   const items=[
-    {k:'nav_games',p:'/games',i:'game'},
-    {k:'nav_apps',p:'/',i:'home',root:true},
-    {k:'nav_search',p:'/search',i:'search'},
+    {k:'nav_you',p:'/you',i:'you'},
     {k:'nav_library',p:'/favorites',i:'heart'},
-    {k:'nav_music',p:'/music',i:'head'}
+    {k:'nav_search',p:'/search',i:'search'},
+    {k:'nav_apps',p:'/',i:'home',root:true},
+    {k:'nav_games',p:'/games',i:'game'}
   ];
   return(
     <nav className="app-footer bot-nav w-full bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] pb-safe sm:hidden">
@@ -1212,7 +1212,7 @@ const Games=({open})=>{
         return(
           <HScroll key={sec.k} title={t(sec.k)} rtl pad="px-5 g-shot-row">
             {waiting||!list.length
-              ?Array(3).fill(0).map((_,j)=><div key={j} className="g-shot-skel shrink-0 bg-muted animate-pulse"><MediaSpin kind="ring"></MediaSpin></div>)
+              ?Array(3).fill(0).map((_,j)=><div key={j} className="g-shot-skel shrink-0"><MediaSpin kind="ring"></MediaSpin></div>)
               :list.filter(isGameApp).map(a=><GameShotCard key={a.trackId+'-'+sec.k} app={a} onClick={open}></GameShotCard>)
             }
           </HScroll>
@@ -1292,6 +1292,11 @@ const SearchAdRow=({app,onOpen})=>{
     </button>
   );
 };
+const MicGlyph=({cancel})=>cancel?(
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+):(
+  <svg viewBox="0 -960 960 960" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M395-435q-35-35-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35q-50 0-85-35Zm85-205Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm68.5-371.5Q520-503 520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480q17 0 28.5-11.5Z"></path></svg>
+);
 const Search=({nav,open,initQ,photo,onOpenAccount})=>{
   const[q,setQ]=useState(initQ||'');
   const[res,setRes]=useState([]);
@@ -1358,6 +1363,11 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
   };
   const startVoice=e=>{
     if(e&&e.stopPropagation)e.stopPropagation();
+    if(hearing&&recRef.current){
+      try{recRef.current.abort()}catch(err){}
+      setHearing(false);
+      return;
+    }
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     setPanel(true);
     setSubmitted(false);
@@ -1408,7 +1418,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
         </button>
         <div className="ps-bar" onClick={openPanel} role="button" tabIndex={0}>
           <button type="button" className={`ps-mic-in ${hearing?'on':''}`} aria-label="mic" onClick={startVoice}>
-            <Icon name="mic" className="w-5 h-5"></Icon>
+            <MicGlyph cancel={hearing}></MicGlyph>
           </button>
           <span>{t('search_placeholder')}</span>
           <Icon name="search" className="w-5 h-5"></Icon>
@@ -1443,7 +1453,7 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
             </button>
             <input ref={ref} value={q} onChange={e=>{setQ(e.target.value);setSubmitted(false)}} onKeyDown={e=>{if(e.key==='Enter')doS(q)}} placeholder={ar?'البحث عن التطبيقات والألعاب':t('search_placeholder')} className="ps-panel-input"/>
             <button type="button" className={`ps-mic ${hearing?'on':''}`} aria-label="mic" onClick={startVoice}>
-              <Icon name="mic" className="w-5 h-5"></Icon>
+              <MicGlyph cancel={hearing}></MicGlyph>
             </button>
           </div>
           <div className="search-page-body">
@@ -1836,6 +1846,8 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   const[peek,setPeek]=useState(false);
   const[peekBare,setPeekBare]=useState(false);
   const[peekSrc,setPeekSrc]=useState('');
+  const[peekFrom,setPeekFrom]=useState(null);
+  const[peekGo,setPeekGo]=useState(false);
   const[dlView,setDlView]=useState(()=>computeDlProgress(getDlRec(id)));
   const[reqOpen,setReqOpen]=useState(false);
   const toastT=useRef(null);
@@ -2080,18 +2092,26 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
     setShareOpen(false);
   };
 
-  const openPeek=src=>{setPeekSrc(src||app.artworkUrl512||app.artworkUrl100||'');setPeekBare(false);setPeek(true)};
+  const openPeek=(e,src)=>{
+    const el=e&&e.currentTarget;
+    if(el&&el.getBoundingClientRect){const r=el.getBoundingClientRect();setPeekFrom({l:r.left,t:r.top,w:r.width,h:r.height})}
+    else setPeekFrom(null);
+    setPeekSrc(src||app.artworkUrl512||app.artworkUrl100||'');
+    setPeekBare(false);setPeekGo(false);setPeek(true);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>setPeekGo(true)));
+  };
+  const closePeek=()=>{setPeekGo(false);setTimeout(()=>setPeek(false),300)};
   return(
     <div className="pb-24 sm:pb-8">
       {peek&&(
-        <div className={`peek-root ${peekBare?'bare':''}`} onClick={()=>setPeek(false)}>
+        <div className={`peek-root ${peekBare?'bare':''} ${peekGo?'go':''}`} onClick={closePeek}>
           <button type="button" className={`peek-eye ${peekBare?'on':''}`} aria-label="hide info" onClick={e=>{e.stopPropagation();setPeekBare(v=>!v)}}>
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
           </button>
-          <button type="button" className="peek-x" aria-label="close" onClick={e=>{e.stopPropagation();setPeek(false)}}>
+          <button type="button" className="peek-x" aria-label="close" onClick={e=>{e.stopPropagation();closePeek()}}>
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
           </button>
-          <img className="peek-img" src={peekSrc||app.artworkUrl512||app.artworkUrl100} alt="" onClick={e=>e.stopPropagation()}/>
+          <img className={`peek-img ${peekGo?'go':''}`} style={peekFrom?{'--l':peekFrom.l+'px','--t':peekFrom.t+'px','--w':peekFrom.w+'px','--h':peekFrom.h+'px'}:undefined} src={peekSrc||app.artworkUrl512||app.artworkUrl100} alt="" onClick={e=>e.stopPropagation()}/>
           <div className={`peek-meta ${peekBare?'hide':''}`} onClick={e=>e.stopPropagation()}>
             <h2>{app.trackName}</h2>
             <p>{app.artistName}</p>
@@ -2104,7 +2124,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
       <div className="bg-detail">
         {promoShot&&(
           <div className="bg-exp-hero">
-            <img className="bg-exp-img" src={promoShot} alt="" loading="eager" onClick={()=>{setPeekSrc(promoShot);setPeekBare(false);setPeek(true)}} style={{cursor:'pointer'}}/>
+            <img className="bg-exp-img" src={promoShot} alt="" loading="eager" onClick={e=>openPeek(e,promoShot)} style={{cursor:'pointer'}}/>
             <div className="bg-exp-grad"></div>
           </div>
         )}
@@ -2146,7 +2166,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
                 src={app.artworkUrl512||app.artworkUrl100}
                 kind="icon"
                 className={`bg-detail-icon ${dlView.ring?'dl-shrunk':''}`}
-                onClick={e=>{if(e&&e.stopPropagation)e.stopPropagation();setPeekSrc(app.artworkUrl512||app.artworkUrl100);setPeekBare(false);setPeek(true)}}
+                onClick={e=>openPeek(e,app.artworkUrl512||app.artworkUrl100)}
               />
             </div>
           </div>
@@ -2667,6 +2687,92 @@ const SearchLogPage=({nav})=>{
   );
 };
 
+
+const YOU_FOLDERS=[
+  {id:'minecraft',ar:'Minecraft',en:'Minecraft',q:'minecraft'},
+  {id:'chat',ar:'تواصل',en:'Connect',q:'messenger whatsapp chat social'},
+  {id:'tools',ar:'ادوات',en:'Tools',q:'tools calculator file manager'},
+  {id:'fun',ar:'رفاهية',en:'Leisure',q:'entertainment lifestyle video relax'},
+];
+const FolderArt=()=>(
+  <svg viewBox="0 0 135 135" className="you-folder-art" aria-hidden="true">
+    <rect x="0.5" y="0.5" width="134" height="134" rx="36" fill="rgba(255,255,255,0.18)" stroke="rgba(151,151,151,0.28)"></rect>
+    <rect x="16" y="16" width="46" height="46" rx="12" fill="#E3F0FF"></rect>
+    <rect x="73" y="16" width="46" height="46" rx="12" fill="#D8F4EE"></rect>
+    <rect x="16" y="73" width="46" height="46" rx="12" fill="#FFE3DB"></rect>
+    <rect x="73" y="73" width="46" height="46" rx="12" fill="#E3FFF3"></rect>
+  </svg>
+);
+const YouPage=({open})=>{
+  const[games,setGames]=useState([]);
+  const[folder,setFolder]=useState(null);
+  const[apps,setApps]=useState([]);
+  const[fldLd,setFldLd]=useState(false);
+  const[from,setFrom]=useState(null);
+  const[grown,setGrown]=useState(false);
+  const[play,setPlay]=useState(null);
+  useEffect(()=>{fetch('res/list_games.json').then(r=>r.json()).then(d=>setGames(Array.isArray(d)?d:[])).catch(()=>setGames([]))},[]);
+  const openFolder=(e,f)=>{
+    const r=e.currentTarget.getBoundingClientRect();
+    setFrom({l:r.left,t:r.top,w:r.width,h:r.height});
+    setFolder(f);setGrown(false);setApps([]);setFldLd(true);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>setGrown(true)));
+    api.search(f.q,18).then(list=>setApps(list||[])).catch(()=>setApps([])).finally(()=>setFldLd(false));
+  };
+  const closeFolder=()=>{setGrown(false);setTimeout(()=>{setFolder(null);setFrom(null)},300)};
+  const ar=_lang==='ar';
+  return(
+    <div className="you-page pb-24">
+      <section className="you-sec">
+        <h2>{ar?'اخترناه لك':'Chosen for you'}</h2>
+        <div className="you-folders">
+          {YOU_FOLDERS.map(f=>(
+            <button key={f.id} type="button" className="you-folder" onClick={e=>openFolder(e,f)}>
+              <FolderArt></FolderArt>
+              <span>{ar?f.ar:f.en}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+      <section className="you-sec">
+        <h2>{ar?'العب الآن':'Play now'}</h2>
+        <div className="you-games">
+          {games.map(g=>(
+            <button key={g.id} type="button" className="you-game" onClick={()=>setPlay(g)}>
+              <img src={'res/game/'+g.file} alt=""/>
+              <span>{g.name}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+      {folder&&(
+        <div className={`you-fold ${grown?'go':''}`} onClick={closeFolder}>
+          <div className="you-fold-card" onClick={e=>e.stopPropagation()} style={Object.assign({backgroundImage:'url(res/game/folder-bg.jpg)'}, from?{'--l':from.l+'px','--t':from.t+'px','--w':from.w+'px','--h':from.h+'px'}:{})}>
+            <button type="button" className="peek-x" onClick={closeFolder}>×</button>
+            <h3>{ar?folder.ar:folder.en}</h3>
+            <div className="you-fold-grid">
+              {fldLd&&!apps.length&&Array(9).fill(0).map((_,i)=><div key={i} className="you-fold-ph"></div>)}
+              {apps.map(a=>(
+                <button key={a.trackId} type="button" className="you-fold-app" onClick={()=>open(a)}>
+                  <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
+                  <span>{a.trackName}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      {play&&(
+        <div className="you-play">
+          <button type="button" className="peek-x" onClick={()=>setPlay(null)}>×</button>
+          <img src={'res/game/'+play.file} alt=""/>
+          <h2>{play.name}</h2>
+          <a className="you-play-btn" href={play.https} target="_blank" rel="noopener noreferrer">{ar?'العب':'Play'}</a>
+        </div>
+      )}
+    </div>
+  );
+};
 const Music=({play})=>{
   const initQ=(()=>{try{return new URLSearchParams((location.hash.split('?')[1]||'')).get('q')||''}catch{return ''}})();
   const[songs,setSongs]=useState([]);const[q,setQ]=useState(initQ);const[ld,setLd]=useState(true);
@@ -3442,7 +3548,7 @@ function App(){
   else if(isDetail){const _p=route.split('?');const _id=(_p[0].split('/')[2]||'');const _qi=new URLSearchParams(_p[1]||'').get('install')==='1';page=<Detail id={_id} nav={nav} favs={favs} toggle={toggle} selStore={selStore} expMode={expMode} setDetailApp={setDetailApp} autoInstall={_qi} onToggleTheme={toggleTheme} isDark={isDarkNow}></Detail>}
   else if(route==='/favorites')page=<Favs favs={favs} songFavs={songFavs} open={open} toggle={toggle} toggleSongFav={toggleSongFav} play={playFromList}></Favs>;
   else if(route==='/downloads')page=<DownloadsManager open={open}></DownloadsManager>;
-  else if(route==='/music')page=<Music play={playFromList}></Music>;
+  else if(route==='/you'||route==='/music')page=<YouPage open={open}></YouPage>;
   else if(route==='/now-playing')page=<NowPlaying track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onFav={toggleSongFav} isFav={isSongFav} nav={nav}></NowPlaying>;
   else if(route==='/equalizer')page=<EqualizerPage eqOn={eqOn} setEqOn={setEqOn} bands={bands} setBand={setBand} volume={volume} setVolume={setVolume} nav={nav}></EqualizerPage>;
   else if(route==='/settings')page=<Settings selStore={selStore} setSelStore={setSelStore} style2={style2} setStyle2={setStyle2} setExpMode={setExpMode} lang={lang} setLang={setLang} night={night} setNight={setNight} nav={nav}></Settings>;
