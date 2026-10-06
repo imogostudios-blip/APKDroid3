@@ -2700,9 +2700,8 @@ const YouPage=({open})=>{
     YOU_FOLDERS.forEach(f=>{
       api.search(f.q,3).then(list=>setRowApps(prev=>({...prev,[f.id]:(list||[]).slice(0,3)}))).catch(()=>{});
     });
-    api.search('popular free apps',24).then(list=>setFreeApps((list||[]).slice(0,24))).catch(()=>setFreeApps([]));
   },[]);
-  const happy=name=>'https://www.happymod.com/search.html?q='+encodeURIComponent(name||'');
+  useEffect(()=>{fetch('res/list_apps.json').then(r=>r.json()).then(d=>setFreeApps(Array.isArray(d)?d:[])).catch(()=>setFreeApps([]))},[]);
   const openFolder=(e,f)=>{
     const r=e.currentTarget.getBoundingClientRect();
     setFrom({l:r.left,t:r.top,w:r.width,h:r.height});
@@ -2749,12 +2748,12 @@ const YouPage=({open})=>{
         {[0,1,2].map(row=>(
           <div key={row} className="you-free-row">
             {freeApps.slice(row*8,row*8+8).map(a=>(
-              <a key={a.trackId} className="you-free-app" href={happy(a.trackName)} target="_blank" rel="noopener noreferrer">
+              <a key={a.id} className="you-free-app" href={a.https} target="_blank" rel="noopener noreferrer">
                 <span className="you-free-ico">
-                  <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
+                  <img src={'res/apps/'+a.file} alt=""/>
                   <img className="you-medal" src="res/game/medal.svg" alt=""/>
                 </span>
-                <span>{a.trackName}</span>
+                <span>{a.name}</span>
               </a>
             ))}
           </div>
