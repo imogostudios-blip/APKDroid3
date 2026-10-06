@@ -435,17 +435,9 @@ const Stars=({r=0,s='w-3 h-3'})=>(
 const SVG_M3_SPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%"><g class="apk-m3-container"><circle class="apk-m3-track" cx="24" cy="24" r="18"></circle></g></svg>`;
 const SVG_AD_DOTS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%"><rect class="apk-grid-dot d-1" x="20" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-2" x="42" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="64" y="20" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-2" x="20" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="42" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-4" x="64" y="42" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-3" x="20" y="64" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-4" x="42" y="64" width="16" height="16" rx="4"></rect><rect class="apk-grid-dot d-5" x="64" y="64" width="16" height="16" rx="4"></rect></svg>`;
 const MediaSpin=({kind})=> <span className={kind==='dots'?'media-spin media-dots':'media-spin media-ring'} aria-hidden="true" dangerouslySetInnerHTML={{__html:kind==='dots'?SVG_AD_DOTS:SVG_M3_SPIN}}></span>;
-const SmartImg=({src,alt='',className='',kind='icon',eager,onClick})=>{
-  const [on,setOn]=useState(!src);
-  useEffect(()=>{setOn(!src)},[src]);
-  return (
-    <span className={`media-box media-${kind} ${on?'is-on':'is-wait'} ${className||''}`} onClick={onClick}>
-      {!on&&<span className="media-shimmer"></span>}
-      {!on&&<MediaSpin kind={kind==='ad'?'dots':'ring'}></MediaSpin>}
-      <img src={src||BLANK_PX} alt={alt} className="media-img" loading={eager?'eager':'lazy'} onLoad={()=>setOn(true)} onError={()=>setOn(true)}/>
-    </span>
-  );
-};
+const SmartImg=({src,alt='',className='',eager,onClick})=>(
+  <img src={src||''} alt={alt} className={className||''} loading={eager?'eager':'lazy'} onClick={onClick}/>
+);
 const AppCard=({app,onClick,small})=>{
   if(!app)return null;
   const img=app.artworkUrl100||app.artworkUrl60;
@@ -673,7 +665,9 @@ const AccountHub=({open,onClose,nav,theme,setTheme,profile,setProfile,lang,night
 
 const NavIcon=({kind,on,className='w-6 h-6'})=>{
   const common={fill:'currentColor'};
-  if(kind==='search')return <Icon name="search" className={className}></Icon>;
+  if(kind==='search')return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 19l-5.7-5.7a6.5 6.5 0 10-1.5 1.5l5.7 5.7 1.5-1.5zM5 9.5a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0z"></path></svg>
+  );
   if(kind==='game'){
     return on?(
       <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 960 960"><path d="M182,760q-51,0 -79,-35.5T82,638l42,-300q9,-60 53.5,-99T282,200h396q60,0 104.5,39t53.5,99l42,300q7,51 -21,86.5T778,760q-21,0 -39,-7.5T706,730l-90,-90L344,640l-90,90q-15,15 -33,22.5t-39,7.5ZM680,520q17,0 28.5,-11.5T720,480q0,-17 -11.5,-28.5T680,440q-17,0 -28.5,11.5T640,480q0,17 11.5,28.5T680,520ZM600,400q17,0 28.5,-11.5T640,360q0,-17 -11.5,-28.5T600,320q-17,0 -28.5,11.5T560,360q0,17 11.5,28.5T600,400ZM310,520h60v-70h70v-60h-70v-70h-60v70h-70v60h70v70Z" fill="currentColor"></path></svg>
@@ -1212,7 +1206,7 @@ const Games=({open})=>{
         return(
           <HScroll key={sec.k} title={t(sec.k)} rtl pad="px-5 g-shot-row">
             {waiting||!list.length
-              ?Array(3).fill(0).map((_,j)=><div key={j} className="g-shot-skel shrink-0"><MediaSpin kind="ring"></MediaSpin></div>)
+              ?Array(3).fill(0).map((_,j)=><div key={j} className="shrink-0 bg-muted animate-pulse" style={{width:'min(88vw,420px)',aspectRatio:'16/9',borderRadius:16}}></div>)
               :list.filter(isGameApp).map(a=><GameShotCard key={a.trackId+'-'+sec.k} app={a} onClick={open}></GameShotCard>)
             }
           </HScroll>
@@ -1431,16 +1425,12 @@ const Search=({nav,open,initQ,photo,onOpenAccount})=>{
           <span className="ps-dots">⋮</span>
         </div>
         <div className="ps-ad-scroller">
-          {(ads.length?ads:[null,null,null,null]).slice(0,6).map((a,i)=>a?(
+          {ads.slice(0,6).map(a=>(
             <button key={a.trackId} type="button" className="ps-ad-card" onClick={()=>open(a)}>
-              <SmartImg kind="ad" className="ps-ad-img" src={a.artworkUrl100||a.artworkUrl60||''}/>
+              <img src={a.artworkUrl100||a.artworkUrl60||''} alt=""/>
               <span>{a.trackName}</span>
               <em>★ {fmtRating(a.averageUserRating)}</em>
             </button>
-          ):(
-            <div key={'ad-ph-'+i} className="ps-ad-card">
-              <span className="ps-ad-ph"><MediaSpin kind="dots"></MediaSpin></span>
-            </div>
           ))}
         </div>
       </section>
@@ -1848,6 +1838,7 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
   const[peekSrc,setPeekSrc]=useState('');
   const[peekFrom,setPeekFrom]=useState(null);
   const[peekGo,setPeekGo]=useState(false);
+  const[peekOut,setPeekOut]=useState(false);
   const[dlView,setDlView]=useState(()=>computeDlProgress(getDlRec(id)));
   const[reqOpen,setReqOpen]=useState(false);
   const toastT=useRef(null);
@@ -2097,14 +2088,14 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
     if(el&&el.getBoundingClientRect){const r=el.getBoundingClientRect();setPeekFrom({l:r.left,t:r.top,w:r.width,h:r.height})}
     else setPeekFrom(null);
     setPeekSrc(src||app.artworkUrl512||app.artworkUrl100||'');
-    setPeekBare(false);setPeekGo(false);setPeek(true);
+    setPeekBare(false);setPeekOut(false);setPeekGo(false);setPeek(true);
     requestAnimationFrame(()=>requestAnimationFrame(()=>setPeekGo(true)));
   };
-  const closePeek=()=>{setPeekGo(false);setTimeout(()=>setPeek(false),300)};
+  const closePeek=()=>{setPeekOut(true);setPeekGo(false);setTimeout(()=>setPeek(false),180)};
   return(
     <div className="pb-24 sm:pb-8">
       {peek&&(
-        <div className={`peek-root ${peekBare?'bare':''} ${peekGo?'go':''}`} onClick={closePeek}>
+        <div className={`peek-root ${peekBare?'bare':''} ${peekGo?'go':''} ${peekOut?'out':''}`} onClick={closePeek}>
           <button type="button" className={`peek-eye ${peekBare?'on':''}`} aria-label="hide info" onClick={e=>{e.stopPropagation();setPeekBare(v=>!v)}}>
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
           </button>
@@ -2694,17 +2685,10 @@ const YOU_FOLDERS=[
   {id:'tools',ar:'ادوات',en:'Tools',q:'tools calculator file manager'},
   {id:'fun',ar:'رفاهية',en:'Leisure',q:'entertainment lifestyle video relax'},
 ];
-const FolderArt=()=>(
-  <svg viewBox="0 0 135 135" className="you-folder-art" aria-hidden="true">
-    <rect x="0.5" y="0.5" width="134" height="134" rx="36" fill="rgba(255,255,255,0.18)" stroke="rgba(151,151,151,0.28)"></rect>
-    <rect x="16" y="16" width="46" height="46" rx="12" fill="#E3F0FF"></rect>
-    <rect x="73" y="16" width="46" height="46" rx="12" fill="#D8F4EE"></rect>
-    <rect x="16" y="73" width="46" height="46" rx="12" fill="#FFE3DB"></rect>
-    <rect x="73" y="73" width="46" height="46" rx="12" fill="#E3FFF3"></rect>
-  </svg>
-);
 const YouPage=({open})=>{
   const[games,setGames]=useState([]);
+  const[rowApps,setRowApps]=useState({});
+  const[freeApps,setFreeApps]=useState([]);
   const[folder,setFolder]=useState(null);
   const[apps,setApps]=useState([]);
   const[fldLd,setFldLd]=useState(false);
@@ -2712,6 +2696,13 @@ const YouPage=({open})=>{
   const[grown,setGrown]=useState(false);
   const[play,setPlay]=useState(null);
   useEffect(()=>{fetch('res/list_games.json').then(r=>r.json()).then(d=>setGames(Array.isArray(d)?d:[])).catch(()=>setGames([]))},[]);
+  useEffect(()=>{
+    YOU_FOLDERS.forEach(f=>{
+      api.search(f.q,3).then(list=>setRowApps(prev=>({...prev,[f.id]:(list||[]).slice(0,3)}))).catch(()=>{});
+    });
+    api.search('popular free apps',24).then(list=>setFreeApps((list||[]).slice(0,24))).catch(()=>setFreeApps([]));
+  },[]);
+  const happy=name=>'https://www.happymod.com/search.html?q='+encodeURIComponent(name||'');
   const openFolder=(e,f)=>{
     const r=e.currentTarget.getBoundingClientRect();
     setFrom({l:r.left,t:r.top,w:r.width,h:r.height});
@@ -2725,12 +2716,20 @@ const YouPage=({open})=>{
     <div className="you-page pb-24">
       <section className="you-sec">
         <h2>{ar?'اخترناه لك':'Chosen for you'}</h2>
-        <div className="you-folders">
+        <div className="you-rows">
           {YOU_FOLDERS.map(f=>(
-            <button key={f.id} type="button" className="you-folder" onClick={e=>openFolder(e,f)}>
-              <FolderArt></FolderArt>
-              <span>{ar?f.ar:f.en}</span>
-            </button>
+            <div key={f.id} className="you-row">
+              <button type="button" className="you-folder" onClick={e=>openFolder(e,f)}>
+                <img className="you-folder-art" src="res/game/folder.svg" alt=""/>
+                <span>{ar?f.ar:f.en}</span>
+              </button>
+              {(rowApps[f.id]||[]).map(a=>(
+                <button key={a.trackId} type="button" className="you-mini" onClick={()=>open(a)}>
+                  <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
+                  <span>{a.trackName}</span>
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       </section>
@@ -2744,6 +2743,22 @@ const YouPage=({open})=>{
             </button>
           ))}
         </div>
+      </section>
+      <section className="you-sec">
+        <h2 className="you-free-title">Free <img src="res/game/free-mark.svg" alt=""/></h2>
+        {[0,1,2].map(row=>(
+          <div key={row} className="you-free-row">
+            {freeApps.slice(row*8,row*8+8).map(a=>(
+              <a key={a.trackId} className="you-free-app" href={happy(a.trackName)} target="_blank" rel="noopener noreferrer">
+                <span className="you-free-ico">
+                  <img src={a.artworkUrl100||a.artworkUrl60} alt=""/>
+                  <img className="you-medal" src="res/game/medal.svg" alt=""/>
+                </span>
+                <span>{a.trackName}</span>
+              </a>
+            ))}
+          </div>
+        ))}
       </section>
       {folder&&(
         <div className={`you-fold ${grown?'go':''}`} onClick={closeFolder}>
