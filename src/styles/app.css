@@ -753,9 +753,10 @@ html:not(.dark):not(.black) .off-btn-no{background:#e4e7ec;color:#202124}
 .you-folder span,.you-mini span{display:block;margin-top:6px;font-size:.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .you-free-title{display:flex;align-items:center;gap:8px}
 .you-free-title img{width:28px;height:28px}
-.you-free-row{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-bottom:12px}
-.you-free-app{text-decoration:none;color:inherit;min-width:0}
+.you-free-row{display:flex;gap:12px;overflow-x:auto;margin:0 -4px 16px;padding:4px 4px 8px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.you-free-row::-webkit-scrollbar{display:none}
+.you-free-app{text-decoration:none;color:inherit;flex:0 0 calc((100% - 24px) / 3);scroll-snap-align:start;min-width:0}
 .you-free-ico{position:relative;display:block}
-.you-free-ico img:first-child{width:100%;aspect-ratio:1;border-radius:14px;object-fit:cover;display:block}
-.you-medal{position:absolute;top:-3px;right:-3px;width:46%;height:46%;pointer-events:none}
-.you-free-app span:last-child{display:block;margin-top:4px;font-size:.62rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.you-free-ico img:first-child{width:100%;aspect-ratio:1;border-radius:22px;object-fit:cover;display:block}
+.you-medal{position:absolute;top:-4px;right:-4px;width:34%;height:34%;pointer-events:none}
+.you-free-app span:last-child{display:block;margin-top:8px;font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
