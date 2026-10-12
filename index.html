@@ -1,37 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="monetag" content="e56aff8858cd597a1838771a24358984">
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>APKDroid</title>
-
-<link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#141415"/>
-<meta name="application-name" content="APKDroid"/>
-<meta name="apple-mobile-web-app-title" content="APKDroid"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<link rel="icon" type="image/png" sizes="192x192" href="res/icons/icon-192.png"/>
-<link rel="icon" type="image/png" sizes="512x512" href="res/icons/icon-512.png"/>
-<link rel="apple-touch-icon" href="res/icons/icon-192.png"/>
-<link rel="shortcut icon" href="favicon.png"/>
-
-<link rel="stylesheet" href="res/fonts/fonts.css"/>
-<link rel="stylesheet" href="src/styles/tailwind.css"/>
-<link rel="stylesheet" href="src/styles/app.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Store - Classic UI</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#34A853">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        body {
+            background: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: #34A853;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo::before {
+            content: "▶";
+            font-size: 24px;
+            color: white;
+        }
+        .search-bar {
+            flex: 1;
+            margin: 0 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            padding: 8px 12px;
+            color: white;
+            border: none;
+            outline: none;
+        }
+        .search-bar::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+        .nav-tabs {
+            background: white;
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 56px;
+            z-index: 99;
+        }
+        .nav-tabs button {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px 8px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+        }
+        .nav-tabs button.active {
+            color: #34A853;
+            border-bottom-color: #34A853;
+            font-weight: 500;
+        }
+        .content {
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 16px 0 12px;
+            color: #333;
+        }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        .app-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .app-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .app-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            margin: 0 auto 8px;
+            background: #eee;
+            object-fit: cover;
+        }
+        .app-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .app-dev {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .rating {
+            color: #FF9800;
+            font-size: 12px;
+        }
+        .install-btn {
+            background: #34A853;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            border-top: 1px solid #ddd;
+            z-index: 100;
+        }
+        .bottom-nav button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .bottom-nav button.active {
+            color: #34A853;
+        }
+        .hidden {
+            display: none;
+        }
+        .page {
+            display: none;
+            padding-bottom: 70px;
+        }
+        .page.active {
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+            .nav-tabs {
+                display: flex;
+            }
+        }
+        @media (max-width: 767px) {
+            .nav-tabs {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="root"></div>
+    <header class="header">
+        <div class="logo">Play Store</div>
+        <input type="text" class="search-bar" placeholder="Search for apps & games">
+        <div style="font-size: 20px;">⋮</div>
+    </header>
 
-<script src="vendor/react.production.min.js"></script>
-<script src="vendor/react-dom.production.min.js"></script>
-<script src="src/app.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(function () {});
-}
-</script>
+    <nav class="nav-tabs">
+        <button class="active" onclick="showPage('home')">Home</button>
+        <button onclick="showPage('apps')">Apps</button>
+        <button onclick="showPage('games')">Games</button>
+        <button onclick="showPage('movies')">Movies</button>
+        <button onclick="showPage('books')">Books</button>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="content">
+            <h2 class="section-title">Top Charts</h2>
+            <div class="app-grid" id="home-apps"></div>
+            <h2 class="section-title">Recommended for you</h2>
+            <div class="app-grid" id="recommended"></div>
+        </div>
+    </div>
+
+    <div id="apps" class="page">
+        <div class="content">
+            <h2 class="section-title">All Apps</h2>
+            <div class="app-grid" id="all-apps"></div>
+        </div>
+    </div>
+
+    <div id="games" class="page">
+        <div class="content">
+            <h2 class="section-title">Popular Games</h2>
+            <div class="app-grid" id="games-list"></div>
+        </div>
+    </div>
+
+    <div id="movies" class="page">
+        <div class="content">
+            <h2 class="section-title">Movies & TV</h2>
+            <p style="padding: 20px; color: #666;">Movies section - classic Play Store style. Assets from res/ can be used for posters.</p>
+        </div>
+    </div>
+
+    <div id="books" class="page">
+        <div class="content">
+            <h2 class="section-title">Books</h2>
+            <p style="padding: 20px; color: #666;">Books section using the provided resources.</p>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="active" onclick="showPage('home')">🏠 Home</button>
+        <button onclick="showPage('apps')">📱 Apps</button>
+        <button onclick="showPage('games')">🎮 Games</button>
+        <button onclick="showPage('movies')">🎬 Movies</button>
+    </nav>
+
+    <script>
+        // Sample data using placeholder icons from res folder (obfuscated names)
+        // In a real setup, map actual icons from the res/ assets
+        const sampleApps = [
+            { name: "WhatsApp", dev: "WhatsApp Inc.", rating: "4.4", icon: "res/-0d.png" },
+            { name: "Facebook", dev: "Meta", rating: "4.2", icon: "res/-1h.png" },
+            { name: "Instagram", dev: "Meta", rating: "4.3", icon: "res/-3X.png" },
+            { name: "YouTube", dev: "Google", rating: "4.5", icon: "res/-5N.png" },
+            { name: "Chrome", dev: "Google", rating: "4.6", icon: "res/-7c.png" },
+            { name: "Maps", dev: "Google", rating: "4.4", icon: "res/-As.png" },
+            { name: "Gmail", dev: "Google", rating: "4.5", icon: "res/-Gv.png" },
+            { name: "Drive", dev: "Google", rating: "4.4", icon: "res/-Hr.png" },
+            { name: "Photos", dev: "Google", rating: "4.7", icon: "res/-Tf.png" },
+            { name: "Play Games", dev: "Google", rating: "4.3", icon: "res/-fY.png" },
+            { name: "Calendar", dev: "Google", rating: "4.2", icon: "res/-iz.png" },
+            { name: "Keep Notes", dev: "Google", rating: "4.4", icon: "res/-n8.png" }
+        ];
+
+        function createAppCard(app) {
+            return `
+                <div class="app-card">
+                    <img class="app-icon" src="${app.icon}" alt="${app.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect fill=%22%2334A853%22 width=%2264%22 height=%2264%22/><text x=%2232%22 y=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2220%22>${app.name[0]}</text></svg>'">
+                    <div class="app-name">${app.name}</div>
+                    <div class="app-dev">${app.dev}</div>
+                    <div class="rating">★ ${app.rating}</div>
+                    <button class="install-btn">Install</button>
+                </div>
+            `;
+        }
+
+        function renderApps(containerId, apps) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = apps.map(createAppCard).join('');
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-tabs button, .bottom-nav button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApps('home-apps', sampleApps.slice(0, 6));
+            renderApps('recommended', sampleApps.slice(4));
+            renderApps('all-apps', sampleApps);
+            renderApps('games-list', sampleApps.slice(2, 8));
+
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js');
+            }
+        });
+
+        // Search functionality
+        document.querySelector('.search-bar').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = sampleApps.filter(app => 
+                app.name.toLowerCase().includes(query) || 
+                app.dev.toLowerCase().includes(query)
+            );
+            renderApps('home-apps', filtered);
+        });
+    </script>
 </body>
 </html>
