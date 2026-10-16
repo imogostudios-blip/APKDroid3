@@ -992,61 +992,57 @@ html:not(.style2).dark .hdr-chip.on, html:not(.style2).black .hdr-chip.on { back
 }
 .download-btn:hover { opacity: 0.9; }
 
-/* Custom switch for style2 toggle */
+/* Custom switch style for style2 toggle - blue style without ads */
 .switch-row {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 12px;
-padding-inline: 4px;
-font-family: system-ui, sans-serif;
-font-size: 16px;
-font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline: 4px;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-/* زر المفتاح نفسه */
 .sw {
-flex: none;
-position: relative;
-width: 52px;
-height: 32px;
-border-radius: 16px;
-border: 2px solid #53686A;
-background: #D3DDDB;
-cursor: pointer;
-padding: 0;
-transition: background-color 0.2s, border-color 0.2s;
+  flex: none;
+  position: relative;
+  width: 52px;
+  height: 32px;
+  border-radius: 16px;
+  border: 2px solid #53686A;
+  background: #D3DDDB;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-/* الدائرة المتحركة داخل المفتاح */
 .sw::after {
-content: "";
-position: absolute;
-top: 6px;
-inset-inline-start: 6px;
-width: 16px;
-height: 16px;
-border-radius: 50%;
-background: #53686A;
-transition: inset-inline-start 0.25s cubic-bezier(0.05, 0.7, 0.1, 1), top 0.25s, width 0.25s, height 0.25s, background-color 0.2s;
+  content: "";
+  position: absolute;
+  top: 6px;
+  inset-inline-start: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #53686A;
+  transition: inset-inline-start 0.25s cubic-bezier(0.05, 0.7, 0.1, 1), top 0.25s, width 0.25s, height 0.25s, background-color 0.2s;
 }
 
-/* حالة التفعيل (عندما يكون المفتاح مُضاء/مُفعل) */
 .sw[aria-checked="true"] {
-background: #0F766E;
-border-color: #0F766E;
+  background: #0F766E;
+  border-color: #0F766E;
 }
 
 .sw[aria-checked="true"]::after {
-top: 2px;
-inset-inline-start: 22px;
-width: 24px;
-height: 24px;
-background: #F4F7F6;
+  top: 2px;
+  inset-inline-start: 22px;
+  width: 24px;
+  height: 24px;
+  background: #F4F7F6;
 }
 
-/* تأثير التركيز للوصولية */
 .sw:focus-visible {
-outline: 3px solid #0F766E;
-outline-offset: 3px;
+  outline: 3px solid #0F766E;
+  outline-offset: 3px;
 }
