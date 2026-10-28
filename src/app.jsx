@@ -1007,24 +1007,77 @@ const probeOnline=()=>new Promise(resolve=>{
     fetch('https://www.gstatic.com/generate_204',{method:'GET',mode:'no-cors',cache:'no-store'}).then(()=>{clearTimeout(timer);finish(true)}).catch(()=>{clearTimeout(timer);finish(false)});
   }catch(e){clearTimeout(timer);finish(false)}
 });
-const OfflineSheet=({onRetry,onCancel})=> (
-  <div className="off-sheet-mask" role="dialog" aria-modal="true">
-    <div className="off-sheet">
-      <div className="off-sheet-ico" aria-hidden="true">
-        <span className="off-wifi">
-          <svg viewBox="0 0 24 24" width="28" height="28"><path fill="#fff" d="M1 9l2 2c2.88-2.88 6.79-4.08 10.53-3.62l1.19-1.19C9.89 5.15 4.86 6.16 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c1.42-1.42 3.28-2.08 5.12-1.96l1.47-1.47C10.54 11.18 7.36 11.72 5 13z"></path></svg>
-        </span>
-        <span className="off-face">🤔</span>
+
+const SATELLITE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="525.0" height="393.75" viewBox="0 0 300.0 225.0">
+  <g>
+    <path d="M183.755 92.384l23.355-9.985 3.734 8.735-23.355 9.985z" fill="#78909C" />
+    <path d="M300.016 105.501l-75.215 32.156-41.472-97.007 75.215-32.156z" fill="#B0BEC5" />
+    <path d="M237.06 70.417l-28.504 12.186L192.36 44.72l28.504-12.186zm34.422-14.723L242.978 67.88l-16.196-37.883 28.504-12.186zm-15.38 59.184l-28.504 12.186-16.196-37.883 28.504-12.186zm34.37-14.591l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E" />
+    <path d="M81.281 63.336l81.192-34.711 52.754 123.397-81.192 34.711z" fill="#B0BEC5" />
+    <path d="M157.1 187.2l-3.7-8.7 43.8-18.8 3.7 8.7" fill="#90A4AE" />
+    <path d="M103.432 20.379l2.53-2.271 15.364 17.114-2.53 2.271z" fill="#78909C" />
+    <path d="M91.9 41.4c9.3 5.6 21.6 4.7 30.1-2.9s10.7-19.7 6.1-29.6L91.9 41.4z" fill="#B0BEC5" />
+    <path d="M84.237 134.88l23.355-9.985 3.734 8.735-23.355 9.985zm3.333-56.887l81.192-34.711 1.612 3.77-81.192 34.711zm39.776 93.116l81.192-34.711 1.612 3.77-81.192 34.711z" fill="#78909C" />
+    <path d="M131 105.5c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2 1.5 0.6 3.1 0.6 4.5-0.1 1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zm22.8-8.9c-1.2 0-2.5-0.2-3.6-0.7-2.4-1-4.3-2.8-5.3-5.2l3.5-1.5c0.6 1.5 1.8 2.6 3.2 3.2s3.1 0.6 4.5-0.1c1.5-0.6 2.6-1.8 3.2-3.2 0.6-1.5 0.6-3.1-0.1-4.5l3.5-1.5c1 2.4 1.1 5 0.1 7.5-1 2.4-2.8 4.3-5.2 5.3-1.2 0.4-2.5 0.7-3.8 0.7zM139.5 119c-1.9-4.4 2.2-10.3 9.1-13.3 6.9-2.9 14-1.8 15.9 2.6l-25 10.7z" fill="#455A64" />
+    <path d="M146.8 130c-1.2 0.5-2.6 0-3.1-1.2l-4.2-9.8 4.3-1.9 4.2 9.8c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1" />
+    <path d="M148.5 122c-1.2 0.5-2.6 0-3.1-1.2l-1.6-3.6 4.3-1.9 1.6 3.6c0.5 1.2 0 2.6-1.2 3.1z" fill="#ECEFF1" />
+    <path d="M116.665 184.37L41.45 216.526l-41.472-97.007 75.215-32.156z" fill="#B0BEC5" />
+    <path d="M53.709 149.286l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883L71.935 96.68zm-15.432 59.316l-28.504 12.186-16.196-37.883 28.504-12.186zm34.422-14.723l-28.504 12.186-16.196-37.883 28.504-12.186z" fill="#00616E" />
+  </g>
+</svg>`;
+
+const FullOfflinePage = ({ onRetry, onSendNotice, onOpenAccount, onEnterOffline }) => {
+  const [showSolutions, setShowSolutions] = React.useState(false);
+  if (showSolutions) {
+    return (
+      <div className="full-offline solutions-page">
+        <button type="button" className="fo-back" onClick={() => setShowSolutions(false)}>←</button>
+        <h2>حلول لمشاكل الشبكة و الاتصال</h2>
+        <p>تأكد من تفعيل Wi-Fi على جهازك و اذا كان مفعل تأكد انك متصل بشبكة الانترنت المحلية بشكل صحيح اذا كانت المشبكة موصلة و لا يتوفر اتصال بالانترنت تحقق من كابل الانترنت بأنه موصل في جهاز التوجيه بشكل سليم او تأكد من حالة كابل الهاتف لأنه قد يكون تالف و كحل سريع استخدم بيانات الجوال و اذا كنت تستخدمها بالفعل و لا يتوفر اتصال بالانترنت تحقق من اشتراكك اذا كنت مشترك بباقة انترنت.</p>
+        <p style={{marginTop:16, color:'#0F9D58'}}>إذا لم يجدي هذا نفعا قد يكون بلدك محظور يمكنك تغيير إعدادات منطقتك من الإعدادات دائما.</p>
       </div>
-      <h3>{_lang==='ar'?'أنت غير متصل بالإنترنت':'You are offline'}</h3>
-      <p>{_lang==='ar'?'بعض الميزات غير متوفرة.':'Some features are unavailable.'}</p>
-      <div className="off-sheet-actions">
-        <button type="button" className="off-btn off-btn-go" onClick={onRetry}>{_lang==='ar'?'إعادة المحاولة':'Retry'}</button>
-        <button type="button" className="off-btn off-btn-no" onClick={onCancel}>{_lang==='ar'?'إلغاء':'Cancel'}</button>
+    );
+  }
+  return (
+    <div className="full-offline" dir="rtl">
+      <button type="button" className="fo-profile" onClick={onOpenAccount} aria-label="الملف الشخصي">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      </button>
+      <div className="fo-main">
+        <div className="fo-sat" dangerouslySetInnerHTML={{__html: SATELLITE_SVG}} />
+        <h1 className="fo-title">أنت غير متصل بالخادم.</h1>
+        <p className="fo-subtitle">يرجى التحقق من الاتصال أو تفعيل إعداد تلقي إشعار عند استعادة <span className="fo-more-link" onClick={() => setShowSolutions(true)}>مزيد</span> الاتصال بالخادم.</p>
+        <div className="fo-buttons">
+          <button type="button" className="fo-btn fo-btn-primary" onClick={onEnterOffline}>متابعة بلا اتصال</button>
+          <button type="button" className="fo-btn fo-btn-outline" onClick={onRetry}>إعادة المحاولة</button>
+        </div>
+        <h3 className="fo-games-title">اللعب أثناء الانتظار</h3>
+        <div className="fo-games">
+          <div className="fo-game">
+            <button type="button" className="fo-play">تشغيل</button>
+            <span className="fo-game-name">Hot Air Balloon</span>
+            <div className="fo-game-icon balloon">🎈</div>
+          </div>
+          <div className="fo-game">
+            <button type="button" className="fo-play">تشغيل</button>
+            <span className="fo-game-name">Solitaire لعبة</span>
+            <div className="fo-game-icon cards">🂡</div>
+          </div>
+          <div className="fo-game">
+            <button type="button" className="fo-play">تشغيل</button>
+            <span className="fo-game-name">ثعبان</span>
+            <div className="fo-game-icon snake">🐍</div>
+          </div>
+        </div>
+        <div className="fo-more-games">
+          <h4>المزيد من الألعاب بلا اتصال بالإنترنت</h4>
+          <p>الاستمتاع بالمزيد من الألعاب مثل PAC-MAN و Minesweeper</p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 const NetOffline = ({onRetry}) => (
   <div className="net-off net-in" role="alert">
     <div className="net-off-block">
@@ -1554,15 +1607,16 @@ const STORE_CONFIGS={
   apkmirror:{id:'apkmirror',label:'APKMirror',icon:'apkpure',platform:'android',buildUrl:(name)=>`https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=${encodeURIComponent(name)}`},
   happymod:{id:'happymod',labelKey:'store_happymod',label:'HappyMod',icon:'happymod',platform:'android',buildUrl:(name)=>`https://happymod.com/search.html?q=${encodeURIComponent(name)}`},
   uptodown:{id:'uptodown',labelKey:'store_uptodown',label:'Uptodown',icon:'uptodown',platform:'android',buildUrl:(name)=>`https://en.uptodown.com/android/search/${encodeURIComponent(name)}`},
+  apkdroid:{id:'apkdroid',label:'APKDroid',icon:'apkdroid',platform:'android',buildUrl:(name)=>`https://droidrepositories.blogspot.com/search?q=${encodeURIComponent(name)}&m=1`},
   apple:{id:'apple',label:'App Store',icon:'applestore',platform:'ios',buildUrl:(name,app)=>(app&&app.trackViewUrl)?app.trackViewUrl:`https://apps.apple.com/search?term=${encodeURIComponent(name)}`},
   microsoft:{id:'microsoft',label:'Microsoft Store',icon:'microsoft',platform:'windows',buildUrl:(name)=>`https://apps.microsoft.com/search?query=${encodeURIComponent(name)}`}
 };
 const PLATFORM_STORES={
-  android:['direct','google','apkpure','apkcombo','apkmirror','happymod','uptodown'],
+  android:['direct','google','apkpure','apkcombo','apkmirror','happymod','uptodown','apkdroid'],
   ios:['apple'],
   windows:['microsoft']
 };
-const INSTALL_SOURCE_IDS=['direct','google','apkpure','apkcombo','apkmirror','happymod','uptodown'];
+const INSTALL_SOURCE_IDS=['direct','google','apkpure','apkcombo','apkmirror','happymod','uptodown','apkdroid'];
 const storeLabel=cfg=>cfg?(cfg.labelKey?t(cfg.labelKey):(cfg.label||cfg.id)):'';
 const normalizeStore=id=>INSTALL_SOURCE_IDS.includes(id)?id:'direct';
 const corsWraps=u=>[
@@ -1681,6 +1735,7 @@ const BrandIcon=({name})=>{
     direct:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line><path d="M8 21h8"></path></svg>,
     happymod:<svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".18"></circle><path fill="currentColor" d="M7.2 15.2V8.8h2.1l2.7 4.3 2.7-4.3h2.1v6.4h-1.7V11.4l-2.4 3.8h-1.4L8.9 11.4v3.8H7.2z"></path></svg>,
     uptodown:<svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6 4h12v3.2H6V4zm2.2 5.2h7.6L12 20 8.2 9.2z"></path></svg>,
+    apkdroid:<svg viewBox="0 -960 960 960" width="20" height="20"><path fill="currentColor" d="m720-80 120-120-28-28-72 72v-164h-40v164l-72-72-28 28L720-80ZM480-800 243-663l237 137 237-137-237-137ZM120-321v-318q0-22 10.5-40t29.5-29l280-161q10-5 19.5-8t20.5-3q11 0 21 3t19 8l280 161q19 11 29.5 29t10.5 40v159h-80v-116L479-434 200-596v274l240 139v92L160-252q-19-11-29.5-29T120-321ZM578.5-58.5Q520-117 520-200t58.5-141.5Q637-400 720-400t141.5 58.5Q920-283 920-200T861.5-58.5Q803 0 720 0T578.5-58.5ZM480-491Z"/></svg>,
   };
   return svgs[name]||null;
 };
@@ -1725,6 +1780,12 @@ const DetailTopBar=({app,isFav,onToggleFav,onShare,onOpenIn,onToggleTheme,isDark
                       <Icon name="info" className="w-5 h-5"></Icon>
                       <span>{t('dt_info')}</span>
                     </button>
+                    {!document.documentElement.classList.contains('style2') && (
+                      <button type="button" role="menuitem" className="dt-item" onClick={run(onToggleFav)}>
+                        <Icon name={isFav?'bookmarkFill':'bookmark'} className="w-5 h-5"></Icon>
+                        <span>{_lang==='ar'?'إضافة إلى المفضلة':'Add to favorites'}</span>
+                      </button>
+                    )}
                   </div>
                 </>
               )}
@@ -2213,46 +2274,84 @@ const Detail=({id,nav,favs,toggle,selStore,expMode,setDetailApp,autoInstall,onTo
             </div>
           </div>
 
-          {/* ===== Original APKDroid specs bar — left exactly as-is, per request ===== */}
-        <div className="flex items-center overflow-x-auto px-4 py-3 border-y border-[hsl(var(--border))] gap-8 mt-4">
-          <div className="flex flex-col items-center shrink-0">
-            <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">{app.userRatingCount>0?`${(app.userRatingCount/1000).toFixed(1)}K RATINGS`:'RATINGS'}</span>
-            <span className="text-[22px] font-bold text-muted-foreground">{app.averageUserRating?.toFixed(1)||'N/A'}</span>
-            <Stars r={app.averageUserRating||0} s="w-3 h-3"></Stars>
-          </div>
-          <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
-          <div className="flex flex-col items-center shrink-0">
-            <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">AGE</span>
-            <span className="text-[22px] font-bold text-muted-foreground">{app.contentAdvisoryRating||'—'}</span>
-            <span className="text-xs text-muted-foreground mt-1">{t('years_old')}</span>
-          </div>
-          <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
-          <div className="flex flex-col items-center shrink-0">
-            <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">CHART</span>
-            <span className="text-[22px] font-bold text-muted-foreground">#1</span>
-            <span className="text-xs text-muted-foreground mt-1">{app.primaryGenreName}</span>
-          </div>
-          <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
-          <div className="flex flex-col items-center shrink-0">
-            <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">DEVELOPER</span>
-            <span className="text-[22px] font-bold text-muted-foreground w-12 h-7 bg-[hsl(var(--muted))] rounded flex items-center justify-center">{(app.artistName||'?').charAt(0)}</span>
-            <span className="text-[10px] text-muted-foreground mt-1 truncate max-w-[80px]">{app.artistName}</span>
-          </div>
-        </div>
-        {/* ===== end unchanged specs bar ===== */}
-          <div className="bg-detail-actions">
+          {/* Specs bar: old style only for green (expMode), new Play Store style for blue */}
+          {expMode ? (
+            <div className="flex items-center overflow-x-auto px-4 py-3 border-y border-[hsl(var(--border))] gap-8 mt-4">
+              <div className="flex flex-col items-center shrink-0">
+                <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">{app.userRatingCount>0?`${(app.userRatingCount/1000).toFixed(1)}K RATINGS`:'RATINGS'}</span>
+                <span className="text-[22px] font-bold text-muted-foreground">{app.averageUserRating?.toFixed(1)||'N/A'}</span>
+                <Stars r={app.averageUserRating||0} s="w-3 h-3"></Stars>
+              </div>
+              <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
+              <div className="flex flex-col items-center shrink-0">
+                <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">AGE</span>
+                <span className="text-[22px] font-bold text-muted-foreground">{app.contentAdvisoryRating||'—'}</span>
+                <span className="text-xs text-muted-foreground mt-1">{t('years_old')}</span>
+              </div>
+              <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
+              <div className="flex flex-col items-center shrink-0">
+                <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">CHART</span>
+                <span className="text-[22px] font-bold text-muted-foreground">#1</span>
+                <span className="text-xs text-muted-foreground mt-1">{app.primaryGenreName}</span>
+              </div>
+              <div className="w-px h-10 bg-[hsl(var(--border))] shrink-0"></div>
+              <div className="flex flex-col items-center shrink-0">
+                <span className="text-xs text-muted-foreground uppercase font-semibold mb-1">DEVELOPER</span>
+                <span className="text-[22px] font-bold text-muted-foreground w-12 h-7 bg-[hsl(var(--muted))] rounded flex items-center justify-center">{(app.artistName||'?').charAt(0)}</span>
+                <span className="text-[10px] text-muted-foreground mt-1 truncate max-w-[80px]">{app.artistName}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="play-stats-bar flex items-center justify-between px-4 py-2 mt-3">
+              <div className="flex flex-col items-center text-center min-w-0 flex-1">
+                <div className="text-sm font-semibold text-muted-foreground">{app.userRatingCount ? (app.userRatingCount > 1000000 ? (app.userRatingCount/1000000).toFixed(1)+'+ مليون' : app.userRatingCount.toLocaleString()) : '—'}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">عمليات تنزيل</div>
+              </div>
+              <div className="w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1"></div>
+              <div className="flex flex-col items-center text-center min-w-0 flex-1">
+                <div className="text-sm font-semibold">{fmtSize(app.fileSizeBytes)}</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">الحجم</div>
+              </div>
+              <div className="w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1"></div>
+              <div className="flex flex-col items-center text-center min-w-0 flex-1">
+                <div className="text-sm font-semibold flex items-center gap-1">
+                  <span className="text-orange-400">⚠</span> {app.contentAdvisoryRating||'—'}
+                </div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">العمر المناسب</div>
+              </div>
+              <div className="w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1"></div>
+              <div className="flex flex-col items-center text-center min-w-0 flex-1">
+                <div className="text-sm font-semibold flex items-center gap-1">
+                  ★ {app.averageUserRating?.toFixed(1)||'N/A'}
+                </div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">{app.userRatingCount ? app.userRatingCount.toLocaleString() + ' تقييم' : 'تقييم'}</div>
+              </div>
+            </div>
+          )}
+          <div className="bg-detail-actions" style={{marginTop:12}}>
             {dlView.active?(
               <div className="flex gap-2 w-full">
                 <input type="file" ref={fileInputRef} style={{display:'none'}} accept="*/*" onChange={()=>{}} />
                 {dlView.phase==='done'?(
-                  <button type="button" className="bg-btn-cancel" onClick={openFilesPicker}>{t('req_open_files')}</button>
+                  <>
+                    <button type="button" className="bg-btn-cancel thin-btn" onClick={openFilesPicker}>{t('req_open_files')}</button>
+                    <button type="button" className="bg-btn-store thin-btn" onClick={()=>beginInstall(true)}>{t('reinstall')}</button>
+                  </>
                 ):(
-                  <button type="button" className="bg-btn-cancel" onClick={cancelInstall}>{t('req_cancel')}</button>
+                  <button type="button" className="bg-btn-cancel thin-btn" style={{width:'100%'}} onClick={cancelInstall}>{t('req_cancel')}</button>
                 )}
-                <button type="button" className="bg-btn-store" onClick={()=>beginInstall(true)}>{t('reinstall')}</button>
               </div>
             ):(
-              <button type="button" className="bg-btn-install" onClick={()=>setReqOpen(true)}>{t('install')}</button>
+              document.documentElement.classList.contains('style2') ? (
+                <button type="button" className="bg-btn-install thin-btn" onClick={()=>setReqOpen(true)}>{t('install')}</button>
+              ) : (
+                <button type="button" className="btn-install-apkcombo" onClick={()=>{
+                  // Open the selected platform link exactly like the old install flow
+                  beginInstall(false);
+                }}>
+                  INSTALL
+                </button>
+              )
             )}
           </div>
         </div>
@@ -3797,7 +3896,7 @@ function App(){
       </main>
       {!hideMini&&<MiniPlayer track={track} playing={playing} progress={progress} duration={duration} onToggle={togglePlay} onClose={closeP} onPrev={playPrev} onNext={playNext} onSeek={seekTo} onOpen={()=>nav('/now-playing')} isFav={isSongFav} onFav={toggleSongFav}/>}
       {!(isDownloads||route==='/settings'||route==='/search-log'||accOpen||route.startsWith('/you-project')||route==='/you-publish'||route==='/you-projects')&&<BottomNav route={route} nav={nav}></BottomNav>}
-      {offSheet&&<OfflineSheet onRetry={()=>{probeOnline().then(ok=>setOffSheet(!ok))}} onCancel={()=>{offHold.current=true;setOffSheet(false)}}></OfflineSheet>}
+      {offSheet&&<FullOfflinePage onRetry={()=>{probeOnline().then(ok=>setOffSheet(!ok))}} onSendNotice={sendNetNotice} onOpenAccount={()=>setAccOpen(true)} onEnterOffline={()=>{offHold.current=true;setOffSheet(false)}}></FullOfflinePage>}
     </div>
   );
 }
