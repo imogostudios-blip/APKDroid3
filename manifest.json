@@ -1,7 +1,7 @@
 {
-  "name": "متجر Droid",
-  "short_name": "متجر Droid",
-  "description": "APKDroid Store",
+  "name": "GP",
+  "short_name": "GP",
+  "description": "GPTR",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
