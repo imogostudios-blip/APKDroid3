@@ -1607,7 +1607,7 @@ const STORE_CONFIGS={
   apkmirror:{id:'apkmirror',label:'APKMirror',icon:'apkpure',platform:'android',buildUrl:(name)=>`https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=${encodeURIComponent(name)}`},
   happymod:{id:'happymod',labelKey:'store_happymod',label:'HappyMod',icon:'happymod',platform:'android',buildUrl:(name)=>`https://happymod.com/search.html?q=${encodeURIComponent(name)}`},
   uptodown:{id:'uptodown',labelKey:'store_uptodown',label:'Uptodown',icon:'uptodown',platform:'android',buildUrl:(name)=>`https://en.uptodown.com/android/search/${encodeURIComponent(name)}`},
-  apkdroid:{id:'apkdroid',label:'APKDroid',icon:'apkdroid',platform:'android',buildUrl:(name)=>`https://droidrepositories.blogspot.com/search?q=${encodeURIComponent(name)}&m=1`},
+  apkdroid:{id:'apkdroid',label:'APKDroid',icon:'apkdroid',platform:'android',buildUrl:(name)=>`https://apkdroidservices.blogspot.com/search?q=${encodeURIComponent(name)}&m=1`},
   apple:{id:'apple',label:'App Store',icon:'applestore',platform:'ios',buildUrl:(name,app)=>(app&&app.trackViewUrl)?app.trackViewUrl:`https://apps.apple.com/search?term=${encodeURIComponent(name)}`},
   microsoft:{id:'microsoft',label:'Microsoft Store',icon:'microsoft',platform:'windows',buildUrl:(name)=>`https://apps.microsoft.com/search?query=${encodeURIComponent(name)}`}
 };

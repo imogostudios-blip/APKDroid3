@@ -721,6 +721,7 @@
       chip_all: "All",
       night_mode_desc: "Overrides every style with black, white and gray",
       choose_theme: "Appearance",
+      adapt_system: "Adapt to system",
       pages_menu: "Menu",
       guest_name: "Your account",
       change_photo: "Change photo",
@@ -1068,8 +1069,9 @@ const TopNav = ({ nav, isDetail, onOpenAccount, route, photo }) => {
     }, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "x", className: "w-5 h-5" }))), view === "edit" ? /* @__PURE__ */ React.createElement("div", { className: "acc-edit" }, /* @__PURE__ */ React.createElement("h2", { className: "text-lg font-bold text-center mb-2" }, t("edit_profile")), /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => fileRef.current && fileRef.current.click(), style: { background: "none", border: "none", display: "block", margin: "0 auto", cursor: "pointer", color: "#eee" } }, photo ? /* @__PURE__ */ React.createElement("img", { src: photo, alt: "", className: "acc-edit-avatar" }) : /* @__PURE__ */ React.createElement("div", { className: "acc-edit-ph" }, /* @__PURE__ */ React.createElement(PersonMark, { className: "w-10 h-10" })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: ".82rem", color: "#9aa", marginTop: 4 } }, t("change_photo"))), /* @__PURE__ */ React.createElement("input", { ref: fileRef, type: "file", accept: "image/*", hidden: true, onChange: onPhoto }), /* @__PURE__ */ React.createElement("label", { className: "text-sm text-muted-foreground", style: { display: "block", margin: "14px 0 6px" } }, t("profile_name")), /* @__PURE__ */ React.createElement("input", { type: "text", value: name, onChange: (e) => setName(e.target.value), placeholder: t("profile_name") }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-save", onClick: saveProfile }, t("save_profile"))) : /* @__PURE__ */ React.createElement("div", { className: "acc-body" }, /* @__PURE__ */ React.createElement("div", { className: "acc-card" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-profile-row", onClick: () => setView("edit") }, /* @__PURE__ */ React.createElement("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", style: { opacity: 0.7 } }, /* @__PURE__ */ React.createElement("polyline", { points: "6 9 12 15 18 9" })), /* @__PURE__ */ React.createElement("div", { className: "acc-profile-meta" }, /* @__PURE__ */ React.createElement("div", { className: "acc-name" }, displayName), /* @__PURE__ */ React.createElement("div", { className: "acc-sub" }, "APKDroid Store")), photo ? /* @__PURE__ */ React.createElement("img", { src: photo, alt: "", className: "acc-avatar" }) : /* @__PURE__ */ React.createElement("div", { className: "acc-avatar-ph" }, /* @__PURE__ */ React.createElement(PersonMark, { className: "w-7 h-7" })))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-manage", onClick: () => window.open("https://apkdroidstore3.blogspot.com/", "_blank", "noopener") }, /* @__PURE__ */ React.createElement("span", { className: "acc-manage-title" }, t("manage_account")), /* @__PURE__ */ React.createElement(StoreLogo, { size: 28 })), /* @__PURE__ */ React.createElement("div", { className: "acc-list" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-row", onClick: () => go("/search-log") }, /* @__PURE__ */ React.createElement("span", { className: "acc-row-label" }, t("search_log")), /* @__PURE__ */ React.createElement(Icon, { name: "hist", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-row", onClick: () => go("/downloads") }, /* @__PURE__ */ React.createElement("span", { className: "acc-row-label" }, t("dl_manager")), /* @__PURE__ */ React.createElement(Icon, { name: "download", className: "w-5 h-5" })), /* @__PURE__ */ style2 ? React.createElement("button", { type: "button", className: "acc-row", onClick: () => setThemeOpen(true) }, /* @__PURE__ */ React.createElement("span", { className: "acc-row-label" }, t("appearance")), /* @__PURE__ */ React.createElement(Icon, { name: theme === "light" ? "sun" : "moon", className: "w-5 h-5" })) : null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-row", onClick: () => setPagesOpen(true) }, /* @__PURE__ */ React.createElement("span", { className: "acc-row-label" }, t("pages_menu")), /* @__PURE__ */ React.createElement(Icon, { name: "folder", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("button", { type: "button", className: "acc-row", onClick: () => go("/settings") }, /* @__PURE__ */ React.createElement("span", { className: "acc-row-label" }, t("settings")), /* @__PURE__ */ React.createElement(Icon, { name: "gear", className: "w-5 h-5" })))), /* @__PURE__ */ React.createElement(AccPick, { open: themeOpen, title: t("choose_theme"), onClose: () => setThemeOpen(false) }, [
       { id: "light", label: t("light") },
       { id: "dark", label: t("dark") },
+      { id: "system", label: t("adapt_system") },
           ].map((it) => {
-      const cur = night ? "dim" : theme === "dark" ? "dark" : "light";
+      const cur = night ? "dim" : theme === "dark" ? "dark" : theme === "system" ? "system" : "light";
       return /* @__PURE__ */ React.createElement("button", { key: it.id, type: "button", className: `acc-pick-item ${cur === it.id ? "on" : ""}`, onClick: () => {
         if (it.id === "dim") {
           setNight(true);
@@ -1915,7 +1917,7 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
     apkmirror: { id: "apkmirror", label: "APKMirror", icon: "apkpure", platform: "android", buildUrl: (name) => `https://www.apkmirror.com/?post_type=app_release&searchtype=apk&s=${encodeURIComponent(name)}` },
     happymod: { id: "happymod", labelKey: "store_happymod", label: "HappyMod", icon: "happymod", platform: "android", buildUrl: (name) => `https://happymod.com/search.html?q=${encodeURIComponent(name)}` },
     uptodown: { id: "uptodown", labelKey: "store_uptodown", label: "Uptodown", icon: "uptodown", platform: "android", buildUrl: (name) => `https://en.uptodown.com/android/search/${encodeURIComponent(name)}` },
-    apkdroid: { id: "apkdroid", label: "APKDroid", icon: "apkdroid", platform: "android", buildUrl: (name) => `https://droidrepositories.blogspot.com/search?q=${encodeURIComponent(name)}&m=1` },
+    apkdroid: { id: "apkdroid", label: "APKDroid", icon: "apkdroid", platform: "android", buildUrl: (name) => `https://apkdroidservices.blogspot.com/search?q=${encodeURIComponent(name)}&m=1` },
     apple: { id: "apple", label: "App Store", icon: "applestore", platform: "ios", buildUrl: (name, app) => app && app.trackViewUrl ? app.trackViewUrl : `https://apps.apple.com/search?term=${encodeURIComponent(name)}` },
     microsoft: { id: "microsoft", label: "Microsoft Store", icon: "microsoft", platform: "windows", buildUrl: (name) => `https://apps.microsoft.com/search?query=${encodeURIComponent(name)}` }
   };
@@ -2065,9 +2067,78 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
       window.addEventListener("keydown", k);
       return () => window.removeEventListener("keydown", k);
     }, [open]);
-    const run = (fn) => () => {
-      setOpen(false);
+    // Drag down to close options menu (green style)
+    useEffect(() => {
+      if (!open || document.documentElement.classList.contains("style2")) return;
+      const sheet = document.querySelector("html:not(.style2) .dt-menu");
+      if (!sheet) return;
+      let startY = 0, dy = 0, pressed = false, dragging = false;
+      const onDown = (e) => {
+        pressed = true; dragging = false; startY = e.clientY; dy = 0;
+      };
+      const onMove = (e) => {
+        if (!pressed) return;
+        dy = e.clientY - startY;
+        if (!dragging && dy > 8) {
+          dragging = true;
+          sheet.style.transition = "none";
+        }
+        if (dragging && dy > 0) sheet.style.transform = "translateY(" + dy + "px)";
+      };
+      const onUp = () => {
+        if (!pressed) return;
+        pressed = false;
+        if (dragging) {
+          dragging = false;
+          sheet.style.transition = "";
+          if (dy > 80) setOpen(false);
+          else sheet.style.transform = "";
+        }
+        dy = 0;
+      };
+      sheet.addEventListener("pointerdown", onDown);
+      sheet.addEventListener("pointermove", onMove);
+      sheet.addEventListener("pointerup", onUp);
+      sheet.addEventListener("pointercancel", onUp);
+      return () => {
+        sheet.removeEventListener("pointerdown", onDown);
+        sheet.removeEventListener("pointermove", onMove);
+        sheet.removeEventListener("pointerup", onUp);
+        sheet.removeEventListener("pointercancel", onUp);
+        sheet.style.transform = "";
+        sheet.style.transition = "";
+      };
+    }, [open]);
+    // Close options menu when clicking/tapping anywhere outside it (green style only)
+    useEffect(() => {
+      if (!open || document.documentElement.classList.contains("style2")) return;
+      let attached = false;
+      const onOutside = (e) => {
+        if (!attached) return;
+        const menu = document.querySelector(".dt-menu");
+        const wrap = document.querySelector(".dt-menu-wrap");
+        if (menu && menu.contains(e.target)) return;
+        if (wrap && wrap.contains(e.target)) return;
+        setOpen(false);
+      };
+      // Delay so the same click that opened the menu does not immediately close it
+      const t = setTimeout(() => {
+        attached = true;
+        document.addEventListener("pointerdown", onOutside, true);
+        document.addEventListener("touchstart", onOutside, true);
+        document.addEventListener("click", onOutside, true);
+      }, 50);
+      return () => {
+        clearTimeout(t);
+        document.removeEventListener("pointerdown", onOutside, true);
+        document.removeEventListener("touchstart", onOutside, true);
+        document.removeEventListener("click", onOutside, true);
+      };
+    }, [open]);
+    const run = (fn) => (e) => {
+      if (e && e.stopPropagation) e.stopPropagation();
       if (fn) fn();
+      setOpen(false);
     };
     const ar = _lang === "ar";
     return /* @__PURE__ */ React.createElement("div", { className: "hdr-top-row dt-bar flex items-center px-4 max-w-screen-2xl mx-auto w-full sticky top-0 z-40 bg-[hsl(var(--bg))]", style: { direction: "ltr" } }, /* @__PURE__ */ React.createElement("div", { className: "dt-left" }, app && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dt-menu-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "nav-chip shrink-0", onClick: () => setOpen((o) => !o), "aria-label": t("more_options"), "aria-haspopup": "menu", "aria-expanded": open }, /* @__PURE__ */ React.createElement(Icon, { name: "dots", className: "w-5 h-5" })), open && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dt-scrim", onClick: () => setOpen(false) }), /* @__PURE__ */ React.createElement("div", { className: "dt-menu", role: "menu", dir: ar ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("button", { type: "button", role: "menuitem", className: "dt-item", onClick: run(onShare) }, /* @__PURE__ */ React.createElement(BrandIcon, { name: "share" }), /* @__PURE__ */ React.createElement("span", null, t("dt_share"))), /* @__PURE__ */ React.createElement("button", { type: "button", role: "menuitem", className: "dt-item", onClick: run(onOpenIn) }, /* @__PURE__ */ React.createElement(Icon, { name: "external", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_open_in"))), /* @__PURE__ */ React.createElement("button", { type: "button", role: "menuitem", className: "dt-item", onClick: run(onToggleTheme) }, /* @__PURE__ */ React.createElement(Icon, { name: isDark ? "sun" : "moon", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_theme"))), /* @__PURE__ */ React.createElement("button", { type: "button", role: "menuitem", className: "dt-item", onClick: run(onInfo) }, /* @__PURE__ */ React.createElement(Icon, { name: "info", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_info"))), !document.documentElement.classList.contains("style2") && /* @__PURE__ */ React.createElement("button", { type: "button", role: "menuitem", className: "dt-item", onClick: run(onToggleFav) }, /* @__PURE__ */ React.createElement(Icon, { name: isFav ? "bookmarkFill" : "bookmark", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, _lang === "ar" ? "إضافة إلى المفضلة" : "Add to favorites" ))))), /* @__PURE__ */ React.createElement("button", { type: "button", className: `nav-chip dt-fav shrink-0 ${isFav ? "on" : ""}`, onClick: onToggleFav, "aria-label": isFav ? t("dt_unsave") : t("dt_save"), "aria-pressed": !!isFav }, /* @__PURE__ */ React.createElement(Icon, { name: isFav ? "bookmarkFill" : "bookmark", className: "w-5 h-5" })))), /* @__PURE__ */ React.createElement("div", { className: "flex-1" }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "nav-chip shrink-0", onClick: onBack, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "arrowRight", className: "w-5 h-5" })));
@@ -2422,6 +2493,70 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
       };
     }, [shareOpen]);
 
+    // Close green options menu when tapping outside
+    useEffect(() => {
+      if (!greenMenuOpen) return;
+      let attached = false;
+      const onOutside = (e) => {
+        if (!attached) return;
+        const menu = document.querySelector(".dt-menu");
+        const wrap = e.target && e.target.closest && (e.target.closest(".green-float-btns") || e.target.closest(".btn-more-square"));
+        if (menu && menu.contains(e.target)) return;
+        if (wrap) return;
+        setGreenMenuOpen(false);
+      };
+      const t = setTimeout(() => {
+        attached = true;
+        document.addEventListener("pointerdown", onOutside, true);
+        document.addEventListener("touchstart", onOutside, true);
+        document.addEventListener("click", onOutside, true);
+      }, 50);
+      return () => {
+        clearTimeout(t);
+        document.removeEventListener("pointerdown", onOutside, true);
+        document.removeEventListener("touchstart", onOutside, true);
+        document.removeEventListener("click", onOutside, true);
+      };
+    }, [greenMenuOpen]);
+
+    // Drag down to close green bottom sheet
+    useEffect(() => {
+      if (!greenMenuOpen) return;
+      const sheet = document.querySelector(".dt-menu");
+      if (!sheet) return;
+      let startY = 0, dy = 0, pressed = false, dragging = false;
+      const onDown = (e) => { pressed = true; dragging = false; startY = e.clientY; dy = 0; };
+      const onMove = (e) => {
+        if (!pressed) return;
+        dy = e.clientY - startY;
+        if (!dragging && dy > 8) { dragging = true; sheet.style.transition = "none"; }
+        if (dragging && dy > 0) sheet.style.transform = "translateY(" + dy + "px)";
+      };
+      const onUp = () => {
+        if (!pressed) return;
+        pressed = false;
+        if (dragging) {
+          dragging = false;
+          sheet.style.transition = "";
+          if (dy > 80) setGreenMenuOpen(false);
+          else sheet.style.transform = "";
+        }
+        dy = 0;
+      };
+      sheet.addEventListener("pointerdown", onDown);
+      sheet.addEventListener("pointermove", onMove);
+      sheet.addEventListener("pointerup", onUp);
+      sheet.addEventListener("pointercancel", onUp);
+      return () => {
+        sheet.removeEventListener("pointerdown", onDown);
+        sheet.removeEventListener("pointermove", onMove);
+        sheet.removeEventListener("pointerup", onUp);
+        sheet.removeEventListener("pointercancel", onUp);
+        sheet.style.transform = "";
+        sheet.style.transition = "";
+      };
+    }, [greenMenuOpen]);
+
     const showToast = (msg) => {
       setToastMsg(msg);
       if (toastT.current) clearTimeout(toastT.current);
@@ -2490,18 +2625,27 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
           if (app) toggle(app);
         },
         onShare: () => {
-        const playUrl = "https://play.google.com/store/search?q=" + encodeURIComponent(app.trackName || "") + "&c=apps";
-        if (navigator.share) {
-          navigator.share({
-            title: app.trackName || "",
-            text: app.trackName || "",
-            url: playUrl
-          }).catch(() => {});
-        } else {
-          if (navigator.clipboard) navigator.clipboard.writeText(playUrl).then(() => showToast(t("toast_copied"))).catch(() => showToast(t("toast_copied")));
-          else showToast(t("toast_copied"));
-        }
-      },
+          try {
+            const shareUrl = window.location.href;
+            const title = (app && app.trackName) || "APKDroid";
+            const text = title + (app && app.artistName ? " - " + app.artistName : "");
+            if (typeof navigator !== "undefined" && navigator.share) {
+              navigator.share({ title, text, url: shareUrl }).catch(function () {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(shareUrl).then(function () { showToast(t("toast_copied")); }).catch(function () { showToast(t("toast_copied")); });
+                } else {
+                  showToast(t("toast_copied"));
+                }
+              });
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareUrl).then(function () { showToast(t("toast_copied")); }).catch(function () { showToast(t("toast_copied")); });
+            } else {
+              showToast(t("toast_copied"));
+            }
+          } catch (err) {
+            try { showToast(t("toast_copied")); } catch (e2) {}
+          }
+        },
         onOpenIn: openInOtherStore,
         onToggleTheme,
         isDark: !!isDark,
@@ -2592,7 +2736,25 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
     } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" }))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "peek-x", "aria-label": "close", onClick: (e) => {
       e.stopPropagation();
       closePeek();
-    } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" }))), /* @__PURE__ */ React.createElement("img", { className: `peek-img ${peekGo ? "go" : ""}`, style: peekFrom ? { "--l": peekFrom.l + "px", "--t": peekFrom.t + "px", "--w": peekFrom.w + "px", "--h": peekFrom.h + "px" } : void 0, src: peekSrc || app.artworkUrl512 || app.artworkUrl100, alt: "", onClick: (e) => e.stopPropagation() }), /* @__PURE__ */ React.createElement("div", { className: `peek-meta ${peekBare ? "hide" : ""}`, onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", null, app.trackName), /* @__PURE__ */ React.createElement("p", null, app.artistName), /* @__PURE__ */ React.createElement("p", { className: "peek-sub" }, "\u2605 ", rating, " \xB7 ", fmtSize(app.fileSizeBytes), " \xB7 ", app.primaryGenreName || ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install", onClick: () => setReqOpen(true) }, t("install")))), isGreenPromo ? null : topBar, /* @__PURE__ */ React.createElement("div", { className: "bg-detail", style: isGreenPromo ? { position: "relative" } : {} }, isGreenPromo && /* @__PURE__ */ React.createElement("div", { className: "green-float-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: goBack, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "left", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => setGreenMenuOpen(o => !o), "aria-label": t("more_options") }, /* @__PURE__ */ React.createElement(Icon, { name: "dots", className: "w-5 h-5" })), greenMenuOpen && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dt-scrim", onClick: () => setGreenMenuOpen(false) }), /* @__PURE__ */ React.createElement("div", { className: "dt-menu", role: "menu", style: { position: "fixed", bottom: 0, left: 0, right: 0, top: "auto", margin: 0, borderRadius: "20px 20px 0 0", maxHeight: "70vh", overflowY: "auto", zIndex: 70, width: "100%" } }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); setShareOpen(true); } }, /* @__PURE__ */ React.createElement(BrandIcon, { name: "share" }), /* @__PURE__ */ React.createElement("span", null, t("dt_share"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); if (app) toggle(app); } }, /* @__PURE__ */ React.createElement(Icon, { name: isF ? "bookmarkFill" : "bookmark", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, isF ? t("dt_unsave") : t("dt_save"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); openInOtherStore(); } }, /* @__PURE__ */ React.createElement(Icon, { name: "external", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_open_in"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); onToggleTheme && onToggleTheme(); } }, /* @__PURE__ */ React.createElement(Icon, { name: isDark ? "sun" : "moon", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_theme"))) )))), promoShot2 && /* @__PURE__ */ React.createElement("div", { className: "bg-exp-hero" }, /* @__PURE__ */ React.createElement("img", { className: "bg-exp-img", src: promoShot2, alt: "", loading: "eager", onClick: (e) => openPeek(e, promoShot2), style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("div", { className: "bg-exp-grad" })), /* @__PURE__ */ React.createElement("div", { className: promoShot2 ? "bg-exp-content" : "" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-header" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-info" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-title-row" }, /* @__PURE__ */ React.createElement("h1", { className: "bg-detail-name" }, app.trackName)), dlView.ring && /* @__PURE__ */ React.createElement("div", { className: `dl-status-badge ${dlView.phase === "spin" ? "wait" : ""}` }, dlView.phase === "spin" ? t("dl_fetch_badge") : t("dl_run_badge")), (dlView.phase === "download" || dlView.phase === "postspin") && /* @__PURE__ */ React.createElement("div", { className: "dl-name-pct", "aria-live": "polite" }, Math.round((dlView.pct || 0) * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "bg-detail-dev", onClick: () => nav(`/search?q=${encodeURIComponent(app.artistName || "")}`) }, app.artistName), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-meta" }, /* @__PURE__ */ React.createElement("span", null, "\u2605 ", rating, " ", ratingCount), /* @__PURE__ */ React.createElement("span", null, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", null, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("span", null, app.primaryGenreName || ""))), /* @__PURE__ */ React.createElement("div", { className: `dl-icon-wrap ${dlView.ring ? "active" : ""}` }, dlView.ring && /* @__PURE__ */ React.createElement("svg", { className: "dl-ring", viewBox: "0 0 100 100", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-track", cx: "50", cy: "50", r: "45" }), dlView.phase === "spin" ? /* @__PURE__ */ React.createElement("g", { className: "dl-spin-g" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-spin", cx: "50", cy: "50", r: "45" })) : /* @__PURE__ */ React.createElement(
+    } }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { fill: "currentColor", d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" }))), /* @__PURE__ */ React.createElement("img", { className: `peek-img ${peekGo ? "go" : ""}`, style: peekFrom ? { "--l": peekFrom.l + "px", "--t": peekFrom.t + "px", "--w": peekFrom.w + "px", "--h": peekFrom.h + "px" } : void 0, src: peekSrc || app.artworkUrl512 || app.artworkUrl100, alt: "", onClick: (e) => e.stopPropagation() }), /* @__PURE__ */ React.createElement("div", { className: `peek-meta ${peekBare ? "hide" : ""}`, onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", null, app.trackName), /* @__PURE__ */ React.createElement("p", null, app.artistName), /* @__PURE__ */ React.createElement("p", { className: "peek-sub" }, "\u2605 ", rating, " \xB7 ", fmtSize(app.fileSizeBytes), " \xB7 ", app.primaryGenreName || ""), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install", onClick: () => setReqOpen(true) }, t("install")))), isGreenPromo ? null : topBar, /* @__PURE__ */ React.createElement("div", { className: "bg-detail", style: isGreenPromo ? { position: "relative" } : {} }, isGreenPromo && /* @__PURE__ */ React.createElement("div", { className: "green-float-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: goBack, "aria-label": t("back") }, /* @__PURE__ */ React.createElement(Icon, { name: "left", className: "w-5 h-5" }))), greenMenuOpen && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dt-scrim", onClick: () => setGreenMenuOpen(false) }), /* @__PURE__ */ React.createElement("div", { className: "dt-menu", role: "menu", dir: _lang === "ar" ? "rtl" : "ltr" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => {
+                try {
+                  const shareUrl = (app && app.trackViewUrl) || window.location.href;
+                  const title = (app && app.trackName) || "APKDroid";
+                  const text = title + (app && app.artistName ? " - " + app.artistName : "");
+                  if (navigator.share) {
+                    navigator.share({ title: title, text: text, url: shareUrl }).catch(function () {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(shareUrl).then(function () { showToast(t("toast_copied")); }).catch(function () { showToast(t("toast_copied")); });
+                      } else showToast(t("toast_copied"));
+                    });
+                  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shareUrl).then(function () { showToast(t("toast_copied")); }).catch(function () { showToast(t("toast_copied")); });
+                  } else showToast(t("toast_copied"));
+                } catch (err) {
+                  try { showToast(t("toast_copied")); } catch (e2) {}
+                }
+                setGreenMenuOpen(false);
+              } }, /* @__PURE__ */ React.createElement(BrandIcon, { name: "share" }), /* @__PURE__ */ React.createElement("span", null, t("dt_share"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); openInOtherStore(); } }, /* @__PURE__ */ React.createElement(Icon, { name: "external", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_open_in"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); onToggleTheme && onToggleTheme(); } }, /* @__PURE__ */ React.createElement(Icon, { name: isDark ? "sun" : "moon", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_theme"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); setInfoOpen(true); } }, /* @__PURE__ */ React.createElement(Icon, { name: "info", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, t("dt_info"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "dt-item", onClick: () => { setGreenMenuOpen(false); if (app) toggle(app); } }, /* @__PURE__ */ React.createElement(Icon, { name: isF ? "bookmarkFill" : "bookmark", className: "w-5 h-5" }), /* @__PURE__ */ React.createElement("span", null, _lang === "ar" ? "إضافة إلى المفضلة" : "Add to favorites")))), promoShot2 && /* @__PURE__ */ React.createElement("div", { className: "bg-exp-hero" }, /* @__PURE__ */ React.createElement("img", { className: "bg-exp-img", src: promoShot2, alt: "", loading: "eager", onClick: (e) => openPeek(e, promoShot2), style: { cursor: "pointer" } }), /* @__PURE__ */ React.createElement("div", { className: "bg-exp-grad" })), /* @__PURE__ */ React.createElement("div", { className: promoShot2 ? "bg-exp-content" : "" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-header" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-info" }, /* @__PURE__ */ React.createElement("div", { className: "bg-detail-title-row" }, /* @__PURE__ */ React.createElement("h1", { className: "bg-detail-name" }, app.trackName)), dlView.ring && /* @__PURE__ */ React.createElement("div", { className: `dl-status-badge ${dlView.phase === "spin" ? "wait" : ""}` }, dlView.phase === "spin" ? t("dl_fetch_badge") : t("dl_run_badge")), (dlView.phase === "download" || dlView.phase === "postspin") && /* @__PURE__ */ React.createElement("div", { className: "dl-name-pct", "aria-live": "polite" }, Math.round((dlView.pct || 0) * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "bg-detail-dev", onClick: () => nav(`/search?q=${encodeURIComponent(app.artistName || "")}`) }, app.artistName), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-meta" }, /* @__PURE__ */ React.createElement("span", null, "\u2605 ", rating, " ", ratingCount), /* @__PURE__ */ React.createElement("span", null, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", null, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("span", null, app.primaryGenreName || ""))), /* @__PURE__ */ React.createElement("div", { className: `dl-icon-wrap ${dlView.ring ? "active" : ""}` }, dlView.ring && /* @__PURE__ */ React.createElement("svg", { className: "dl-ring", viewBox: "0 0 100 100", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-track", cx: "50", cy: "50", r: "45" }), dlView.phase === "spin" ? /* @__PURE__ */ React.createElement("g", { className: "dl-spin-g" }, /* @__PURE__ */ React.createElement("circle", { className: "dl-ring-spin", cx: "50", cy: "50", r: "45" })) : /* @__PURE__ */ React.createElement(
       "circle",
       {
         className: "dl-ring-prog",
@@ -2610,8 +2772,8 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
         className: `bg-detail-icon ${dlView.ring ? "dl-shrunk" : ""}`,
         onClick: (e) => openPeek(e, app.artworkUrl512 || app.artworkUrl100)
       }
-    ))), /* @__PURE__ */ !document.documentElement.classList.contains("style2") ? /* @__PURE__ */ React.createElement("div", { className: "flex items-center overflow-x-auto px-4 py-3 border-y border-[hsl(var(--border))] gap-8 mt-4" }, /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, app.userRatingCount > 0 ? `${(app.userRatingCount / 1e3).toFixed(1)}K RATINGS` : "RATINGS"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, ((_a = app.averageUserRating) == null ? void 0 : _a.toFixed(1)) || "N/A"), /* @__PURE__ */ React.createElement(Stars, { r: app.averageUserRating || 0, s: "w-3 h-3" })), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "AGE"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground mt-1" }, t("years_old"))), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "CHART"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, "#1"), /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground mt-1" }, app.primaryGenreName)), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "DEVELOPER"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground w-12 h-7 bg-[hsl(var(--muted))] rounded flex items-center justify-center" }, (app.artistName || "?").charAt(0)), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] text-muted-foreground mt-1 truncate max-w-[80px]" }, app.artistName))) : /* @__PURE__ */ React.createElement("div", { className: "play-stats-bar flex items-center justify-between px-4 py-2 mt-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold text-muted-foreground" }, app.userRatingCount ? (app.userRatingCount > 1e6 ? (app.userRatingCount / 1e6).toFixed(1) + "+ \u0645\u0644\u064A\u0648\u0646" : app.userRatingCount.toLocaleString()) : "\u2014"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0639\u0645\u0644\u064A\u0627\u062A \u062A\u0646\u0632\u064A\u0644")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold" }, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0627\u0644\u062D\u062C\u0645")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold flex items-center gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-orange-400" }, "\u26A0"), " ", app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0627\u0644\u0639\u0645\u0631 \u0627\u0644\u0645\u0646\u0627\u0633\u0628")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold flex items-center gap-1" }, "\u2605 ", ((_b = app.averageUserRating) == null ? void 0 : _b.toFixed(1)) || "N/A"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, app.userRatingCount ? (app.userRatingCount / 1e6).toFixed(1) + " \u0645\u0644\u064A\u0648\u0646 \u0645\u0631\u0627\u062C\u0639\u0629" : "\u0645\u0631\u0627\u062C\u0639\u0629"))), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-actions", style: { marginTop: 12 } }, dlView.active ? /* @__PURE__ */ React.createElement("div", { className: "flex gap-2 w-full" }, /* @__PURE__ */ React.createElement("input", { type: "file", ref: fileInputRef, style: { display: "none" }, accept: "*/*", onChange: () => {
-    } }), dlView.phase === "done" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel thin-btn", onClick: openFilesPicker }, t("req_open_files")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-store thin-btn", onClick: () => beginInstall(true) }, t("reinstall"))) : /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel thin-btn", style: { width: "100%" }, onClick: cancelInstall }, t("req_cancel"))) : document.documentElement.classList.contains("style2") ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install thin-btn", onClick: () => setReqOpen(true) }, t("install")) : /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-install-apkcombo", onClick: () => { beginInstall(false); } }, "INSTALL"))), /* @__PURE__ */ React.createElement("div", { className: `bg-req-overlay ${reqOpen ? "show" : ""}`, onClick: (e) => {
+    ))), /* @__PURE__ */ !document.documentElement.classList.contains("style2") ? /* @__PURE__ */ React.createElement("div", { className: "flex items-center overflow-x-auto px-4 py-3 border-y border-[hsl(var(--border))] gap-8 mt-4" }, /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, app.userRatingCount > 0 ? `${(app.userRatingCount / 1e3).toFixed(1)}K RATINGS` : "RATINGS"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, ((_a = app.averageUserRating) == null ? void 0 : _a.toFixed(1)) || "N/A"), /* @__PURE__ */ React.createElement(Stars, { r: app.averageUserRating || 0, s: "w-3 h-3" })), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "AGE"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground mt-1" }, t("years_old"))), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "CHART"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground" }, "#1"), /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground mt-1" }, app.primaryGenreName)), /* @__PURE__ */ React.createElement("div", { className: "w-px h-10 bg-[hsl(var(--border))] shrink-0" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center shrink-0" }, /* @__PURE__ */ React.createElement("span", { className: "text-xs text-muted-foreground uppercase font-semibold mb-1" }, "DEVELOPER"), /* @__PURE__ */ React.createElement("span", { className: "text-[22px] font-bold text-muted-foreground w-12 h-7 bg-[hsl(var(--muted))] rounded flex items-center justify-center" }, (app.artistName || "?").charAt(0)), /* @__PURE__ */ React.createElement("span", { className: "text-[10px] text-muted-foreground mt-1 truncate max-w-[80px]" }, app.artistName))) : /* @__PURE__ */ React.createElement("div", { className: "play-stats-bar flex items-center justify-between px-4 py-2 mt-3" }, /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold text-muted-foreground" }, app.userRatingCount ? (app.userRatingCount > 1e6 ? (app.userRatingCount / 1e6).toFixed(1) + "+ \u0645\u0644\u064A\u0648\u0646" : app.userRatingCount.toLocaleString()) : "\u2014"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0639\u0645\u0644\u064A\u0627\u062A \u062A\u0646\u0632\u064A\u0644")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold" }, fmtSize(app.fileSizeBytes)), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0627\u0644\u062D\u062C\u0645")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold flex items-center gap-1" }, /* @__PURE__ */ React.createElement("span", { className: "text-orange-400" }, "\u26A0"), " ", app.contentAdvisoryRating || "\u2014"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, "\u0627\u0644\u0639\u0645\u0631 \u0627\u0644\u0645\u0646\u0627\u0633\u0628")), /* @__PURE__ */ React.createElement("div", { className: "w-px h-8 bg-[hsl(var(--border))] shrink-0 mx-1" }), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center text-center min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("div", { className: "text-sm font-semibold flex items-center gap-1" }, "\u2605 ", ((_b = app.averageUserRating) == null ? void 0 : _b.toFixed(1)) || "N/A"), /* @__PURE__ */ React.createElement("div", { className: "text-[11px] text-muted-foreground mt-0.5" }, app.userRatingCount ? (app.userRatingCount / 1e6).toFixed(1) + " \u0645\u0644\u064A\u0648\u0646 \u0645\u0631\u0627\u062C\u0639\u0629" : "\u0645\u0631\u0627\u062C\u0639\u0629"))), /* @__PURE__ */ React.createElement("div", { className: "bg-detail-actions", style: { marginTop: 12 } }, dlView.active && document.documentElement.classList.contains("style2") ? /* @__PURE__ */ React.createElement("div", { className: "flex gap-2 w-full" }, /* @__PURE__ */ React.createElement("input", { type: "file", ref: fileInputRef, style: { display: "none" }, accept: "*/*", onChange: () => {
+    } }), dlView.phase === "done" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel thin-btn", onClick: openFilesPicker }, t("req_open_files")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-store thin-btn", onClick: () => beginInstall(true) }, t("reinstall"))) : /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-cancel thin-btn", style: { width: "100%" }, onClick: cancelInstall }, t("req_cancel"))) : document.documentElement.classList.contains("style2") ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "bg-btn-install thin-btn", onClick: () => setReqOpen(true) }, t("install")) : /* @__PURE__ */ React.createElement("div", { className: "green-install-row", style: { display: "flex", alignItems: "center", gap: "10px", width: "100%", justifyContent: "flex-end" } }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-fav-square btn-more-square", onClick: () => setGreenMenuOpen((o) => !o), "aria-label": t("more_options") }, /* @__PURE__ */ React.createElement(Icon, { name: "dots", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-fav-square", onClick: () => { if (app) toggle(app); }, "aria-label": isF ? t("dt_unsave") : t("dt_save") }, /* @__PURE__ */ React.createElement(Icon, { name: isF ? "bookmarkFill" : "bookmark", className: "w-5 h-5" })), /* @__PURE__ */ React.createElement("button", { type: "button", className: dlView.active && dlView.phase !== "done" ? "btn-install-apkcombo gray-cancel" : "btn-install-apkcombo", onClick: () => { if (dlView.active && dlView.phase !== "done") { cancelInstall(); } else { setReqOpen(true); } } }, dlView.active && dlView.phase !== "done" ? t("req_cancel") : t("install"))))), /* @__PURE__ */ React.createElement("div", { className: `bg-req-overlay ${reqOpen ? "show" : ""}`, onClick: (e) => {
       if (e.target === e.currentTarget) setReqOpen(false);
     } }, /* @__PURE__ */ React.createElement("div", { className: "bg-req-sheet", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "bg-plat-handle" }), /* @__PURE__ */ React.createElement("div", { className: "bg-plat-title" }, t("req_title")), /* @__PURE__ */ React.createElement("div", { className: "bg-req-body" }, [
       { k: "req_money", icon: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "12", r: "10" }), /* @__PURE__ */ React.createElement("path", { d: "M12 6v12M15 9.5c0-1.1-1.3-2-3-2s-3 .9-3 2 1.3 2 3 2 3 .9 3 2-1.3 2-3 2-3-.9-3-2" })) },
@@ -3775,11 +3937,15 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
     useEffect(() => {
       const green = !style2;
       const n = green ? true : !!night;
-      const th = green ? "dark" : (theme === "black" ? "dark" : theme);
-      if (th !== theme) setThemeS(th);
+      let th = green ? "dark" : (theme === "black" ? "dark" : theme);
+      if (theme === "system" && !green) {
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        th = prefersDark ? "dark" : "light";
+      }
+      if (th !== theme && theme !== "system") setThemeS(th);
       document.documentElement.classList.toggle("black", green || n);
       document.documentElement.classList.toggle("dark", th === "dark");
-      setS("apk_theme", th);
+      setS("apk_theme", theme === "system" ? "system" : th);
       setS("apk_night", n);
       const special = !!accOpen || route === "/settings" || route === "/downloads" || route === "/search-log";
       const color = special ? "#1F1F1F" : n ? "#000000" : th === "dark" ? "#141415" : "#FFFFFF";
@@ -3804,7 +3970,22 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
         });
       } catch (e) {
       }
-    }, [theme, night, route, accOpen]);
+      // Listen for system theme changes
+      let mq;
+      const onChange = () => {
+        if (theme === "system" && !green) {
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.classList.toggle("dark", prefersDark);
+        }
+      };
+      if (theme === "system" && !green && window.matchMedia) {
+        mq = window.matchMedia("(prefers-color-scheme: dark)");
+        mq.addEventListener("change", onChange);
+      }
+      return () => {
+        if (mq) mq.removeEventListener("change", onChange);
+      };
+    }, [theme, night, route, accOpen, style2]);
     useEffect(() => {
       installImgFallback();
     }, []);
@@ -3822,11 +4003,14 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
     const setTheme = (v) => setThemeS(v);
     const isDarkNow = !!night || theme === "dark";
     const [themePick, setThemePick] = useState(false);
-    const themeCur = night ? "dim" : theme === "dark" ? "dark" : "light";
+    const themeCur = night ? "dim" : theme === "dark" ? "dark" : theme === "system" ? "system" : "light";
     const applyThemeMode = (mode) => {
       if (mode === "dark") {
         setNight(false);
         setTheme("dark");
+      } else if (mode === "system") {
+        setNight(false);
+        setTheme("system");
       } else {
         setNight(false);
         setTheme("light");
@@ -4102,7 +4286,7 @@ const NetOffline = ({ onRetry }) => /* @__PURE__ */ React.createElement("div", {
     }, [route]);
     if (!onboardDone) return /* @__PURE__ */ React.createElement(OnboardFlow, { onFinish: finishOnboard, setLang, setTheme, setExpMode, setStyle2 });
     if (isBlockedCountry(country2)) return /* @__PURE__ */ React.createElement(CountryBlock, { country: country2, setCountry, lang });
-    return /* @__PURE__ */ React.createElement("div", { className: "app-shell", key: lang }, /* @__PURE__ */ React.createElement(AccountHub, { open: accOpen, onClose: () => setAccOpen(false), nav, theme, setTheme, profile, setProfile, lang, night, setNight, style2 }), /* @__PURE__ */ React.createElement(AccPick, { open: themePick, title: t("choose_theme"), onClose: () => setThemePick(false) }, [{ id: "light", label: t("light") }, { id: "dark", label: t("dark") }].map((it) => /* @__PURE__ */ React.createElement("button", { key: it.id, type: "button", className: `acc-pick-item ${themeCur === it.id ? "on" : ""}`, onClick: () => applyThemeMode(it.id) }, /* @__PURE__ */ React.createElement("span", null, it.label), themeCur === it.id && /* @__PURE__ */ React.createElement("span", { style: { marginInlineStart: "auto" } }, "\u2713")))), /* @__PURE__ */ React.createElement("main", { id: "app-scroll", className: "app-main max-w-screen-2xl mx-auto w-full" }, !(isDownloads || route === "/settings" || route === "/search-log" || accOpen || isDetail || route.startsWith("/search") || route === "/you" || route === "/music" || route.startsWith("/you-") || route === "/movies" || route.startsWith("/movie/")) && /* @__PURE__ */ React.createElement(TopNav, { nav, isDetail, onOpenAccount: () => setAccOpen(true), route, photo: profile && profile.photo }), /* @__PURE__ */ React.createElement("div", { className: "app-scroll-fill" }, page)), !hideMini && /* @__PURE__ */ React.createElement(MiniPlayer, { track, playing, progress, duration, onToggle: togglePlay, onClose: closeP, onPrev: playPrev, onNext: playNext, onSeek: seekTo, onOpen: () => nav("/now-playing"), isFav: isSongFav, onFav: toggleSongFav }), !(isDownloads || route === "/settings" || route === "/search-log" || accOpen || route.startsWith("/you-project") || route === "/you-publish" || route === "/you-projects") && /* @__PURE__ */ React.createElement(BottomNav, { route, nav }), offSheet && /* @__PURE__ */ React.createElement(FullOfflinePage, { onRetry: () => { probeOnline().then((ok) => setOffSheet(!ok)); }, onSendNotice: sendNetNotice, onOpenAccount: () => setAccOpen(true), onEnterOffline: () => { offHold.current = true; setOffSheet(false); } }));
+    return /* @__PURE__ */ React.createElement("div", { className: "app-shell", key: lang }, /* @__PURE__ */ React.createElement(AccountHub, { open: accOpen, onClose: () => setAccOpen(false), nav, theme, setTheme, profile, setProfile, lang, night, setNight, style2 }), /* @__PURE__ */ React.createElement(AccPick, { open: themePick, title: t("choose_theme"), onClose: () => setThemePick(false) }, [{ id: "light", label: t("light") }, { id: "dark", label: t("dark") }, { id: "system", label: t("adapt_system") }].map((it) => /* @__PURE__ */ React.createElement("button", { key: it.id, type: "button", className: `acc-pick-item ${themeCur === it.id ? "on" : ""}`, onClick: () => applyThemeMode(it.id) }, /* @__PURE__ */ React.createElement("span", null, it.label), themeCur === it.id && /* @__PURE__ */ React.createElement("span", { style: { marginInlineStart: "auto" } }, "\u2713")))), /* @__PURE__ */ React.createElement("main", { id: "app-scroll", className: "app-main max-w-screen-2xl mx-auto w-full" }, !(isDownloads || route === "/settings" || route === "/search-log" || accOpen || isDetail || route.startsWith("/search") || route === "/you" || route === "/music" || route.startsWith("/you-") || route === "/movies" || route.startsWith("/movie/")) && /* @__PURE__ */ React.createElement(TopNav, { nav, isDetail, onOpenAccount: () => setAccOpen(true), route, photo: profile && profile.photo }), /* @__PURE__ */ React.createElement("div", { className: "app-scroll-fill" }, page)), !hideMini && /* @__PURE__ */ React.createElement(MiniPlayer, { track, playing, progress, duration, onToggle: togglePlay, onClose: closeP, onPrev: playPrev, onNext: playNext, onSeek: seekTo, onOpen: () => nav("/now-playing"), isFav: isSongFav, onFav: toggleSongFav }), !(isDownloads || route === "/settings" || route === "/search-log" || accOpen || route.startsWith("/you-project") || route === "/you-publish" || route === "/you-projects") && /* @__PURE__ */ React.createElement(BottomNav, { route, nav }), offSheet && /* @__PURE__ */ React.createElement(FullOfflinePage, { onRetry: () => { probeOnline().then((ok) => setOffSheet(!ok)); }, onSendNotice: sendNetNotice, onOpenAccount: () => setAccOpen(true), onEnterOffline: () => { offHold.current = true; setOffSheet(false); } }));
   }
   class ErrorBoundary extends React.Component {
     constructor(p) {
