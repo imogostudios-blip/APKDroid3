@@ -88,7 +88,7 @@ const STRINGS={
     top_songs:'أفضل الأغاني',results:'النتائج',search_songs:'ابحث عن أغاني',
     settings_title:'الإعدادات',store_country:'دولة متجر التطبيقات',appearance:'المظهر',light:'فاتح',dark:'داكن',language:'اللغة',
     lang_ar:'العربية',lang_en:'English',
-    footer_line1:'APKDroid Store — نسخة HTML واحدة',footer_line2:'التطبيقات من iTunes · الموسيقى من Audius. بدون إعلانات.',
+    footer_line1:'APKDroid Store — نسخة HTML واحدة',footer_line2:'التطبيقات من Google Play · الموسيقى من Audius. بدون إعلانات.',
     sec_best:'الأفضل',sec_for_you:'من أجلك',sec_social:'التواصل',sec_most_dl:'الأكثر تحميلاً',
     g_most_dl:'الأكثر تحميلاً',g_br:'ألعاب باتل رويال',g_sandbox:'ألعاب صندوق الرمل',g_tanks:'ألعاب الدبابات',
     g_adventure:'ألعاب المغامرات',g_popular:'الأكثر شيوعاً',g_horror:'ألعاب رعب',g_kids:'ألعاب أطفال',
@@ -152,7 +152,7 @@ const STRINGS={
     top_songs:'Top Songs',results:'Results',search_songs:'Search songs',
     settings_title:'Settings',store_country:'App Store Country',appearance:'Appearance',light:'Light',dark:'Dark',language:'Language',
     lang_ar:'العربية',lang_en:'English',
-    footer_line1:'APKDroid Store — Single HTML edition',footer_line2:'Apps from iTunes · Music from Audius. No ads.',
+    footer_line1:'APKDroid Store — Single HTML edition',footer_line2:'Apps from Google Play · Music from Audius. No ads.',
     sec_best:'Best',sec_for_you:'For You',sec_social:'Communication',sec_most_dl:'Most Downloaded',
     g_most_dl:'Most Downloaded',g_br:'Battle Royale',g_sandbox:'Sandbox Games',g_tanks:'Tank Games',
     g_adventure:'Adventure Games',g_popular:'Most Popular',g_horror:'Horror Games',g_kids:'Kids Games',
@@ -315,11 +315,11 @@ const computeDlProgress=(rec,now)=>{
   return{active:true,phase:'done',pct:1,overall:1,ring:false};
 };
 const api={
-  search:(t,l=25)=>fetchC(`https://itunes.apple.com/search?term=${encodeURIComponent(t)}&entity=software&limit=${l}&country=${country()}`).then(d=>d.results||[]),
-  lookup:id=>fetchC(`https://itunes.apple.com/lookup?id=${id}&country=${country()}`).then(d=>d.results?.[0]||null),
-  top:()=>fetchC(`https://itunes.apple.com/search?term=app&entity=software&limit=30&country=${country()}`).then(d=>d.results||[]),
-  cat:(t,g,l=20)=>fetchC(`https://itunes.apple.com/search?term=${encodeURIComponent(t)}&entity=software&genreId=${g}&limit=${l}&country=${country()}`).then(d=>d.results||[]),
-  // Full tracks via Audius (not 30s iTunes previews)
+  search:(t,l=25)=>fetchC(`/api/search?term=${encodeURIComponent(t)}&limit=${l}&country=${country()}`).then(d=>Array.isArray(d)?d:[]),
+  lookup:id=>fetchC(`/api/lookup?id=${encodeURIComponent(id)}&country=${country()}`).then(d=>d||null),
+  top:()=>fetchC(`/api/top?limit=30&country=${country()}`).then(d=>Array.isArray(d)?d:[]),
+  cat:(t,g,l=20)=>fetchC(`/api/cat?term=${encodeURIComponent(t)}&limit=${l}&country=${country()}`).then(d=>Array.isArray(d)?d:[]),
+  // Full tracks via Audius
   songs:async(t,l=25)=>{
     const appName='APKDroidStore';
     const base='https://api.audius.co/v1';
@@ -1587,11 +1587,11 @@ const ratingDistribution=(avgRating)=>{
   const result={};stars.forEach((s,i)=>result[s]=Math.max(0,percents[i]));
   return result;
 };
-const fetchReviews=(id,page=1)=>fetchC(`https://itunes.apple.com/${country()}/rss/customerreviews/id=${encodeURIComponent(id)}/sortBy=mostRecent/page=${page}/json`).then(d=>{
+const fetchReviews=(id,page=1)=>fetchC(`/api/reviews?id=${encodeURIComponent(id)}&country=${country()}`).then(d=>{
   const entries=Array.isArray(d?.feed?.entry)?d.feed.entry:[];
   return entries.filter(e=>e&&e['im:rating']).map(e=>({
     id:e.id?.label||'',
-    author:e.author?.name?.label||'App Store User',
+    author:e.author?.name?.label||'User',
     rating:Number(e['im:rating']?.label||0),
     title:e.title?.label||'',
     content:e.content?.label||'',
@@ -1740,7 +1740,7 @@ const BrandIcon=({name})=>{
   return svgs[name]||null;
 };
 
-/* ===== شريط صفحة التثبيت + معلومات iTunes ===== */
+/* ===== شريط صفحة التثبيت + معلومات التطبيق ===== */
 const DetailTopBar=({app,isFav,onToggleFav,onShare,onOpenIn,onToggleTheme,isDark,onInfo,onBack})=>{
   const[open,setOpen]=useState(false);
   useEffect(()=>{
@@ -3521,7 +3521,7 @@ const OnboardFlow=({onFinish,setLang,setTheme,setExpMode,setStyle2})=>{
       {step===4&&(
         <div className="ob-body">
           <ObSvg className="ob-logo sm" html={SVG_TERMS}></ObSvg>
-          <p className="ob-legal">بمتابعتك أنت توافق على بنود الخدمة وسياسة الخصوصية الخاصة بنا. كما أنه سيتم جلب بيانات هائلة عبر خدمات خارجية مثل iTunes وقد تخضع هذه المواقع إلى بنود خدمة وسياسة خصوصية خاصة بها. نحن لا نتحمل مسؤولية أي محتوى صادر من هذه الخدمات.</p>
+          <p className="ob-legal">بمتابعتك أنت توافق على بنود الخدمة وسياسة الخصوصية الخاصة بنا. كما أنه سيتم جلب بيانات هائلة عبر خدمات خارجية مثل Google Play وقد تخضع هذه المواقع إلى بنود خدمة وسياسة خصوصية خاصة بها. نحن لا نتحمل مسؤولية أي محتوى صادر من هذه الخدمات.</p>
         </div>
       )}
       {step===5&&(
