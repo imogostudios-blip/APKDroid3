@@ -1,19 +1,17 @@
-/* ============ INTRO VIDEO (plays first for 80 seconds) ============ */
+/* ============ INTRO VIDEO ============ */
 (function introVideo() {
   const wrap = document.getElementById('intro-video-wrap');
   const video = document.getElementById('intro-video');
   const loading = document.getElementById('loading');
+  const hint = document.getElementById('intro-hint');
+
   if (!wrap || !video) {
     if (typeof boot === 'function') boot();
     return;
   }
 
-  video.controls = false;
-  video.playsInline = true;
-  video.muted = false; // try with sound
-
   let finished = false;
-  let started = false;
+  let unmuted = false;
 
   function finishIntro() {
     if (finished) return;
@@ -30,67 +28,47 @@
     }
   }
 
-  function enterFullscreen() {
+  function tryFullscreen() {
     const el = document.documentElement;
     const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-    if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
+    if (req && !document.fullscreenElement) {
       try { req.call(el); } catch (e) {}
     }
   }
 
-  function startVideo() {
-    if (started) return;
-    started = true;
-    const hint = document.getElementById("intro-hint");
-    if (hint) hint.style.display = "none";
+  // Start muted so the video always appears
+  video.muted = true;
+  video.playsInline = true;
+  video.controls = false;
+  video.play().catch(() => {});
 
-    enterFullscreen();
+  // After 80 seconds always finish
+  setTimeout(finishIntro, 80000);
 
-    // Try unmuted first
-    video.muted = false;
-    const p = video.play();
-    if (p) {
-      p.catch(() => {
-        // Autoplay with sound blocked → mute and play, then unmute on next interaction
-        video.muted = true;
-        video.play().catch(() => {});
-      });
-    }
-
-    // Timer starts after first interaction
-    setTimeout(finishIntro, 80 * 1000);
-  }
-
-  video.addEventListener('error', () => finishIntro());
-
+  video.addEventListener('error', finishIntro);
   video.addEventListener('ended', () => {
     video.currentTime = 0;
     video.play().catch(() => {});
   });
 
-  // First click / tap / key starts the video with sound + fullscreen
-  function onFirstInteraction() {
-    startVideo();
-    document.removeEventListener('click', onFirstInteraction);
-    document.removeEventListener('keydown', onFirstInteraction);
-    document.removeEventListener('touchstart', onFirstInteraction);
+  // First interaction: unmute + fullscreen
+  function onInteract() {
+    if (!unmuted) {
+      unmuted = true;
+      video.muted = false;
+      video.play().catch(() => {});
+      tryFullscreen();
+      if (hint) hint.style.display = 'none';
+    }
   }
 
-  document.addEventListener('click', onFirstInteraction);
-  document.addEventListener('keydown', onFirstInteraction);
-  document.addEventListener('touchstart', onFirstInteraction);
+  wrap.addEventListener('click', onInteract);
+  document.addEventListener('keydown', onInteract);
+  document.addEventListener('touchstart', onInteract);
 
-  // Also try immediately (in case browser allows it)
-  setTimeout(() => {
-    if (!started) startVideo();
-  }, 300);
-
-  // Allow skip after started
+  // Second click after unmuted = skip
   wrap.addEventListener('click', () => {
-    if (started) finishIntro();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (started && ['Escape', 'Enter', ' '].includes(e.key)) finishIntro();
+    if (unmuted) finishIntro();
   });
 })();
 
