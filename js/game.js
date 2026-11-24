@@ -9,10 +9,12 @@
   }
 
   video.controls = false;
-  video.muted = true;
   video.playsInline = true;
+  video.muted = false; // try with sound
 
   let finished = false;
+  let started = false;
+
   function finishIntro() {
     if (finished) return;
     finished = true;
@@ -28,30 +30,67 @@
     }
   }
 
-  function tryFullscreen() {
+  function enterFullscreen() {
     const el = document.documentElement;
     const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-    if (req && !document.fullscreenElement) {
+    if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
       try { req.call(el); } catch (e) {}
     }
   }
-  tryFullscreen();
-  setTimeout(tryFullscreen, 200);
 
-  video.play().catch(() => {});
+  function startVideo() {
+    if (started) return;
+    started = true;
+    const hint = document.getElementById("intro-hint");
+    if (hint) hint.style.display = "none";
+
+    enterFullscreen();
+
+    // Try unmuted first
+    video.muted = false;
+    const p = video.play();
+    if (p) {
+      p.catch(() => {
+        // Autoplay with sound blocked → mute and play, then unmute on next interaction
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    }
+
+    // Timer starts after first interaction
+    setTimeout(finishIntro, 80 * 1000);
+  }
 
   video.addEventListener('error', () => finishIntro());
-
-  setTimeout(finishIntro, 80 * 1000);
 
   video.addEventListener('ended', () => {
     video.currentTime = 0;
     video.play().catch(() => {});
   });
 
-  wrap.addEventListener('click', finishIntro);
+  // First click / tap / key starts the video with sound + fullscreen
+  function onFirstInteraction() {
+    startVideo();
+    document.removeEventListener('click', onFirstInteraction);
+    document.removeEventListener('keydown', onFirstInteraction);
+    document.removeEventListener('touchstart', onFirstInteraction);
+  }
+
+  document.addEventListener('click', onFirstInteraction);
+  document.addEventListener('keydown', onFirstInteraction);
+  document.addEventListener('touchstart', onFirstInteraction);
+
+  // Also try immediately (in case browser allows it)
+  setTimeout(() => {
+    if (!started) startVideo();
+  }, 300);
+
+  // Allow skip after started
+  wrap.addEventListener('click', () => {
+    if (started) finishIntro();
+  });
   document.addEventListener('keydown', (e) => {
-    if (['Escape', 'Enter', ' '].includes(e.key)) finishIntro();
+    if (started && ['Escape', 'Enter', ' '].includes(e.key)) finishIntro();
   });
 })();
 
