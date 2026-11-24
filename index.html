@@ -1,36 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>APKDroid</title>
-
-<link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#0A0A0B"/>
-<meta name="application-name" content="APKDroid"/>
-<meta name="apple-mobile-web-app-title" content="APKDroid"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<link rel="icon" type="image/png" sizes="192x192" href="res/icons/icon-192.png"/>
-<link rel="icon" type="image/png" sizes="512x512" href="res/icons/icon-512.png"/>
-<link rel="apple-touch-icon" href="res/icons/icon-192.png"/>
-<link rel="shortcut icon" href="favicon.png"/>
-
-<link rel="stylesheet" href="res/fonts/fonts.css"/>
-<link rel="stylesheet" href="src/styles/tailwind.css"/>
-<link rel="stylesheet" href="src/styles/app.css"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>بيت الظلال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/game.css">
 </head>
 <body>
-<div id="root"></div>
+<!-- Intro video overlay (plays first, before everything) -->
+<div id="intro-video-wrap" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;">
+  <video id="intro-video" playsinline muted autoplay loop style="width:100%;height:100%;object-fit:cover;pointer-events:none;" preload="auto">
+    <source src="assets/loading/video/intro.mp4" type="video/mp4">
+  </video>
+</div>
 
-<script src="vendor/react.production.min.js"></script>
-<script src="vendor/react-dom.production.min.js"></script>
-<script src="src/app.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(function () {});
-}
-</script>
+<canvas id="gl" aria-label="مشهد اللعبة ثلاثي الأبعاد"></canvas>
+
+<div id="hud">
+  <div id="pgbox">
+    <div class="l">الأوراق</div>
+    <div class="n" id="pg">0 / 7</div>
+    <div id="obj">اجمع 7 أوراق من أرجاء البيت</div>
+    <div id="keyi">🗝 معك مفتاح</div>
+    <div id="wep"></div>
+  </div>
+  <div id="msgs"></div>
+  <div id="dot"></div>
+  <div id="prompt"></div>
+  <div id="room"></div>
+  <div id="stamwrap"><div id="stam"></div></div>
+</div>
+<div id="slit"></div>
+<div id="scope"></div>
+<div id="note"><div class="h">ورقة ممزّقة</div><p></p></div>
+
+<div id="touchzone"></div>
+<div id="stick"><div id="knob"></div></div>
+<div id="touchui">
+  <button class="tb" id="bAct" type="button" aria-label="تفاعل">تفاعل</button>
+  <button class="tb" id="bRun" type="button" aria-label="ركض">ركض</button>
+  <button class="tb" id="bFlash" type="button" aria-label="المصباح">مصباح</button>
+  <button class="tb" id="bInv" type="button" aria-label="الحقيبة">حقيبة</button>
+  <button class="tb" id="bFire" type="button" aria-label="إطلاق">نار</button>
+  <button class="tb" id="bAim" type="button" aria-label="تصويب">تصويب</button>
+  <button class="tb" id="bPause" type="button" aria-label="إيقاف مؤقت">❚❚</button>
+</div>
+
+<div class="screen on" id="loading" style="display:none;">
+  <h1>بيت الظلال</h1>
+  <div id="loadbar"><div></div></div>
+  <div id="loadmsg">جارٍ التحميل...</div>
+</div>
+
+<div class="screen" id="menu">
+  <div class="card">
+    <h1 class="title">بيت الظلال</h1>
+    <p class="sub">أنت في حديقة بيت قديم، ظلام، وشيء طويل يمشي في الممرات.<br>ادخل البيت، اجمع الأوراق السبع، ثم اهرب إلى ساحة المدينة.</p>
+    <button class="btn" id="btnStart" type="button">ابدأ</button>
+    <div class="opts">
+      <h3>الرسوميات</h3>
+      <div class="chips">
+        <label><input type="radio" name="q" id="q-ultra" value="ultra"><span>خارقة</span></label>
+        <label><input type="radio" name="q" id="q-high" value="high"><span>عالية</span></label>
+        <label><input type="radio" name="q" id="q-medium" value="medium"><span>متوسطة</span></label>
+        <label><input type="radio" name="q" id="q-low" value="low" checked><span>منخفضة</span></label>
+      </div>
+      <div class="sl"><label for="sens">حساسية الدوران</label><input type="range" id="sens" min="0.4" max="2.4" step="0.05" value="2.4"></div>
+      <div class="sl"><label for="vol">مستوى الصوت</label><input type="range" id="vol" min="0" max="1" step="0.05" value="1"></div>
+    </div>
+    <div class="opts">
+      <h3>التحكم</h3>
+      <div class="keys desk"><span><b>W A S D</b> مشي</span><span><b>Shift</b> ركض</span><span><b>R</b> المصباح</span><span><b>F</b> تفاعل / التقاط / اختباء</span><span><b>E</b> الحقيبة</span><span><b>1 / 2</b> مسدس / قنّاصة</span><span><b>كليك يسار</b> إطلاق</span><span><b>كليك يمين</b> تصويب</span><span><b>الفأرة</b> نظر</span><span><b>Esc</b> إيقاف مؤقت</span></div>
+      <div class="keys tch"><span>العصا اليسرى: مشي</span><span>اسحب اليمين: نظر</span><span>«ركض»: اضغط باستمرار</span><span>«تفاعل»: التقاط / اختباء</span><span>«حقيبة»: فتح الحقيبة</span><span>«نار» و«تصويب»: عند حمل سلاح</span></div>
+    </div>
+    <div class="row"><button class="btn ghost" id="btnFull" type="button">ملء الشاشة (مفعل افتراضياً)</button></div>
+    <p class="warn">لعبة رعب فيها مفاجآت صوتية عالية. يُفضَّل ارتداء سماعات في غرفة مظلمة.</p>
+  </div>
+</div>
+
+<div class="screen" id="inv"><div class="card"><h2>الحقيبة</h2><div class="slots" id="slots"></div><div class="row"><button class="btn" id="btnInvClose" type="button">إغلاق (E)</button></div></div></div>
+<div class="screen" id="pause"><div class="card"><h2>متوقفة</h2><div class="row"><button class="btn" id="btnResume" type="button">تابع</button><button class="btn ghost" id="btnMenu" type="button">القائمة</button></div></div></div>
+<div class="screen" id="dead"><div class="card"><h2>أمسك بك</h2><p class="stat" id="dead-stats"></p><div class="row"><button class="btn" id="btnRetry" type="button">حاول مجدداً</button></div></div></div>
+<div class="screen" id="win"><div class="card"><h2>نجوت</h2><p class="stat">وصلتَ إلى ساحة المدينة، والبيت ما زال يراقبك من بعيد.</p><p class="stat" id="win-stats"></p><div class="row"><button class="btn" id="btnAgain" type="button">العب مرة أخرى</button></div></div></div>
+
+<script src="js/game.js"></script>
 </body>
 </html>
