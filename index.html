@@ -6,13 +6,13 @@
 <title>بيت الظلال</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/game.css?v=2">
 </head>
 <body>
 <!-- Intro video overlay (plays first, before everything) -->
 <div id="intro-video-wrap" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;">
   <video id="intro-video" playsinline muted autoplay loop style="width:100%;height:100%;object-fit:cover;pointer-events:none;" preload="auto">
-    <source src="assets/loading/video/intro.mp4" type="video/mp4">
+    <source src="assets/loading/video/intro.mp4?v=2" type="video/mp4">
   </video>
 </div>
 
@@ -85,6 +85,29 @@
 <div class="screen" id="dead"><div class="card"><h2>أمسك بك</h2><p class="stat" id="dead-stats"></p><div class="row"><button class="btn" id="btnRetry" type="button">حاول مجدداً</button></div></div></div>
 <div class="screen" id="win"><div class="card"><h2>نجوت</h2><p class="stat">وصلتَ إلى ساحة المدينة، والبيت ما زال يراقبك من بعيد.</p><p class="stat" id="win-stats"></p><div class="row"><button class="btn" id="btnAgain" type="button">العب مرة أخرى</button></div></div></div>
 
-<script src="js/game.js"></script>
+
+<script>
+// Force cleanup of any old service workers and caches
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+  // Register cleanup SW once
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    console.log('Cleanup SW registered');
+    // After a short time, unregister everything
+    setTimeout(() => {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister());
+      });
+      caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+    }, 2000);
+  }).catch(() => {});
+}
+</script>
+
+<script src="js/game.js?v=2"></script>
 </body>
 </html>
