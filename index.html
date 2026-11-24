@@ -10,10 +10,11 @@
 </head>
 <body>
 <!-- Intro video overlay (plays first, before everything) -->
-<div id="intro-video-wrap" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;">
-  <video id="intro-video" playsinline muted autoplay loop style="width:100%;height:100%;object-fit:cover;pointer-events:none;" preload="auto">
+<div id="intro-video-wrap" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+  <video id="intro-video" playsinline loop style="width:100%;height:100%;object-fit:cover;" preload="auto">
     <source src="assets/loading/video/intro.mp4?v=2" type="video/mp4">
   </video>
+  <div id="intro-hint" style="position:absolute;bottom:8%;left:50%;transform:translateX(-50%);color:#dcd5c5;font-family:Tajawal,sans-serif;font-size:18px;text-shadow:0 2px 8px #000;pointer-events:none;">اضغط في أي مكان للبدء</div>
 </div>
 
 <canvas id="gl" aria-label="مشهد اللعبة ثلاثي الأبعاد"></canvas>
