@@ -1,53 +1,57 @@
-
 /* ============ INTRO VIDEO (plays first for 80 seconds) ============ */
 (function introVideo() {
   const wrap = document.getElementById('intro-video-wrap');
   const video = document.getElementById('intro-video');
   const loading = document.getElementById('loading');
-  if (!wrap || !video) return;
-
-  // Force no controls
-  video.controls = false;
-  video.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
-  video.disablePictureInPicture = true;
-
-  // Try to enter fullscreen as soon as possible
-  function tryFullscreen() {
-    const el = document.documentElement;
-    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-    if (req && !document.fullscreenElement && !document.webkitFullscreenElement) {
-      try { req.call(el); } catch (e) {}
-    }
+  if (!wrap || !video) {
+    if (typeof boot === 'function') boot();
+    return;
   }
-  tryFullscreen();
-  setTimeout(tryFullscreen, 100);
-  setTimeout(tryFullscreen, 500);
 
-  // Play the video
-  video.play().catch(() => {
-    // Autoplay may be blocked; still continue the timer
-  });
+  video.controls = false;
+  video.muted = true;
+  video.playsInline = true;
 
-  // After exactly 80 seconds (1:20), hide video and show loading
-  const INTRO_DURATION = 80 * 1000;
-  setTimeout(() => {
+  let finished = false;
+  function finishIntro() {
+    if (finished) return;
+    finished = true;
     wrap.style.display = 'none';
-    wrap.remove();
+    if (wrap.parentNode) wrap.remove();
     if (loading) {
       loading.style.display = '';
       loading.classList.add('on');
     }
-    // Now start the real game boot if it hasn't started
     if (typeof boot === 'function' && !window.__booted) {
       window.__booted = true;
-      boot();
+      setTimeout(boot, 50);
     }
-  }, INTRO_DURATION);
+  }
 
-  // Also hide on video end if longer, but we force the timer
+  function tryFullscreen() {
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (req && !document.fullscreenElement) {
+      try { req.call(el); } catch (e) {}
+    }
+  }
+  tryFullscreen();
+  setTimeout(tryFullscreen, 200);
+
+  video.play().catch(() => {});
+
+  video.addEventListener('error', () => finishIntro());
+
+  setTimeout(finishIntro, 80 * 1000);
+
   video.addEventListener('ended', () => {
     video.currentTime = 0;
     video.play().catch(() => {});
+  });
+
+  wrap.addEventListener('click', finishIntro);
+  document.addEventListener('keydown', (e) => {
+    if (['Escape', 'Enter', ' '].includes(e.key)) finishIntro();
   });
 })();
 
@@ -632,84 +636,329 @@ function solidTex(R, r, g, b) {
 }
 const tick = () => new Promise(r => setTimeout(r, 0));
 
-async function loadTex(R, path) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const cv = document.createElement('canvas');
-      cv.width = img.width;
-      cv.height = img.height;
-      const ctx = cv.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      resolve(R.texFromCanvas(cv));
-    };
-    img.onerror = () => reject(new Error('Failed to load ' + path));
-    img.src = path;
-  });
-}
-
 async function buildMaterials(R, progress) {
   const M = {};
-  const flat = solidTex(R, 128, 128, 255);
-  const mat = (diff, spec, shin, ns, dirt) => ({ diff: diff, norm: flat, spec: [spec, shin], ns: ns, dirt: dirt, emis: [0, 0, 0] });
+  const flat = solidTex(R, 128, 128, 255), white = solidTex(R, 255, 255, 255);
+  const mat = (t, spec, shin, ns, dirt) => ({ diff: t.diff || t, norm: t.norm || flat, spec: [spec, shin], ns: ns, dirt: dirt, emis: [0, 0, 0] });
 
-  progress(0.1); 
-  const base = 'assets/textures/photos/';
-  const items = 'assets/textures/items/';
+  // wooden floor
+  progress(0.05); await tick();
+  M.wood = mat(genTex(R, 512, 512, (u, v) => {
+    const pw = 6, pi = Math.floor(u * pw), pu = u * pw - pi;
+    const off = hash2(pi, 7, 3), vv = (v + off) % 1, seg = Math.floor(vv * 2), fy = vv * 2 - seg;
+    const tint = hash2(pi, seg, 5);
+    const grain = fbm(u * 18, v * 44, 11 + pi, 18, 44, 3);
+    const rings = 0.5 + 0.5 * Math.sin((pu * 9 + grain * 6) * PI);
+    const wear = fbm(u * 3, v * 3, 91, 3, 3, 4);
+    const e = Math.min(pu, 1 - pu);
+    let k = (0.55 + 0.7 * tint) * (0.55 + 0.5 * grain + 0.18 * rings) * (0.6 + 0.6 * wear);
+    let h = 0.5 + 0.25 * grain + 0.1 * rings;
+    if (e < 0.035 || fy < 0.012 || fy > 0.99) { k *= 0.12; h = 0; }
+    else if (e < 0.06) { h *= 0.8; }
+    return [0.34 * k, 0.2 * k, 0.1 * k, h];
+  }, 3.0), 0.5, 36, 1.0, 0.9);
 
-  try {
-    M.wood = mat(await loadTex(R, base + 'wood.png'), 0.5, 36, 1.0, 0.9);
-    progress(0.2);
-    M.tile = mat(await loadTex(R, base + 'tile.png'), 0.9, 110, 1.0, 1.0);
-    progress(0.3);
-    M.carpet = mat(await loadTex(R, base + 'carpet.png'), 0.04, 6, 1.0, 1.0);
-    progress(0.4);
-    M.stone = mat(await loadTex(R, base + 'stone.png'), 0.35, 30, 1.0, 1.0);
-    progress(0.5);
-    M.wall = mat(await loadTex(R, base + 'wall.png'), 0.22, 20, 1.0, 0.9);
-    progress(0.6);
-    M.ceil = mat(await loadTex(R, base + 'ceil.png'), 0.05, 8, 1.0, 1.0);
-    progress(0.7);
-    M.furn = mat(await loadTex(R, base + 'furn.png'), 0.55, 44, 1.0, 0.5);
-    progress(0.75);
-    M.brick = mat(await loadTex(R, base + 'brick.png'), 0.15, 16, 1.0, 1.0);
-    progress(0.8);
-    M.grass = mat(await loadTex(R, base + 'grass.png'), 0.05, 8, 1.0, 0.7);
-    progress(0.85);
-    const white = await loadTex(R, base + 'white.png');
-    M.white = mat(white, 0.25, 30, 0.0, 0.0);
-    M.fabric = mat(white, 0.04, 6, 0.0, 0.6);
-    M.skin = mat(white, 0.5, 60, 0.0, 0.0);
-    M.glow = mat(white, 0.0, 8, 0.0, 0.0);
-    M.paper = mat(await loadTex(R, base + 'paper.png'), 0.05, 6, 0.0, 0.0);
-    progress(0.9);
-    // fallback for others
-    M.wpanel = M.furn;
-    M.paint = M.wall;
-    M.window = mat(white, 0.4, 40, 0.0, 0.0);
-  } catch (e) {
-    console.error(e);
-    // fallback to solid if images fail
-    const solid = solidTex(R, 128, 128, 128);
-    M.wood = mat(solid, 0.5, 36, 1, 0.9);
-    M.tile = mat(solid, 0.9, 110, 1, 1);
-    M.carpet = mat(solid, 0.04, 6, 1, 1);
-    M.stone = mat(solid, 0.35, 30, 1, 1);
-    M.wall = mat(solid, 0.22, 20, 1, 0.9);
-    M.ceil = mat(solid, 0.05, 8, 1, 1);
-    M.furn = mat(solid, 0.55, 44, 1, 0.5);
-    M.brick = mat(solid, 0.15, 16, 1, 1);
-    M.grass = mat(solid, 0.05, 8, 1, 0.7);
-    M.white = mat(solid, 0.25, 30, 0, 0);
-    M.fabric = mat(solid, 0.04, 6, 0, 0.6);
-    M.skin = mat(solid, 0.5, 60, 0, 0);
-    M.glow = mat(solid, 0, 8, 0, 0);
-    M.paper = mat(solid, 0.05, 6, 0, 0);
-    M.wpanel = M.furn;
-    M.paint = M.wall;
-    M.window = mat(solid, 0.4, 40, 0, 0);
+  // checker tile
+  progress(0.15); await tick();
+  M.tile = mat(genTex(R, 512, 512, (u, v) => {
+    const ix = Math.floor(u * 4), iy = Math.floor(v * 4), tx = u * 4 - ix, ty = v * 4 - iy;
+    const e = Math.min(tx, 1 - tx, ty, 1 - ty);
+    const chk = (ix + iy) & 1, n = fbm(u * 10, v * 10, 5, 10, 10, 4), n2 = fbm(u * 3, v * 3, 8, 3, 3, 3);
+    let c = chk ? [0.045, 0.045, 0.05] : [0.6, 0.58, 0.52];
+    let k = 0.55 + 0.7 * n, h = 0.8 - 0.1 * n;
+    if (e < 0.03) { c = [0.16, 0.15, 0.12]; k = 0.8; h = 0; }
+    else if (e < 0.05) h = 0.55 + (e - 0.03) * 12;
+    const cr = Math.abs(fbm(u * 14, v * 14, 33, 14, 14, 3) - 0.5);
+    if (cr < 0.008) { k *= 0.3; h -= 0.3; }
+    const stain = smooth(0.6, 0.8, n2);
+    return [c[0] * k * (1 - stain * 0.5) + stain * 0.05, c[1] * k * (1 - stain * 0.65), c[2] * k * (1 - stain * 0.7), h];
+  }, 4.0), 0.9, 110, 1.0, 1.0);
+
+  // carpet
+  progress(0.25); await tick();
+  M.carpet = mat(genTex(R, 256, 256, (u, v) => {
+    const a = Math.abs((u * 4) % 1 - 0.5) + Math.abs((v * 4) % 1 - 0.5);
+    const fib = fbm(u * 96, v * 96, 21, 96, 96, 2);
+    let c = [0.3, 0.035, 0.05];
+    if (Math.abs(a - 0.36) < 0.025) c = [0.5, 0.34, 0.1];
+    else if (a < 0.16) c = [0.2, 0.025, 0.04];
+    else if (Math.abs(a - 0.22) < 0.012) c = [0.38, 0.27, 0.1];
+    const k = 0.55 + 0.7 * fib;
+    return [c[0] * k, c[1] * k, c[2] * k, fib];
+  }, 2.2), 0.04, 6, 1.0, 1.0);
+
+  // stone flags
+  progress(0.35); await tick();
+  M.stone = mat(genTex(R, 512, 512, (u, v) => {
+    const iy = Math.floor(v * 4), ty = v * 4 - iy;
+    const su = u * 3 + (iy & 1) * 0.5, ix = Math.floor(su), tx = su - ix;
+    const e = Math.min(tx, 1 - tx, ty, 1 - ty);
+    const bt = hash2(ix, iy, 9), n = fbm(u * 9, v * 9, 3, 9, 9, 4), n2 = fbm(u * 28, v * 28, 4, 28, 28, 2);
+    let k = (0.35 + 0.35 * bt) * (0.6 + 0.8 * n), h = 0.6 + 0.3 * n + 0.1 * n2;
+    if (e < 0.04) { k *= 0.25; h = 0.1; }
+    return [k * 0.9, k * 0.92, k, h];
+  }, 4.5), 0.35, 30, 1.0, 1.0);
+
+  // dirty white peeling paint on gray cement + original wood frame bottom 1/4 + little blood
+  progress(0.5); await tick();
+  M.wall = mat(genTex(R, 512, 512, (u, v) => {
+    // bottom ~42%: square wood panels with geometric carvings
+    if (v > 0.58) {
+      const local = (v - 0.58) / 0.42;
+      const panelsU = 2.2, panelsV = 3.5;
+      const pu = (u * panelsU) % 1;
+      const pv = (local * panelsV) % 1;
+      const e = Math.min(pu, 1 - pu, pv, 1 - pv);
+      const n = fbm(u * 9, v * 9, 5, 9, 9, 3);
+      const gr = fbm(u * 14, v * 50, 12, 14, 50, 3);
+      let k = 0.5 + 0.7 * gr;
+      let h = 0.75;
+      let m = 1;
+      // panel borders (raised)
+      if (e < 0.06) { h = 0.92; m = 1.1; }
+      else if (e < 0.1) { h = 0.6; m = 0.85; }
+      // geometric carvings inside panels
+      const cu = pu - 0.5, cv = pv - 0.5;
+      const diamond = Math.abs(cu) + Math.abs(cv);
+      const circle = Math.hypot(cu, cv);
+      const lines = Math.abs(Math.sin(cu * 8 * PI)) < 0.12 || Math.abs(Math.sin(cv * 6 * PI)) < 0.1;
+      if (e > 0.12) {
+        if (diamond < 0.28 && diamond > 0.18) { h = 0.45; k *= 0.7; } // diamond frame
+        else if (circle < 0.12) { h = 0.5; k *= 0.75; } // center circle
+        else if (lines) { h = 0.55; k *= 0.8; }
+      }
+      if (local < 0.03) return [0.4, 0.28, 0.17, 0.95];
+      return [0.26 * k * m * (0.65 + 0.45 * n), 0.15 * k * m * (0.65 + 0.45 * n), 0.08 * k * m * (0.65 + 0.45 * n), h];
+    }
+
+    // upper: dirty mottled white/gray paint on cement, fine peeling, heavy dirt, real streaking
+    const cementN = fbm(u * 12, v * 12, 4, 12, 12, 4);
+    let cr = 0.38 + 0.08 * cementN;
+    let cg = 0.36 + 0.07 * cementN;
+    let cb = 0.34 + 0.06 * cementN;
+    let ch = 0.46 + 0.12 * cementN;
+
+    // base dirty white-gray paint with real mottling
+    const mott1 = fbm(u * 8, v * 9, 11, 8, 9, 3);
+    const mott2 = fbm(u * 22, v * 25, 19, 22, 25, 2);
+    const streak = fbm(u * 1.8, v * 6.5, 27, 2, 6, 3); // vertical-ish streaking
+    let pr = 0.68 * (0.7 + 0.4 * mott1) * (0.9 + 0.15 * mott2);
+    let pg = 0.66 * (0.7 + 0.4 * mott1) * (0.9 + 0.15 * mott2);
+    let pb = 0.62 * (0.7 + 0.4 * mott1) * (0.9 + 0.15 * mott2);
+    pr *= 0.75 + 0.3 * streak;
+    pg *= 0.73 + 0.3 * streak;
+    pb *= 0.7 + 0.3 * streak;
+
+    // heavy layered dirt: dark grime + light dust
+    const darkDirt = smooth(0.35, 0.7, fbm(u * 7, v * 8, 41, 7, 8, 4));
+    const lightDirt = fbm(u * 18, v * 20, 53, 18, 20, 2);
+    const soot = smooth(0.5, 0.8, fbm(u * 4.5, v * 5, 67, 4, 5, 3));
+    pr *= 1 - darkDirt * 0.55 - soot * 0.4;
+    pg *= 1 - darkDirt * 0.58 - soot * 0.42;
+    pb *= 1 - darkDirt * 0.62 - soot * 0.45;
+    pr += lightDirt * 0.08;
+    pg += lightDirt * 0.07;
+    pb += lightDirt * 0.06;
+
+    // fine peeling (higher frequency so no big blobs)
+    const peelN = fbm(u * 9, v * 10, 31, 9, 10, 4);
+    const peelDetail = fbm(u * 28, v * 32, 47, 28, 32, 2);
+    let peel = smooth(0.48, 0.72, peelN) * (0.5 + 0.5 * peelDetail);
+    peel = Math.min(0.85, peel + smooth(0.65, 0.92, v) * 0.25);
+    const edge = smooth(0.08, 0.18, Math.abs(peelN - 0.55) * 1.8);
+
+    let r = pr * (1 - peel) + cr * peel;
+    let g = pg * (1 - peel) + cg * peel;
+    let b = pb * (1 - peel) + cb * peel;
+    let h = 0.5 * (1 - peel) + ch * peel;
+    if (edge > 0.3 && peel > 0.1 && peel < 0.75) {
+      h = Math.max(h, 0.68);
+    }
+
+    // little sparse blood
+    const bloodN = fbm(u * 14, v * 16, 71, 14, 16, 2);
+    const bloodAmt = smooth(0.7, 0.88, bloodN) * 0.22;
+    if (bloodAmt > 0.04) {
+      r = r * (1 - bloodAmt) + 0.38 * bloodAmt;
+      g = g * (1 - bloodAmt) + 0.045 * bloodAmt;
+      b = b * (1 - bloodAmt) + 0.035 * bloodAmt;
+    }
+
+    return [clamp(r, 0.05, 0.85), clamp(g, 0.05, 0.8), clamp(b, 0.04, 0.75), h];
+  }, 3.4), 0.22, 20, 1.0, 0.9);
+
+  // ceiling plaster
+  progress(0.65); await tick();
+  M.ceil = mat(genTex(R, 256, 256, (u, v) => {
+    const n = fbm(u * 6, v * 6, 2, 6, 6, 4), cr = Math.abs(fbm(u * 9, v * 9, 44, 9, 9, 3) - 0.5);
+    let k = 0.5 + 0.5 * n;
+    const stain = smooth(0.55, 0.75, fbm(u * 3, v * 3, 12, 3, 3, 3));
+    k *= 1 - stain * 0.45;
+    let h = 0.5 + 0.2 * n;
+    if (cr < 0.007) { k *= 0.3; h -= 0.3; }
+    return [0.5 * k, 0.49 * k, 0.45 * k * (1 - stain * 0.25), h];
+  }, 2.5), 0.05, 8, 1.0, 1.0);
+
+  // original furniture wood (restored)
+  progress(0.75); await tick();
+  M.furn = mat(genTex(R, 256, 256, (u, v) => {
+    const gr = fbm(u * 6, v * 50, 15, 6, 50, 3), rg = 0.5 + 0.5 * Math.sin((u * 8 + gr * 5) * PI);
+    const k = 0.45 + 0.6 * gr + 0.25 * rg;
+    return [0.3 * k, 0.15 * k, 0.08 * k, 0.5 + 0.3 * gr];
+  }, 2.5), 0.55, 44, 1.0, 0.5);
+
+  // separate material for wall lower wood panels only
+  M.wpanel = mat(genTex(R, 256, 256, (u, v) => {
+    const panelsU = 2.2, panelsV = 3.2;
+    const pu = (u * panelsU) % 1, pv = (v * panelsV) % 1;
+    const e = Math.min(pu, 1 - pu, pv, 1 - pv);
+    const n = fbm(u * 8, v * 8, 4, 8, 8, 3);
+    const gr = fbm(u * 12, v * 40, 11, 12, 40, 3);
+    let k = 0.5 + 0.65 * gr;
+    let h = 0.72;
+    let m = 1;
+    if (e < 0.055) { h = 0.94; m = 1.15; }
+    else if (e < 0.09) { h = 0.58; m = 0.9; }
+    const cu = pu - 0.5, cv = pv - 0.5;
+    const diamond = Math.abs(cu) + Math.abs(cv);
+    if (e > 0.11 && diamond < 0.26 && diamond > 0.16) { h = 0.42; k *= 0.65; }
+    else if (e > 0.11 && Math.hypot(cu, cv) < 0.1) { h = 0.48; k *= 0.7; }
+    return [0.24 * k * m * (0.65 + 0.4 * n), 0.13 * k * m * (0.65 + 0.4 * n), 0.07 * k * m * (0.65 + 0.4 * n), h];
+  }, 3.0), 0.4, 36, 1.0, 0.6);
+
+  M.white = mat({ diff: white, norm: flat }, 0.25, 30, 0.0, 0.0);
+  M.fabric = mat({ diff: white, norm: flat }, 0.04, 6, 0.0, 0.6);
+  M.skin = mat({ diff: white, norm: flat }, 0.5, 60, 0.0, 0.0);
+  M.glow = mat({ diff: white, norm: flat }, 0.0, 8, 0.0, 0.0);
+
+  // paper (collectible notes)
+  progress(0.85); await tick();
+  {
+    const c = cvs(256, 256), x = c.getContext('2d');
+    const g = x.createRadialGradient(128, 128, 20, 128, 128, 190);
+    g.addColorStop(0, '#d8cdae'); g.addColorStop(1, '#8e7e5a');
+    x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+    const r = rng(77);
+    for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(90,60,25,${r() * 0.12})`; x.beginPath(); x.arc(r() * 256, r() * 256, 6 + r() * 26, 0, TAU); x.fill(); }
+    x.strokeStyle = 'rgba(40,24,14,.85)'; x.lineWidth = 2; x.lineCap = 'round';
+    for (let l = 0; l < 11; l++) {
+      x.beginPath(); let px = 22, py = 30 + l * 19;
+      x.moveTo(px, py);
+      while (px < 232 - r() * 40) { px += 5 + r() * 9; x.lineTo(px, py + (r() - 0.5) * 7); }
+      x.stroke();
+    }
+    x.strokeStyle = 'rgba(140,10,14,.9)'; x.lineWidth = 5;
+    x.beginPath(); x.moveTo(40, 90); x.bezierCurveTo(90, 60, 150, 190, 215, 160); x.stroke();
+    x.fillStyle = 'rgba(120,8,10,.7)'; x.beginPath(); x.arc(205, 200, 14, 0, TAU); x.fill();
+    M.paper = mat({ diff: R.texFromCanvas(c), norm: flat }, 0.05, 6, 0.0, 0.0);
   }
+
+  // portraits atlas 2x2
+  {
+    const c = cvs(512, 512), x = c.getContext('2d'), r = rng(5);
+    for (let k = 0; k < 4; k++) {
+      const ox = (k % 2) * 256, oy = (k >> 1) * 256;
+      const bg = x.createLinearGradient(ox, oy, ox, oy + 256); bg.addColorStop(0, '#2a1f14'); bg.addColorStop(1, '#0d0906');
+      x.fillStyle = bg; x.fillRect(ox, oy, 256, 256);
+      x.fillStyle = '#0c0a0c'; x.beginPath(); x.ellipse(ox + 128, oy + 262, 100, 78, 0, 0, TAU); x.fill();
+      x.fillStyle = '#b9a58e'; x.fillRect(ox + 113, oy + 150, 30, 40);
+      const hair = ['#0a0707', '#2a1a0c', '#101010', '#050505'][k];
+      if (k === 0 || k === 3) { x.fillStyle = hair; x.beginPath(); x.ellipse(ox + 128, oy + 120, 62, 82, 0, 0, TAU); x.fill(); x.fillRect(ox + 64, oy + 120, 128, 126); }
+      const fg = x.createRadialGradient(ox + 120, oy + 105, 10, ox + 128, oy + 120, 58); fg.addColorStop(0, '#d6c2a8'); fg.addColorStop(1, '#8c7660');
+      x.fillStyle = fg; x.beginPath(); x.ellipse(ox + 128, oy + 120, k === 1 ? 40 : 46, k === 1 ? 50 : 60, 0, 0, TAU); x.fill();
+      if (k === 2) { x.fillStyle = '#0a0a0a'; x.fillRect(ox + 70, oy + 62, 116, 14); x.fillRect(ox + 92, oy + 30, 72, 40); }
+      if (k === 1) { x.fillStyle = hair; x.beginPath(); x.ellipse(ox + 128, oy + 84, 44, 24, 0, PI, TAU); x.fill(); }
+      if (k !== 3) {
+        x.fillStyle = '#050304';
+        x.beginPath(); x.ellipse(ox + 110, oy + 112, 9, 12, 0, 0, TAU); x.fill();
+        x.beginPath(); x.ellipse(ox + 146, oy + 112, 9, 12, 0, 0, TAU); x.fill();
+        x.fillStyle = '#e8e2d0'; x.fillRect(ox + 108, oy + 108, 3, 3); x.fillRect(ox + 144, oy + 108, 3, 3);
+        x.strokeStyle = '#3a1a18'; x.lineWidth = 2; x.beginPath(); x.moveTo(ox + 114, oy + 152); x.lineTo(ox + 142, oy + 153); x.stroke();
+      } else {
+        x.fillStyle = '#1c0e0e'; for (let i = 0; i < 26; i++) { x.beginPath(); x.ellipse(ox + 100 + r() * 56, oy + 90 + r() * 60, 3 + r() * 10, 6 + r() * 16, r() * 3, 0, TAU); x.fill(); }
+      }
+      x.strokeStyle = 'rgba(0,0,0,.35)'; x.lineWidth = 1;
+      for (let i = 0; i < 40; i++) { x.beginPath(); let px = ox + r() * 256, py = oy + r() * 256; x.moveTo(px, py); for (let j = 0; j < 4; j++) { px += (r() - 0.5) * 30; py += (r() - 0.5) * 30; x.lineTo(px, py); } x.stroke(); }
+      const vg = x.createRadialGradient(ox + 128, oy + 128, 60, ox + 128, oy + 128, 190); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.7)');
+      x.fillStyle = vg; x.fillRect(ox, oy, 256, 256);
+    }
+    M.paint = mat({ diff: R.texFromCanvas(c), norm: flat }, 0.35, 40, 0.0, 0.0);
+  }
+
+  // night forest window (realistic view)
+  {
+    const c = cvs(512, 512), x = c.getContext('2d');
+    // sky
+    const g = x.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0, '#0a1228'); g.addColorStop(0.6, '#1a2a48'); g.addColorStop(1, '#0d1a30');
+    x.fillStyle = g; x.fillRect(0, 0, 512, 512);
+    // moon
+    const mg = x.createRadialGradient(380, 90, 8, 380, 90, 80);
+    mg.addColorStop(0, 'rgba(220,230,255,0.9)'); mg.addColorStop(0.3, 'rgba(140,170,220,0.4)'); mg.addColorStop(1, 'rgba(40,60,100,0)');
+    x.fillStyle = mg; x.fillRect(0, 0, 512, 512);
+    // distant trees / forest silhouette
+    x.fillStyle = '#05080e';
+    for (let i = 0; i < 28; i++) {
+      const tx = i * 20 + (i % 3) * 8;
+      const th = 180 + Math.sin(i * 1.7) * 60;
+      x.beginPath();
+      x.moveTo(tx, 512);
+      x.lineTo(tx + 12, 512 - th);
+      x.lineTo(tx + 24, 512);
+      x.fill();
+    }
+    // closer trees
+    for (let i = 0; i < 14; i++) {
+      const tx = 20 + i * 36;
+      const th = 260 + Math.sin(i * 2.3) * 40;
+      x.beginPath();
+      x.moveTo(tx, 512);
+      x.lineTo(tx + 18, 512 - th);
+      x.lineTo(tx + 36, 512);
+      x.fill();
+    }
+    // window frame (dark wood)
+    x.fillStyle = '#1a120c';
+    x.fillRect(0, 0, 512, 18); x.fillRect(0, 494, 512, 18);
+    x.fillRect(0, 0, 18, 512); x.fillRect(494, 0, 18, 512);
+    x.fillRect(246, 0, 20, 512); // middle mullion
+    // one pane slightly open look (lighter / offset suggestion via gradient)
+    const openG = x.createLinearGradient(260, 0, 512, 0);
+    openG.addColorStop(0, 'rgba(255,255,255,0.03)');
+    openG.addColorStop(1, 'rgba(180,200,255,0.08)');
+    x.fillStyle = openG; x.fillRect(266, 18, 228, 476);
+    // lighter glass so 3D forest shows through
+    x.fillStyle = 'rgba(160,190,230,0.12)'; x.fillRect(18, 18, 476, 476);
+    M.window = mat({ diff: R.texFromCanvas(c), norm: flat }, 0.4, 40, 0.0, 0.0);
+  }
+
+  // ---- outdoor materials ----
+  progress(0.9); await tick();
+  M.brick = mat(genTex(R, 256, 256, (u, v) => {
+    const rows = 14, cols = 6;
+    const ry = Math.floor(v * rows), ty = v * rows - ry;
+    const su = u * cols + (ry & 1) * 0.5, ix = Math.floor(su), tx = su - ix;
+    const e = Math.min(tx, 1 - tx, ty, 1 - ty);
+    const bt = hash2(ix, ry, 13), n = fbm(u * 10, v * 10, 6, 10, 10, 3);
+    let k = (0.6 + 0.5 * bt) * (0.6 + 0.7 * n), h = 0.7 + 0.2 * n;
+    if (e < 0.07) { k *= 0.35; h = 0.1; }
+    return [0.55 * k, 0.27 * k, 0.2 * k, h];
+  }, 4.0), 0.15, 16, 1.0, 1.0);
+  progress(0.93); await tick();
+  M.grass = mat(genTex(R, 256, 256, (u, v) => {
+    const n = fbm(u * 16, v * 16, 61, 16, 16, 4), n2 = fbm(u * 64, v * 64, 62, 64, 64, 2), k = 0.5 + 0.6 * n + 0.3 * n2;
+    return [0.12 * k, 0.27 * k, 0.08 * k, 0.4 + 0.5 * n2];
+  }, 3.0), 0.05, 8, 1.0, 0.7);
+  progress(0.96); await tick();
+  M.road = mat(genTex(R, 256, 256, (u, v) => {
+    const n = fbm(u * 24, v * 24, 71, 24, 24, 3), n2 = fbm(u * 90, v * 90, 72, 90, 90, 1), k = 0.55 + 0.5 * n + 0.35 * n2;
+    const cr = Math.abs(fbm(u * 6, v * 6, 73, 6, 6, 3) - 0.5);
+    const kk = cr < 0.01 ? k * 0.3 : k;
+    return [0.17 * kk, 0.17 * kk, 0.18 * kk, 0.4 + 0.4 * n2];
+  }, 3.0), 0.25, 26, 1.0, 0.8);
+  M.iron = mat({ diff: white, norm: flat }, 0.7, 70, 0.0, 0.8);
+  M.glass = mat({ diff: white, norm: flat }, 0.9, 90, 0.0, 0.2);
+  M.litwin = M.glow;
   progress(1);
   return M;
 }
@@ -2776,5 +3025,5 @@ document.querySelectorAll('input[name=q]').forEach(r => r.addEventListener('chan
 $('sens').addEventListener('input', e => { G.settings.sens = +e.target.value; });
 $('vol').addEventListener('input', e => { G.settings.vol = +e.target.value; if (SND.ok) SND.master.gain.value = G.settings.vol; });
 $('btnFull').addEventListener('click', () => { const d = document.documentElement; if (!document.fullscreenElement) (d.requestFullscreen || d.webkitRequestFullscreen || (() => { })).call(d); else document.exitFullscreen(); });
-// boot(); // delayed until after intro video
+// boot(); // called after intro video
 
